@@ -15,3 +15,12 @@ Maksuturva payment module for magento2.
 
 = 1.0.2 =
 * Initial release
+
+
+== install instruction ==
+Install manually
+*downloading the maksuturva  package
+*merge the package with the Magento2 root folder
+
+Install via composer
+doesn't work yet
