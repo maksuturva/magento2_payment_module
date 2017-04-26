@@ -23,4 +23,4 @@ Install manually
 *merge the package with the Magento2 root folder
 
 Install via composer
-doesn't work yet
+doesn't work yet...
