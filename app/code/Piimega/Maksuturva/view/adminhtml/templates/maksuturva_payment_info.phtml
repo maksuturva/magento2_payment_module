@@ -1,0 +1,12 @@
+<div id="maksuturva_payment_info">
+    <div class="maksuturva_payment_method_name"><?php echo $block->getOrder()->getData('maksuturva_preselected_payment_method_name')?></div>
+</div>
+<script type="text/javascript">
+    require(
+        ['jquery'],
+        function($) {
+            var element = $('#maksuturva_payment_info').detach();
+            $('.order-payment-additional').append(element);
+        }
+    );
+</script>

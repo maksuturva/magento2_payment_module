@@ -1,0 +1,43 @@
+<?php
+$paymentMethods = $this->getPaymentMethods();
+?>
+
+<?php if ($paymentMethods && count($paymentMethods) > 0): ?>
+    <form id="maksuturva_cod_payment-form" class="form form-purchase-order" data-role="maksuturva_cod_payment-form">
+            <?php $_code = $this->getMethodCode() ?>
+            <div id="payment_form_<?php echo $_code ?>" style="display:inline-flex;">
+
+                <?php foreach ($paymentMethods as $method): ?>
+                    <div class="payment-method">
+                        <label for="maksuturva_cod_<?php echo $method->code ?>">
+                            <img src="<?php echo $method->imageurl ?>" alt="<?php echo $method->displayname ?>"/>
+                        </label>
+                        <div class="input-wrapper" style="margin-left: 50%;">
+                            <input type="radio" class="radio maksuturva_cod_-radio" id="maksuturva_cod_<?php echo $method->code ?>"
+                                   name="payment[maksuturva_cod_preselected_payment_method]"
+                                   value="<?php echo $method->code ?>"
+                                   onclick="selectPaymentMethod(this.value)"
+                                   data-validate="{required:true}">
+                        </div>
+                    </div>
+                <?php endforeach ?>
+
+            </div>
+        </fieldset>
+    </form>
+    <script>
+        require(['jquery', "mage/mage"], function($) {
+            "use strict";
+            if(window.checkoutConfig.payment.maksuturva_cod_payment.preselected_payment_method){
+                $("#maksuturva_cod_" + window.checkoutConfig.payment.maksuturva_cod_payment.preselected_payment_method).prop('checked', true);
+            }else{
+                $('.maksuturva_cod-radio').first().prop('checked', true);
+            }
+        });
+
+        function selectPaymentMethod(value){
+            window.checkoutConfig.payment.maksuturva_cod_payment.preselected_payment_method = value;
+        }
+    </script>
+<?php endif ?>
+

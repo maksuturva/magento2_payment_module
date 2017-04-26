@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <maksuturva_payment>
+            <maksuturva_config>
+                <!--<active>0</active>-->
+                <!--<model>Piimega\Maksuturva\Model\Payment</model>-->
+                <order_status>pending</order_status>
+                <title>Maksuturva</title>
+                <payment_action>sale</payment_action>
+                <allowspecific>0</allowspecific>
+                <keyversion>001</keyversion>
+                <paymentdue>0</paymentdue>
+                <commurl>https://www.maksuturva.fi/</commurl>
+                <commencoding>UTF-8</commencoding>
+                <sandboxmode>1</sandboxmode>
+                <preselect_payment_method>0</preselect_payment_method>
+                <cron_active>0</cron_active>
+                <test_sellerid>testikauppias</test_sellerid>
+                <test_secretkey>11223344556677889900</test_secretkey>
+                <test_commurl>https://www.maksuturva.fi/</test_commurl>
+                <preselect_form_type>0</preselect_form_type>
+                <manually_query_in_hour>0</manually_query_in_hour>
+                <manually_query_in_day>0</manually_query_in_day>
+            </maksuturva_config>
+        </maksuturva_payment>
+    </default>
+</config>

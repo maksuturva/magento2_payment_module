@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid">
+        <arguments>
+            <argument name="joins" xsi:type="array">
+                <item name="maksuturva_payment_method" xsi:type="array">
+                    <item name="table" xsi:type="string">maksuturva_payment_method</item>
+                    <item name="origin_column" xsi:type="string">maksuturva_preselected_payment_method</item>
+                    <item name="target_column" xsi:type="string">code</item>
+                </item>
+            </argument>
+            <argument name="columns" xsi:type="array">
+                <item name="maksuturva_preselected_payment_method" xsi:type="string">maksuturva_payment_method.displayname</item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>

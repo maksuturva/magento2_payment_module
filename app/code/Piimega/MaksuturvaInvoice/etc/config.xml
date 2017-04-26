@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <maksuturva_invoice_payment>
+                <active>0</active>
+                <model>Piimega\MaksuturvaInvoice\Model\Invoice</model>
+                <order_status>pending</order_status>
+                <title>Maksuturva Invoice</title>
+                <method_filter>FI60;FI70;FI72;RBIN</method_filter>
+                <default_preselect_method>FI70</default_preselect_method>
+            </maksuturva_invoice_payment>
+        </payment>
+    </default>
+</config>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <maksuturva_part_payment_payment>
+                <active>0</active>
+                <model>Piimega\MaksuturvaPartPayment\Model\PartPayment</model>
+                <order_status>pending</order_status>
+                <title>Maksuturva Part Payment</title>
+                <method_filter>FI61;FI71;RBPP;RBCD;RBRC</method_filter>
+                <default_preselect_method>FI71</default_preselect_method>
+            </maksuturva_part_payment_payment>
+        </payment>
+    </default>
+</config>
