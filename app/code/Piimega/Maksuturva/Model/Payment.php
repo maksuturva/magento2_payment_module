@@ -269,7 +269,7 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod implements Ga
         if (null === $storeId) {
             $storeId = $this->getStore();
         }
-        $path = 'payment/' . self::PARENT_CODE . '/' . $field;
+        $path = 'maksuturva_payment/maksuturva_config/'.$field;
         return $this->_scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
