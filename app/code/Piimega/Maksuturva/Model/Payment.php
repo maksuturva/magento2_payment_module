@@ -232,8 +232,13 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod implements Ga
                 __('Capture action is not available.')
             );
         }
+        $getAdditionalDataUnserialized = $payment->getAdditionalData();
+        if (!is_array($getAdditionalDataUnserialized)) {
+            $additional_data = unserialize($payment->getAdditionalData());
+        } else {
+            $additional_data = $getAdditionalDataUnserialized;
+        }
 
-        $additional_data = unserialize($payment->getAdditionalData());
         $method = $additional_data[self::MAKSUTURVA_PRESELECTED_PAYMENT_METHOD];
 
         if ($this->isDelayedCaptureCase($method)) {
