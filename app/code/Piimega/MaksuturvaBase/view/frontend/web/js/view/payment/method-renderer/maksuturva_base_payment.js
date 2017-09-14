@@ -23,13 +23,6 @@ define(
                 return 'maksuturva_base_payment';
             },
 
-            isActive: function() {
-                return true;
-            },
-            getInstructions: function () {
-                return '';
-            },
-
             getData: function () {
                 var extension_attributes = {maksuturva_preselected_payment_method : ''};
                 return {
@@ -79,7 +72,12 @@ define(
                     html = window.checkoutConfig.payment.maksuturva_base_payment.html;
                 }
                 return html;
-            }
+            },
+
+            /** Returns send check to info */
+            getMailingAddress: function() {
+                return window.checkoutConfig.payment.maksuturva_base_payment.mailingAddress;
+            },
         });
     }
 );

@@ -32,6 +32,7 @@ $paymentMethods = $this->getPaymentMethods();
                 $("#maksuturva_card_" + window.checkoutConfig.payment.maksuturva_card_payment.preselected_payment_method).prop('checked', true);
             }else{
                 $('.maksuturva_card-radio').first().prop('checked', true);
+                window.checkoutConfig.payment.maksuturva_card_payment.preselected_payment_method = $('.maksuturva_card-radio').first().val();
             }
         });
 

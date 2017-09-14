@@ -28,6 +28,7 @@ $paymentMethods = $block->getPaymentMethods();
                 $("#" + window.checkoutConfig.payment.maksuturva_generic_payment.preselected_payment_method).prop('selected', true);
             }else{
                 $('#maksuturva_generic_payment_method .bank_option').first().prop('selected', true);
+                window.checkoutConfig.payment.maksuturva_generic_payment.preselected_payment_method = $('#maksuturva_generic_payment_method .bank_option').first().val();
             }
         });
         function selectPaymentMethod(value){

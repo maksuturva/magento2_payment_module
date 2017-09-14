@@ -405,7 +405,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         $xml = simplexml_load_string($response);
         $obj = json_decode(json_encode($xml));
 
-        if (property_exists($obj, ‘paymentmethod’) && $obj->paymentmethod) {
+        if (property_exists($obj, 'paymentmethod') && $obj->paymentmethod) {
             return $obj->paymentmethod;
         } else {
             return false;

@@ -11,7 +11,7 @@ define(
         rendererList.push(
             {
                 type: 'maksuturva_base_payment',
-                component: 'Piimega_MaksuturvaBase/js/view/payment/method-renderer/maksuturva-base-method'
+                component: 'Piimega_MaksuturvaBase/js/view/payment/method-renderer/maksuturva_base_payment'
             }
         );
         return Component.extend({});

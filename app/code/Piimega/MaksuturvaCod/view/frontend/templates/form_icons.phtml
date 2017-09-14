@@ -32,6 +32,7 @@ $paymentMethods = $this->getPaymentMethods();
                 $("#maksuturva_cod_" + window.checkoutConfig.payment.maksuturva_cod_payment.preselected_payment_method).prop('checked', true);
             }else{
                 $('.maksuturva_cod-radio').first().prop('checked', true);
+                window.checkoutConfig.payment.maksuturva_cod_payment.preselected_payment_method = $('.maksuturva_cod-radio').first().val();
             }
         });
 

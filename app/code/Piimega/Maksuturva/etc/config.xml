@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
-        <maksuturva_payment>
-            <maksuturva_config>
+        <maksuturva_config>
+            <maksuturva_payment>
                 <!--<active>0</active>-->
                 <!--<model>Piimega\Maksuturva\Model\Payment</model>-->
                 <order_status>pending</order_status>
@@ -22,7 +22,7 @@
                 <preselect_form_type>0</preselect_form_type>
                 <manually_query_in_hour>0</manually_query_in_hour>
                 <manually_query_in_day>0</manually_query_in_day>
-            </maksuturva_config>
-        </maksuturva_payment>
+            </maksuturva_payment>
+        </maksuturva_config>
     </default>
 </config>
