@@ -5,11 +5,11 @@
 Contributors: maksuturva
 Tags: maksuturva, payment gateway
 Requires magento version at least: 2.x
-Tested up to: 2.1.8
+Tested up to: 2.2.0
 
 ## System requirement 
 The Maksuturva Payment Gateway module for Magento was tested on and requires the following set of applications in order to fully work:
-*Magento 2.1.2 - 2.1.8
+*Magento 2.1.2 - 2.2.0
 *P
 
 HP cURL support

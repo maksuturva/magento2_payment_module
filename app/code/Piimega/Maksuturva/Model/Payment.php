@@ -5,6 +5,7 @@ use Magento\TestFramework\Event\Magento;
 use Magento\Framework\DataObject;
 use Magento\Payment\Model\Method\ConfigInterface;
 use Magento\Payment\Model\Method\Online\GatewayInterface;
+use Magento\Framework\Config\CacheInterface;
 
 class Payment extends \Magento\Payment\Model\Method\AbstractMethod implements GatewayInterface
 {
@@ -47,6 +48,9 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod implements Ga
     protected $_currentOrder;
     protected $_methodResourceModel;
     protected $_methods;
+    protected $cache;
+    protected $checkoutSession;
+    protected $cart;
 
     public function __construct(
         \Magento\Framework\DataObject $dataObject,
@@ -63,8 +67,9 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod implements Ga
     	\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
     	\Magento\Payment\Model\Method\Logger $logger,
         \Piimega\Maksuturva\Model\Gateway\ImplementationFactory $implementationFactory,
-        \Magento\Framework\ObjectManagerInterface $objectManager,
         \Piimega\Maksuturva\Model\ResourceModel\Method $methodResourceModel,
+        CacheInterface $cache,
+        \Magento\Checkout\Model\Cart $cart,
     	array $data = []
     ) {
     	parent::__construct(
@@ -82,8 +87,10 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod implements Ga
         $this->_scopeConfig = $scopeConfig;
         $this->_storeManager = $storeManager;
         $this->_implementationFactory = $implementationFactory;
-        $this->_objectManager = $objectManager;
         $this->_methodResourceModel = $methodResourceModel;
+        $this->cart = $cart;
+        $this->cache = $cache;
+        $this->checkoutSession = $session;
     }
 
     public function getOrderPlaceRedirectUrl()
@@ -167,15 +174,15 @@ class Payment extends \Magento\Payment\Model\Method\AbstractMethod implements Ga
 
     protected function _getPaymentMethods()
     {
-        $quoteTotal = $this->_objectManager->get('Magento\Checkout\Model\Cart')->getQuote()->getGrandTotal();
+        $quoteTotal = $this->cart->getQuote()->getGrandTotal();
         $cacheKey = "MAKSUTURVA_PAYMENT_METHODS_" . number_format($quoteTotal, 4, "_", "");
 
-        if ($cachedData = $this->_objectManager->get('Magento\Framework\View\Layout\Proxy')->loadCache($cacheKey)) {
+        if ($cachedData = $this->cache->load($cacheKey)) {
             $this->_methods = unserialize($cachedData);
         } else {
             $this->_methods = $this->getGatewayImplementation()->getPaymentMethods($quoteTotal);
             if ($this->_methods) {
-                $this->_objectManager->get('Magento\Framework\View\Layout\Proxy')->saveCache(serialize($this->_methods), $cacheKey, array("MAKSUTURVA"), 60 * 5);
+                $this->cache->save(serialize($this->_methods), $cacheKey, array("MAKSUTURVA"), 60 * 5);
                 //
                 if ($this->_methods && count($this->_methods) > 0){
                     foreach($this->_methods as $method){
