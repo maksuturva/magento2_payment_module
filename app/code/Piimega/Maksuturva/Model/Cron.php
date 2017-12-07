@@ -36,7 +36,7 @@ class Cron
 
     public function checkPaymentStatus($lookback = "-2 hours")
     {
-        if (!$this->_scopeConfig->isSetFlag('maksuturva_payment/maksuturva_config/cron_active') && !$this->registry->registry('run_cron_manually')) {
+        if (!$this->_scopeConfig->isSetFlag('maksuturva_config/maksuturva_payment/cron_active') && !$this->registry->registry('run_cron_manually')) {
             return;
         }
 

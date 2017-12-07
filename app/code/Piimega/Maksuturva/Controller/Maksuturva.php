@@ -48,7 +48,7 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
 
     protected function _createInvoice($order)
     {
-        if (!$order->canInvoice() || (!$this->_scopeConfig->getValue('maksuturva_payment/maksuturva_config/generate_invoice'))) {
+        if (!$order->canInvoice() || (!$this->_scopeConfig->getValue('maksuturva_config/maksuturva_payment/generate_invoice'))) {
             return false;
         }
         $invoice = $order->prepareInvoice();
@@ -75,7 +75,7 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
 
     public function getConfigData($path)
     {
-        return $this->_scopeConfig->getValue('maksuturva_payment/maksuturva_config/'.$path.'', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->_scopeConfig->getValue('maksuturva_config/maksuturva_payment/'.$path.'', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     public function disableQuote($order)

@@ -98,7 +98,6 @@ class Success extends \Piimega\Maksuturva\Controller\Maksuturva
             if (!$isDelayedCapture) {
                 $this->_createInvoice($order);
             }
-
             if (!$order->getEmailSent()) {
                 try {
                     $this->_objectManager->get('Magento\Sales\Model\Order\Email\Sender\OrderSender')->send($order);
