@@ -406,7 +406,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             "pmtq_resptype" => "XML",
             //"pmtq_return" => "",	// optional
             "pmtq_hashversion" => $this->_pmt_hashversion,
-            "pmtq_keygeneration" => "001"
+            "pmtq_keygeneration" => $this->keyVersion
         );
 
         // overrides with user-defined fields
@@ -557,7 +557,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             "pkg_allsent" => "Y",
             "pkg_resptype" => "XML",
             "pkg_hashversion" => $this->_pmt_hashversion,
-            "pkg_keygeneration" => "001"
+            "pkg_keygeneration" => $this->keyVersion
         );
 
         // hash calculation

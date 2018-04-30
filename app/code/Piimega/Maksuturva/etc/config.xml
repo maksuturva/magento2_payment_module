@@ -10,6 +10,7 @@
                 <payment_action>sale</payment_action>
                 <allowspecific>0</allowspecific>
                 <keyversion>001</keyversion>
+                <generate_invoice>1</generate_invoice>
                 <paymentdue>0</paymentdue>
                 <commurl>https://www.maksuturva.fi/</commurl>
                 <commencoding>UTF-8</commencoding>

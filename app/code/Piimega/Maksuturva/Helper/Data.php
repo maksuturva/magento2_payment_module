@@ -3,12 +3,12 @@ namespace Piimega\Maksuturva\Helper;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Piimega\Maksuturva\Api\MaksuturvaHelperInterface
 {
+    const CONFIG_PRESELECT_PAYMENT_METHOD = "maksuturva_config\maksuturva_payment\preselect_payment_method";
+    const CONFIG_PATH_GENERATE_INVOICE_AUTOMATICALLY = "maksuturva_config/maksuturva_payment/generate_invoice";
+
     protected $_loggerHandler;
     protected $_checkoutSession;
     protected $serializer;
-
-
-    const CONFIG_PRESELECT_PAYMENT_METHOD = "maksuturva_config\maksuturva_payment\preselect_payment_method";
 
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -99,6 +99,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Piim
             $additional_data = $this->getSerializer()->unserialize($additional_data);
         }
         return $additional_data;
+    }
+
+    public function generateInvoiceAutomatically()
+    {
+        return (bool)$this->scopeConfig->getValue(self::CONFIG_PATH_GENERATE_INVOICE_AUTOMATICALLY);
     }
 }
 
