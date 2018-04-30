@@ -1,18 +1,23 @@
 <?php
 namespace Piimega\Maksuturva\Helper;
 
-class Data extends \Magento\Framework\App\Helper\AbstractHelper
+class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Piimega\Maksuturva\Api\MaksuturvaHelperInterface
 {
     protected $_loggerHandler;
     protected $_checkoutSession;
-    const CONFIG_PRESELECT_PAYMENT_METHOD = "payment/maksuturva/preselect_payment_method";
-    const CONFIG_DELAYED_CAPTURE_METHODS = "payment/maksuturva/delayed_capture";
+    protected $serializer;
 
+
+    const CONFIG_PRESELECT_PAYMENT_METHOD = "maksuturva_config\maksuturva_payment\preselect_payment_method";
 
     public function __construct(
-        \Magento\Checkout\Model\Session $session
+        \Magento\Framework\App\Helper\Context $context,
+        \Magento\Checkout\Model\Session $session,
+        \Magento\Framework\Serialize\Serializer\Json $serializer
     ) {
+        parent::__construct($context);
         $this->_checkoutSession = $session;
+        $this->serializer = $serializer;
     }
 
     public static function generatePaymentId()
@@ -75,6 +80,25 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         } catch (\Exception $e) {
             //do nothing
         }
+    }
+
+    public function getSerializer()
+    {
+        return $this->serializer;
+    }
+
+    public function getCheckoutSession()
+    {
+        return $this->_checkoutSession;
+    }
+
+    public function getPaymentAdditionData($payment)
+    {
+        $additional_data = $payment->getAdditionalData();
+        if($additional_data && !is_array($additional_data)){
+            $additional_data = $this->getSerializer()->unserialize($additional_data);
+        }
+        return $additional_data;
     }
 }
 

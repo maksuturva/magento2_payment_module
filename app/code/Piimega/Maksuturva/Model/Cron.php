@@ -3,7 +3,7 @@ namespace Piimega\Maksuturva\Model;
 class Cron
 {
     protected $_scopeConfig;
-    protected $_orderFactory;
+    protected $_orderCollectionFactory;
     protected $_localeResolver;
     protected $_localeDate;
     protected $registry;
@@ -12,7 +12,7 @@ class Cron
     function __construct(
         \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Sales\Model\OrderFactory $orderFactory,
+        \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
         \Magento\Framework\Locale\ResolverInterface $localeResolver,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         \Magento\Framework\Registry $registry
@@ -20,7 +20,7 @@ class Cron
     {
         $this->helper = $maksuturvaHelper;
         $this->_scopeConfig = $scopeConfig;
-        $this->_orderFactory = $orderFactory;
+        $this->_orderCollectionFactory = $orderCollectionFactory;
         $this->_localeResolver = $localeResolver;
         $this->_localeDate = $localeDate;
         $this->registry = $registry;
@@ -50,11 +50,23 @@ class Cron
         $to = $this->_localeDate->date();
         $to->modify("-15 minutes");
 
-        $orderCollection = $this->_orderFactory->create()->getCollection()
-            ->join(array('payment' => 'sales_order_payment'), 'main_table.entity_id=parent_id', 'method')
-            ->addFieldToFilter('main_table.status', "pending_payment")
-            ->addFieldToFilter('payment.method', array('like' => '"maksuturva_%'))
-            ->addFieldToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s'), 'lt' => $to->format('Y-m-d H:i:s')));
+        $orderCollection = $this->_orderCollectionFactory->create();
+        $resource = $orderCollection->getResource();
+        $con = $resource->getConnection();
+
+        $q1 = "SELECT `main_table`.* FROM `sales_order` AS `main_table` WHERE (`created_at` >= '2017-11-20 14:02:36')";
+        $q1 = "SELECT * FROM sales_order WHERE created_at >= '2017-11-20 14:42:13'";
+        $stmnt = $con->query($q1);
+       // $stmnt = $con->execute();
+        $result = $stmnt->fetchAll();
+
+
+        $orderCollection = $this->_orderCollectionFactory->create()
+            //->join(array('payment' => 'sales_order_payment'), 'main_table.entity_id=parent_id', 'method')
+           // ->addFieldToFilter('main_table.status', "pending")
+            //->addFieldToFilter('payment.method', array('like' => 'maksuturva_%'))
+            ->addAttributeToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s')));
+           // ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
 
         $this->helper->maksuturvaLogger("found " . $orderCollection->count() . " orders to check");
 

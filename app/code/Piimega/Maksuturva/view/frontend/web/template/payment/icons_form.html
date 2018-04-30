@@ -1,0 +1,68 @@
+<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title field choice">
+        <input type="radio"
+               name="payment[method]"
+               class="radio"
+               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()" />
+        <label data-bind="attr: {'for': getCode()}" class="label">
+            <span data-bind="text: getTitle()"></span>
+        </label>
+
+    </div>
+
+    <div class="payment-method-content">
+        <!-- ko foreach: getRegion('messages') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+        <div class="payment-method-billing-address">
+            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+
+
+        <form data-bind="attr: {id: getCode() +'-form'}, data-role: getCode() + '-form'" class="form form-purchase-order" >
+            <div data-bind="attr: {id: 'payment_form_'+ getCode()}" style="display:inline-flex;">
+                <!-- ko foreach: { data: payments, as: 'subpayment' } -->
+                <div class="payment-method">
+                    <label data-bind="attr: {for: $parent.getCode() + subpayment.code}">
+                        <img data-bind="attr: {src: subpayment.imageurl, alt: subpayment.displayname} "/>
+                    </label>
+                    <div class="input-wrapper" style="margin-left: 50%;">
+                        <input type="radio"
+                               data-bind="
+                                   attr: { id: 'maksuturva_' + subpayment.code, name:'payment['+ $parent.getCode()+ '_preselected_payment_method]'},
+                                   value:subpayment.code,
+                                   checked: $parent.selectedPayment,
+                                   event:{ click: $parent.selectSubMethod.bind($parent)}
+                                "
+                               data-validate="{required:true}">
+                    </div>
+                </div>
+                <!--/ko-->
+            </div>
+        </form>
+
+
+        <div class="checkout-agreements-block">
+            <!-- ko foreach: $parent.getRegion('before-place-order') -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+        <div class="actions-toolbar">
+            <div class="primary">
+                <button class="action primary checkout"
+                        type="submit"
+                        data-bind="
+                        click: placeOrder,
+                        attr: {'title': $t('Place Order')},
+                        enable: (getCode() == isChecked()),
+                        css: {disabled: !isPlaceOrderActionAllowed()}
+                        "
+                        disabled>
+                    <span data-bind="i18n: 'Place Order'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

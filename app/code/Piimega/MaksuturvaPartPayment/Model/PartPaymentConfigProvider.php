@@ -1,25 +1,13 @@
 <?php
 namespace Piimega\MaksuturvaPartPayment\Model;
 
-class PartPaymentConfigProvider implements \Piimega\Maksuturva\Model\ConfigProviderInterface
+class PartPaymentConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
 {
-    protected $_blockFactory;
-
     public function __construct(
-        \Magento\Framework\View\Element\BlockFactory $blockFactory
+        \Piimega\MaksuturvaPartPayment\Model\PartPayment $maksuturvaModel,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
-        $this->_blockFactory = $blockFactory;
-    }
-    public function getConfig()
-    {
-        $block = $this->_blockFactory->createBlock('Piimega\MaksuturvaPartPayment\Block\Form\PartPayment');
-        $html = $block->toHtml();
-        $data = ['html' => $html, 'defaultPaymentMethod'=>$block->getDefaultPaymentMethod()];
-        return [
-            'payment' => [
-                'maksuturva_part_payment_payment' => $data
-            ]
-        ];
+        parent::__construct($maksuturvaModel, $scopeConfig);
     }
 }

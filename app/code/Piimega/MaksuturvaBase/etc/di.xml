@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <virtualType name="maksuturvaGateway" type="Piimega\Maksuturva\Model\Gateway\Implementation">
+        <arguments>
+            <argument name="maksuturvaForm" xsi:type="object">Piimega\Maksuturva\Model\Form</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Piimega\Maksuturva\Model\Base">
+        <arguments>
+            <argument name="implementation" xsi:type="object">maksuturvaGateway</argument>
+        </arguments>
+    </type>
+</config>

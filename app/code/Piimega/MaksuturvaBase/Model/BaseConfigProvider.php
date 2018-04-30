@@ -1,25 +1,19 @@
 <?php
 namespace Piimega\MaksuturvaBase\Model;
-
-class BaseConfigProvider implements \Piimega\Maksuturva\Model\ConfigProviderInterface
+class BaseConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
 {
-    protected $_blockFactory;
-
     public function __construct(
-        \Magento\Framework\View\Element\BlockFactory $blockFactory
+        \Piimega\MaksuturvaBase\Model\Base $maksuturvaModel,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
-        $this->_blockFactory = $blockFactory;
+        parent::__construct($maksuturvaModel, $scopeConfig);
+        $this->preselectRequired = 0;
     }
-    public function getConfig()
+
+    protected function getTemplate()
     {
-        $block = $this->_blockFactory->createBlock('Piimega\MaksuturvaBase\Block\Form\Base');
-        $html = $block->toHtml();
-        $data = ['html' => $html];
-        return [
-            'payment' => [
-                'maksuturva_base_payment' => $data
-            ]
-        ];
+        $template = "Piimega_Maksuturva/payment/icon";
+        return $template;
     }
 }

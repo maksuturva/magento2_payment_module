@@ -1,25 +1,13 @@
 <?php
 namespace Piimega\MaksuturvaInvoice\Model;
 
-class InvoiceConfigProvider implements \Piimega\Maksuturva\Model\ConfigProviderInterface
+class InvoiceConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
 {
-    protected $_blockFactory;
-
     public function __construct(
-        \Magento\Framework\View\Element\BlockFactory $blockFactory
+        \Piimega\MaksuturvaInvoice\Model\Invoice $maksuturvaModel,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
-        $this->_blockFactory = $blockFactory;
-    }
-    public function getConfig()
-    {
-        $block = $this->_blockFactory->createBlock('Piimega\MaksuturvaInvoice\Block\Form\Invoice');
-        $html = $block->toHtml();
-        $data = ['html' => $html, 'defaultPaymentMethod'=>$block->getDefaultPaymentMethod()];
-        return [
-            'payment' => [
-                'maksuturva_invoice_payment' => $data
-            ]
-        ];
+        parent::__construct($maksuturvaModel, $scopeConfig);
     }
 }

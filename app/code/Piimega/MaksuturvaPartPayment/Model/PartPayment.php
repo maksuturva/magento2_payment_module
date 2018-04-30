@@ -1,7 +1,7 @@
 <?php
 namespace Piimega\MaksuturvaPartPayment\Model;
 
-class PartPayment extends \Piimega\Maksuturva\Model\Payment
+class PartPayment extends \Piimega\Maksuturva\Model\PaymentAbstract
 {
     protected $_code = 'maksuturva_part_payment_payment';
     protected $_allowedMethods = [];
@@ -11,6 +11,7 @@ class PartPayment extends \Piimega\Maksuturva\Model\Payment
         if(!$this->_methods){
             $this->_methods = $this->_getPaymentMethods();
         }
+
         foreach($this->_methods as $method){
             if(in_array($method->code, $this->_getAllowedMethods())){
                 $this->_allowedMethods[] = $method;

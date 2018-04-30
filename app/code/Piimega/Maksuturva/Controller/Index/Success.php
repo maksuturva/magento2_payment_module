@@ -3,25 +3,27 @@ namespace Piimega\Maksuturva\Controller\Index;
 
 class Success extends \Piimega\Maksuturva\Controller\Maksuturva
 {
-    protected $_maksuturvaModel;
+    protected $orderSender;
     protected $_resultPageFactory;
-    protected $_maksuturvaHelper;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Sales\Model\OrderFactory $orderFactory,
-        \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\View\Result\LayoutFactory $resultLayoutFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Checkout\Model\Session $checkoutsession,
         \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
+        \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender,
+        \Magento\Sales\Model\OrderRepository $orderRepository,
+        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
+        \Magento\Framework\Api\SortOrderBuilder $sortOrderBuilder,
         array $data = []
     )
     {
-        parent::__construct($context, $orderFactory, $logger, $scopeConfig, $quoteRepository, $checkoutsession, $maksuturvaHelper, $data);
+        parent::__construct($context, $orderFactory, $scopeConfig, $quoteRepository, $checkoutsession, $maksuturvaHelper, $orderRepository, $searchCriteriaBuilder, $sortOrderBuilder, $data);
         $this->_resultPageFactory = $resultLayoutFactory;
-        $this->_maksuturvaHelper = $maksuturvaHelper;
+        $this->orderSender = $orderSender;
     }
 
     public function execute()
@@ -33,7 +35,7 @@ class Success extends \Piimega\Maksuturva\Controller\Maksuturva
             if (array_key_exists($field, $params)) {
                 $values[$field] = $params[$field];
             } else {
-                $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\Payment::ERROR_EMPTY_FIELD, 'field' => $field));
+                $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD, 'field' => $field));
                 return;
             }
         }
@@ -42,7 +44,7 @@ class Success extends \Piimega\Maksuturva\Controller\Maksuturva
         $order = $this->getLastedOrder();
 
         if(!$this->validateReturnedOrder($order, $params)){
-            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\Payment::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on maksuturva payment module.')));
+            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on maksuturva payment module.')));
             return;
         }
 
@@ -51,7 +53,7 @@ class Success extends \Piimega\Maksuturva\Controller\Maksuturva
         $calculatedHash = $implementation->generateReturnHash($values);
 
         if ($values['pmt_hash'] != $calculatedHash) {
-            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\Payment::ERROR_INVALID_HASH));
+            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_INVALID_HASH));
             return;
         }
 
@@ -69,13 +71,13 @@ class Success extends \Piimega\Maksuturva\Controller\Maksuturva
                 continue;
             }
             if ($form->{$key} != $value) {
-                $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\Payment::ERROR_VALUES_MISMATCH, 'message' => urlencode("different $key: $value != " . $form->{$key})));
+                $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => urlencode("different $key: $value != " . $form->{$key})));
                 return;
             }
         }
 
         if ($form->{'pmt_sellercosts'} > $values['pmt_sellercosts']) {
-            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\Payment::ERROR_SELLERCOSTS_VALUES_MISMATCH, 'message' => urlencode("Payment method returned shipping and payment costs of " . $values['pmt_sellercosts'] . " EUR. YOUR PURCHASE HAS NOT BEEN SAVED. Please contact the web store."), 'new_sellercosts' => $values['pmt_sellercosts'], 'old_sellercosts' => $form->{'pmt_sellercosts'}));
+            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH, 'message' => urlencode("Payment method returned shipping and payment costs of " . $values['pmt_sellercosts'] . " EUR. YOUR PURCHASE HAS NOT BEEN SAVED. Please contact the web store."), 'new_sellercosts' => $values['pmt_sellercosts'], 'old_sellercosts' => $form->{'pmt_sellercosts'}));
             return;
         }
 
@@ -101,11 +103,11 @@ class Success extends \Piimega\Maksuturva\Controller\Maksuturva
 
             if (!$order->getEmailSent()) {
                 try {
-                    $this->_objectManager->get('Magento\Sales\Model\Order\Email\Sender\OrderSender')->send($order);
+                    $this->orderSender->send($order);
                     $order->setEmailSent(true);
                     $this->_maksuturvaHelper->statusQuery($order);
                 } catch (\Exception $e) {
-                    $this->_objectManager->get('Piimega\Maksuturva\Helper\Data')->maksuturvaLogger($e);
+                    $this->_maksuturvaHelper->maksuturvaLogger($e);
                 }
             }
             if($this->getConfigData('paid_order_status')){

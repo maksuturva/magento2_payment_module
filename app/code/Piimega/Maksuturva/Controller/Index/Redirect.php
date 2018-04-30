@@ -10,17 +10,19 @@ class Redirect extends \Piimega\Maksuturva\Controller\Maksuturva
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Sales\Model\OrderFactory $orderFactory,
-        \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\View\Result\LayoutFactory $resultLayoutFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Checkout\Model\Session $checkoutsession,
         \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
+        \Magento\Sales\Model\OrderRepository $orderRepository,
+        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
+        \Magento\Framework\Api\SortOrderBuilder $sortOrderBuilder,
         array $data = []
     )
     {
         $this->_isScopePrivate = true;
-        parent::__construct($context, $orderFactory, $logger, $scopeConfig, $quoteRepository, $checkoutsession, $maksuturvaHelper, $data);
+        parent::__construct($context, $orderFactory, $scopeConfig, $quoteRepository, $checkoutsession, $maksuturvaHelper, $orderRepository, $searchCriteriaBuilder, $sortOrderBuilder, $data);
         $this->_resultPageFactory = $resultLayoutFactory;
         $this->_salesOrder = $orderFactory->create();
         $this->_checkoutSession = $checkoutsession;

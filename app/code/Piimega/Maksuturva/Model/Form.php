@@ -1,7 +1,7 @@
 <?php
 namespace Piimega\Maksuturva\Model;
 
-class Form extends \Magento\Framework\Model\AbstractModel
+class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Maksuturva\Api\MaksuturvaFormInterface
 {
     protected $_errors;
     private $_originalFormData = array();
@@ -284,7 +284,7 @@ class Form extends \Magento\Framework\Model\AbstractModel
             $this->_errors[] = "The amount(" . $this->_formData['pmt_rows'] . ") of items passed in the field 'pmt_rows' don't match with real amount(" . ($countRows - 1) . ") of items";
         }
 
-        $tmp = $this->filterFieldsLength();
+        $this->filterFieldsLength();
 
         return $isvalid;
     }
@@ -487,5 +487,60 @@ class Form extends \Magento\Framework\Model\AbstractModel
     private function convert_encoding($string_input, $encoding)
     {
         return mb_convert_encoding($string_input, $encoding);
+    }
+
+    public function setNewMasterpassConfig($args)
+    {
+        if ($args['encoding']) {
+            $this->_charset = $args['encoding'];
+            $this->_charsethttp = $args['encoding'];
+        }
+
+        $data = $args['options'];
+
+        $this->_secretKey = $args['secretkey'];
+
+        $this->_formData['pmt_action'] = 'NEW_PAYMENT_EXTENDED';
+        $this->_formData['pmt_version'] = '0004';
+        $this->_formData['pmt_escrow'] = $data['pmt_escrow'];
+        $this->_formData['pmt_keygeneration'] = '001';
+        $this->_formData['pmt_currency'] = 'EUR';
+        $this->_formData['pmt_escrowchangeallowed'] = 'N';
+
+        $this->_formData['pmt_charset'] = $this->_charset;
+        $this->_formData['pmt_charsethttp'] = $this->_charsethttp;
+
+        // Force to cut off all amps and merge in current array_data
+        foreach ($data as $key => $value) {
+            if ($key == 'pmt_rows_data') {
+                $rows = array();
+                foreach ($value as $k => $v) {
+                    $v = preg_replace('!\s+!', ' ', $v);
+                    $rows[$k] = str_replace('&amp;', '', $v);
+                }
+                $this->_formData[$key] = $rows;
+            } else {
+                $value = preg_replace('!\s+!', ' ', $value);
+                $this->_formData[$key] = str_replace('&amp;', '', $value);
+            }
+        }
+        $hashAlgos = hash_algos();
+
+        if (in_array("sha512", $hashAlgos)) {
+            $this->_formData['pmt_hashversion'] = 'SHA-512';
+            $this->_hashAlgoDefined = "sha512";
+        } else if (in_array("sha256", $hashAlgos)) {
+            $this->_formData['pmt_hashversion'] = 'SHA-256';
+            $this->_hashAlgoDefined = "sha256";
+        } else if (in_array("sha1", $hashAlgos)) {
+            $this->_formData['pmt_hashversion'] = 'SHA-1';
+            $this->_hashAlgoDefined = "sha1";
+        } else if (in_array("md5", $hashAlgos)) {
+            $this->_formData['pmt_hashversion'] = 'MD5';
+            $this->_hashAlgoDefined = "md5";
+        } else {
+            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array('the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!'), \Piimega\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_ALGORITHMS_NOT_SUPORTED);
+        }
+        return $this;
     }
 }

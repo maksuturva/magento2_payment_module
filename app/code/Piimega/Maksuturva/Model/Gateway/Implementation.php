@@ -1,6 +1,5 @@
 <?php
 namespace Piimega\Maksuturva\Model\Gateway;
-use Magento\Sales\Model\ResourceModel\Order;
 
 class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 {
@@ -16,10 +15,10 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     const MAKSUTURVA_PKG_RESULT_FORCED_UPDATE_REQUIRED = 42;
     const MAKSUTURVA_PKG_RESULT_ERROR = 99;
 
-    private $sellerId = "";
+    protected $sellerId = "";
     protected $order = null;
     protected $_currentOrder;
-    private $form = null;
+    protected $form = null;
     protected $preSelectPaymentMethod;
     protected $helper;
     protected $_storeManager;
@@ -30,10 +29,14 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     protected $_orderFactory;
     protected $_taxHelper;
     protected $_calculationModel;
-    protected $_maksuturvaFormFactory;
-    protected $_maksuturvaModelFactory;
+    protected $_maksuturvaForm;
+    protected $_maksuturvaModel;
     protected $commUrl;
     protected $secretKey;
+    protected $payment;
+    protected $commEncoding;
+    protected $keyVersion;
+    protected $paymentDue;
 
     function __construct(
         \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
@@ -45,10 +48,10 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Tax\Helper\Data $taxHelper,
         \Magento\Tax\Model\Calculation $calculationModel,
-        \Piimega\Maksuturva\Model\FormFactory $maksuturvaFormFactory,
-        \Piimega\Maksuturva\Model\PaymentFactory $maksuturvaModelFactory
+        \Piimega\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm
     )
     {
+        parent::__construct();
         $this->helper = $maksuturvaHelper;
         $this->_scopeConfig = $scopeConfig;
         $this->_storeManager = $storeManager;
@@ -58,9 +61,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         $this->_orderFactory = $orderFactory;
         $this->_taxHelper = $taxHelper;
         $this->_calculationModel = $calculationModel;
-        $this->_maksuturvaFormFactory = $maksuturvaFormFactory;
-        $this->_maksuturvaModelFactory = $maksuturvaModelFactory;
-        parent::__construct();
+        $this->_maksuturvaForm = $maksuturvaForm;
     }
 
     public  function setConfig($config)
@@ -71,7 +72,10 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         $this->commEncoding = $config['commencoding'];
         $this->paymentDue = $config['paymentdue'];
         $this->keyVersion = $config['keyversion'];
-        $this->preSelectPaymentMethod = $config['preselect_payment_method'];
+        //some branch of Maksuturva doesn't have preselect_payment_method, such as masterpass
+        if (isset($config['preselect_payment_method'])){
+            $this->preSelectPaymentMethod = $config['preselect_payment_method'];
+        }
         return $this;
     }
 
@@ -81,7 +85,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
             $order = $this->getOrder();
             if(!($order instanceof \Magento\Sales\Model\Order)){
-                throw new Exception("order not found");
+                throw new \Exception("order not found");
             }
 
             $dueDate = date("d.m.Y", strtotime("+" . $this->paymentDue . " day"));
@@ -248,77 +252,23 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             $totalSellerCosts += $shippingCost + $shippingTax;
             array_push($products_rows, $row);
 
-            if ($fee = $order->getBasePiimegaPaymentFee()) {
-                $feeTax = $order->getBasePiimegaPaymentFeeTax();
-                $feeTaxPercent = round($feeTax / $fee * 100);
-                $row = array(
-                    'pmt_row_name' => __('Payment fee'),
-                    'pmt_row_desc' => __('Payment fee'),
-                    'pmt_row_quantity' => 1,
-                    'pmt_row_deliverydate' => date("d.m.Y"),
-                    'pmt_row_price_net' => str_replace('.', ',', sprintf("%.2f", $fee)),
-                    'pmt_row_vat' => str_replace('.', ',', sprintf("%.2f", $feeTaxPercent)),
-                    'pmt_row_discountpercentage' => "0,00",
-                    'pmt_row_type' => 3,
-                );
-                array_push($products_rows, $row);
-                $totalSellerCosts += $fee + $feeTax;
-            }
-
-            if ($order->getBaseGiftCardsAmount() > 0) {
-                $giftCardDescription = array();
-                if ($giftCards = $order->getGiftCards()) {
-                    if ($giftCards = @unserialize($giftCards)) {
-                        if (is_array($giftCards)) {
-                            foreach ($giftCards as $giftCard) {
-                                $giftCardDescription[] = $giftCard['c'];
-                            }
-                        }
-                    }
-                }
-                $giftCardDescription = implode(', ', $giftCardDescription);
-                $row = array(
-                    'pmt_row_name' => 'Gift Card',
-                    'pmt_row_desc' => $giftCardDescription,
-                    'pmt_row_quantity' => 1,
-                    'pmt_row_deliverydate' => date('d.m.Y'),
-                    'pmt_row_price_net' => str_replace('.', ',', sprintf('%.2f', -$order->getBaseGiftCardsAmount())),
-                    'pmt_row_vat' => '0,00',
-                    'pmt_row_discountpercentage' => '0,00',
-                    'pmt_row_type' => 6,
-                );
-                array_push($products_rows, $row);
-                $totalAmount -= $order->getBaseGiftCardsAmount();
-            }
-
-            if ($order->getBaseCustomerBalanceAmount() > 0) {
-                $row = array(
-                    'pmt_row_name' => 'Store Credit',
-                    'pmt_row_desc' => 'Store Credit',
-                    'pmt_row_quantity' => 1,
-                    'pmt_row_deliverydate' => date('d.m.Y'),
-                    'pmt_row_price_net' => str_replace('.', ',', sprintf('%.2f', -$order->getBaseCustomerBalanceAmount())),
-                    'pmt_row_vat' => '0,00',
-                    'pmt_row_discountpercentage' => '0,00',
-                    'pmt_row_type' => 6,
-                );
-                array_push($products_rows, $row);
-                $totalAmount -= $order->getBaseCustomerBalanceAmount();
-            }
-
             $options = array();
             $options["pmt_keygeneration"] = $this->keyVersion;
 
 
             // store unique transaction id on payment object for later retrieval
-            $payment = $order->getPayment();
-            $additional_data = unserialize($payment->getAdditionalData());
-            if (isset($additional_data[\Piimega\Maksuturva\Model\Payment::MAKSUTURVA_TRANSACTION_ID])) {
-                $pmt_id = $additional_data[\Piimega\Maksuturva\Model\Payment::MAKSUTURVA_TRANSACTION_ID];
+            //$this->getPayment() as same as $order->getPayment() in this case
+            $payment = $this->getPayment();
+            $additional_data = $payment->getAdditionalData();
+            if(is_string($additional_data)){
+                $additional_data = $this->helper->getSerializer()->unserialize($additional_data);
+            }
+            if (isset($additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID])) {
+                $pmt_id = $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
             } else {
                 $pmt_id = $this->helper->generatePaymentId();
-                $additional_data[\Piimega\Maksuturva\Model\Payment::MAKSUTURVA_TRANSACTION_ID] = $pmt_id;
-                $payment->setAdditionalData(serialize($additional_data));
+                $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] = $pmt_id;
+                $payment->setAdditionalData($this->helper->getSerializer()->serialize($additional_data));
                 $payment->save();
             }
             $refernceNumber = $this->helper->getPmtReferenceNumber($order->getIncrementId() + 100);
@@ -371,7 +321,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             $options["pmt_rows_data"] = $products_rows;
 
             $this->helper->maksuturvaLogger(var_export($options, true), null, 'maksuturva.log', true);
-            $this->form = $this->_maksuturvaFormFactory->create()->setConfig(array('secretkey' => $this->secretKey, 'options' => $options, 'encoding' => $this->commEncoding, 'url' => $this->commUrl));
+            $this->form = $this->_maksuturvaForm->setConfig(array('secretkey' => $this->secretKey, 'options' => $options, 'encoding' => $this->commEncoding, 'url' => $this->commUrl));
         }
 
         return $this->form;
@@ -435,7 +385,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     protected function getPreselectedMethod()
     {
         if ($this->preSelectPaymentMethod) {
-            return $this->getOrder()->getPayment()->getData('additional_information')['maksuturva_preselected_payment_method'];
+            return $this->getPayment()->getData('additional_information')['maksuturva_preselected_payment_method'];
         } else {
             return "";
         }
@@ -443,9 +393,9 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
     public function statusQuery($data = array())
     {
-        $payment = $this->getOrder()->getPayment();
-        $additional_data = unserialize($payment->getAdditionalData());
-        $pmt_id = $additional_data[\Piimega\Maksuturva\Model\Payment::MAKSUTURVA_TRANSACTION_ID];
+        $payment = $this->getPayment();
+        $additional_data = $payment->getAdditionalData();
+        $pmt_id = $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
 
 
         $defaultFields = array(
@@ -515,7 +465,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID_DELIVERY:
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_COMPENSATED:
 
-                $isDelayedCapture = $this->_maksuturvaModelFactory->create()->isDelayedCaptureCase($response['pmtq_paymentmethod']);
+                $isDelayedCapture = $this->_maksuturvaModel->isDelayedCaptureCase($response['pmtq_paymentmethod']);
                 if ($isDelayedCapture) {
                     $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
                     if($this->getConfigData('paid_order_status')){
@@ -593,8 +543,8 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
     public function addDeliveryInfo($payment)
     {
-        $additional_data = unserialize($payment->getAdditionalData());
-        $pkg_id = $additional_data[\Piimega\Maksuturva\Model\Payment::MAKSUTURVA_TRANSACTION_ID];
+        $additional_data = $payment->getAdditionalData();
+        $pkg_id = $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
 
         $this->helper->maksuturvaLogger("Adding delivery info for pkg_id {$pkg_id}", null, 'maksuturva.log', true);
 
@@ -638,7 +588,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         }
     }
 
-    private function _getCustomerTaxClass()
+    protected function _getCustomerTaxClass()
     {
         $customerGroup = $this->getQuote()->getCustomerGroupId();
         if (!$customerGroup) {
@@ -662,7 +612,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         return $this->_currentOrder;
     }
 
-    public function setOrder(\Magento\Sales\Model\Order $order)
+    public function setOrder(\Magento\Framework\Api\CustomAttributesDataInterface $order)
     {
         $this->_currentOrder = $order;
         return $this->_currentOrder;
@@ -671,5 +621,16 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     public function getConfigData($path)
     {
         return $this->_scopeConfig->getValue('maksuturva_payment/maksuturva_config/'.$path.'', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
+    public function getPayment()
+    {
+        return $this->payment;
+    }
+
+    public function setPayment($payment)
+    {
+        $this->payment = $payment;
+        return $this;
     }
 }

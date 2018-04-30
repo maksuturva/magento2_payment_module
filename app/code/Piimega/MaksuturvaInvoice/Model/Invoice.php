@@ -1,7 +1,7 @@
 <?php
 namespace Piimega\MaksuturvaInvoice\Model;
 
-class Invoice extends \Piimega\Maksuturva\Model\Payment
+class Invoice extends \Piimega\Maksuturva\Model\PaymentAbstract
 {
     protected $_code = 'maksuturva_invoice_payment';
     protected $_allowedMethods = [];

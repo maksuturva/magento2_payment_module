@@ -22,6 +22,9 @@
                 <preselect_form_type>0</preselect_form_type>
                 <manually_query_in_hour>0</manually_query_in_hour>
                 <manually_query_in_day>0</manually_query_in_day>
+                <order_status>pending</order_status>
+                <paid_order_status>processing</paid_order_status>
+                <canceled_order_status>canceled</canceled_order_status>
             </maksuturva_payment>
         </maksuturva_config>
     </default>

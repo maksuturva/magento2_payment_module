@@ -1,10 +1,12 @@
 <?php
 namespace Piimega\Maksuturva\Controller;
 
+use Magento\Framework\Api\SortOrder;
+use Piimega\Maksuturva\Model\Gateway\Exception;
+
 abstract class Maksuturva extends \Magento\Framework\App\Action\Action
 {
     protected $_orderFactory;
-    protected $_objectManager;
     protected $_customerSession;
     protected $_convertorFactory;
     protected $_scopeConfig;
@@ -25,25 +27,33 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
     );
 
     protected $_order;
+    protected $orderFactory;
+    protected $orderRepository;
+    protected $searchCriteriaBuilder;
+    protected $sortOrderBuilder;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Sales\Model\OrderFactory $orderFactory,
-        \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Checkout\Model\Session $checkoutsession,
         \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
+        \Magento\Sales\Model\OrderRepository $orderRepository,
+        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
+        \Magento\Framework\Api\SortOrderBuilder $sortOrderBuilder,
         array $data = []
     ) 
     {
     	parent::__construct($context);
-        $this->_objectManager = $context->getObjectManager();
-        $this->_orderFactory = $orderFactory;
         $this->_scopeConfig = $scopeConfig;
         $this->quoteRepository = $quoteRepository;
         $this->_checkoutSession = $checkoutsession;
         $this->_maksuturvaHelper = $maksuturvaHelper;
+        $this->orderRepository = $orderRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->_orderFactory = $orderFactory;
+        $this->sortOrderBuilder = $sortOrderBuilder;
     }
 
     protected function _createInvoice($order)
@@ -66,9 +76,8 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
     {
         if ($this->_order == null)
         {
-            $session = $this->_checkoutSession;
             $this->_order = $this->_orderFactory->create();
-            $this->_order->loadByIncrementId($session->getLastRealOrderId());
+            $this->_order->loadByIncrementId($this->_checkoutSession->getLastRealOrderId());
         }
         return $this->_order;
     }
@@ -86,6 +95,14 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
         $this->_checkoutSession->setLastQuoteId($quote->getId());
     }
 
+    public function activeQuote($order)
+    {
+        $quote = $this->quoteRepository->get($order->getQuoteId());
+        $quote->setIsActive(1)->setReservedOrderId($order->getIncrementId());
+        $this->quoteRepository->save($quote);
+        $this->_checkoutSession->setLastQuoteId($quote->getId());
+    }
+
     protected function setOrder(\Magento\Sales\Model\Order $order)
     {
         $this->_order = $order;
@@ -96,14 +113,27 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
     {
         if(!$this->_checkoutSession->getLastRealOrderId()){
             $quoteId = $this->_checkoutSession->getQuote()->getId();
-            $order = $this->_orderFactory->create()->getCollection()
-                ->addFieldToFilter('quote_id', $quoteId)
-                ->setOrder('entity_id', 'DESC')
-                ->getFirstItem();
-            //set session data
-            if($order->getId()){
-                $this->setOrder($order);
-                $this->_checkoutSession->setLastOrderId($order->getId())->setLastRealOrderId($order->getIncrementId());
+
+            //create sort order
+            $sortOrder = $this->sortOrderBuilder
+                ->setField('entity_id')
+                ->setDirection(SortOrder::SORT_DESC)
+                ->create();
+
+            $searchCriteria = $this->searchCriteriaBuilder
+                ->addFilter('quote_id', $quoteId, 'eq')
+                ->addSortOrder($sortOrder)->create();
+
+
+
+            $orderList = $this->orderRepository->getList($searchCriteria)->getItems();
+            if(is_array($orderList) && !empty($orderList)){
+                $order = reset($orderList);
+                //set session data
+                if($order->getId()){
+                    $this->setOrder($order);
+                    $this->_checkoutSession->setLastOrderId($order->getId())->setLastRealOrderId($order->getIncrementId());
+                }
             }
         }
 
@@ -117,6 +147,19 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
             return true;
         }else{
             return false;
+        }
+    }
+
+    protected function getHelper()
+    {
+        return $this->_maksuturvaHelper;
+    }
+
+    protected function getPayment()
+    {
+        $order = $this->getLastedOrder();
+        if($order->getId() && $order instanceof \Magento\Sales\Model\Order){
+           return $order->getPayment();
         }
     }
 }

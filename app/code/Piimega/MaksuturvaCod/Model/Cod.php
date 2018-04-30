@@ -1,7 +1,7 @@
 <?php
 namespace Piimega\MaksuturvaCod\Model;
 
-class Cod extends \Piimega\Maksuturva\Model\Payment
+class Cod extends \Piimega\Maksuturva\Model\PaymentAbstract
 {
     protected $_code = 'maksuturva_cod_payment';
     protected $_allowedMethods = [];

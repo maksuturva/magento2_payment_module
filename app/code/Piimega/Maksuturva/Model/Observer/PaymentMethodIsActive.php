@@ -38,7 +38,7 @@ class PaymentMethodIsActive implements ObserverInterface {
                         }
                     }
                 }
-            }elseif(strpos($methodCode, 'maksuturva') !== false){
+            }elseif(strpos($methodCode, 'maksuturva') !== false && $methodCode != "maksuturva_masterpass"){
                 if(strpos($methodCode, 'maksuturva_base') !== false){
                     $result->setData('is_available', true);
                 }else{

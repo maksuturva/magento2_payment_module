@@ -3,24 +3,16 @@ namespace Piimega\Maksuturva\Block\Redirect;
 
 class Maksuturva extends \Magento\Payment\Block\Form
 {
-    protected $_salesOrder;
-    protected $_maksuturvaModel;
-    protected $_checkoutSession;
     protected $_formFactory;
-    protected $_objectManager;
+    protected $logger;
     
     public function __construct(
     		\Magento\Framework\View\Element\Template\Context $context,
-            \Magento\Sales\Model\OrderFactory $order,
-            \Magento\Checkout\Model\Session $session,
     		\Magento\Framework\Data\FormFactory $formFactory,
-    		\Magento\Framework\ObjectManagerInterface $objectManager,
     		array $data = []
     ){
-        $this->_salesOrder = $order;
-        $this->_checkoutSession = $session;
         $this->_formFactory = $formFactory;
-        $this->_objectManager = $objectManager; 
+        $this->logger = $context->getLogger();
         parent::__construct($context, $data);
     }
 
@@ -45,7 +37,7 @@ class Maksuturva extends \Magento\Payment\Block\Form
         $html .= $form->toHtml();
         $html .= '<script type="text/javascript">document.getElementById("maksuturva_payment_checkout").submit();</script>';
         $html .= '</body></html>';
-        $this->_objectManager->get('Psr\Log\LoggerInterface')->info(json_encode($fields));
+        $this->logger->info(json_encode($fields));
         return $html;
     }
 }
