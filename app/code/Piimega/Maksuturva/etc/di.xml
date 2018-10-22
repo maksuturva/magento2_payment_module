@@ -27,4 +27,6 @@
             <argument name="implementation" xsi:type="object">maksuturvaGateway</argument>
         </arguments>
     </type>
+    <preference for="Piimega\Maksuturva\Api\MaksuturvaFormInterface" type="Piimega\Maksuturva\Model\Form"/>
+
 </config>
