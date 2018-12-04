@@ -1,0 +1,13 @@
+<!-- ko if: getCartParam('summary_count') -->
+<!-- ko if: isMaterpassEnabled -->
+<div class="actions">
+    <div class="secondary">
+        <span data-bind="i18n: 'Make instant payment'"></span>
+        <a href="#" class="action masterpass-checkout" id="masterpass-minicart" data-bind="afterRender: masterpassInitialize">
+            <img data-bind="attr:{src: masterpassImageUrl}" />
+        </a>
+        <a href="https://www.mastercard.com/mc_us/wallet/learnmore/fi/FI/" target="_blank" data-bind="i18n: 'Read more...'"></a>
+    </div>
+</div>
+<!-- /ko -->
+<!-- /ko -->

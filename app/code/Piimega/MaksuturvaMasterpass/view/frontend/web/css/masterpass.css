@@ -1,0 +1,18 @@
+#minicart-content-wrapper .actions span, #minicart-content-wrapper .actions a:last-of-type {
+    display: table;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+.summary-masterpass {
+    font-size: 13px;
+}
+.summary-masterpass img {
+    margin-top: 3px;
+}
+.summary-masterpass a:last-child {
+    clear: both;
+    display: block;
+    margin-bottom: 7px;
+}
