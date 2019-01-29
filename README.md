@@ -107,13 +107,13 @@ Most simple way to test the payment module is to switch the Sandbox / Testing mo
 
 For testing the module with actual internet bank, credit card, invoice or part payment services, you can order a test account for yourself.
 
->http://test1.maksuturva.fi/MerchantSubscriptionBeginning.pmt
+>https://test1.maksuturva.fi/MerchantSubscriptionBeginning.pmt
 
 When ordering a test account signing the order with your TUPAS bank credentials is not required. When you have completed the order and stored your test account ID and secret key, we kindly ask you to contact us for us to activate the account.
 
 In the test environment no actual money is handled and no orders tracked. For testing the internet bank payments in the test environment we recommend using the test services of either Nordea or Aktia banks bacause in their services the payer credentials are already prefilled or displayed for you. Do not try to use actual bank credentials in the test environment.
 
-For testing our payment service without using actual money, you need to set communication URL in the module configurations as http://test1.maksuturva.fi. All our test environment services are found under that domain unlike our production environment services which are found under SSL-secured domain https://www.maksuturva.fi. Test environment for KauppiasExtranet can be found similarly at http://test1.maksuturva.fi/extranet/.
+For testing our payment service without using actual money, you need to set communication URL in the module configurations as https://test1.maksuturva.fi. All our test environment services are found under that domain unlike our production environment services which are found under SSL-secured domain https://www.maksuturva.fi. Test environment for KauppiasExtranet can be found similarly at https://test1.maksuturva.fi/extranet/.
 
 If sandbox testing passes but testing with test server fails, the reason most likely is in communication URL, seller id or secret key. In that case you should first check that they are correct and no extra spaces are added in the beginning or end of the inputs.
 
