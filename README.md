@@ -9,18 +9,16 @@ Tested up to: 2.2.0
 
 ## System requirement 
 The Maksuturva Payment Gateway module for Magento was tested on and requires the following set of applications in order to fully work:
-*Magento 2.1.2 - 2.2.0
-*P
-
-HP cURL support
-*PHP libxml support
+* Magento 2.1.2 - 2.2.0
+* PHP cURL support
+* PHP libxml support
 
 There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements.
 
 ## Features
-*sub payments filter
-*cronjob to deal with delay Maksuturva payment
-*dropdown and icons payment methods selector
+* sub payments filter
+* cronjob to deal with delay Maksuturva payment
+* dropdown and icons payment methods selector
 
 ## Changelog
 
@@ -30,11 +28,11 @@ There is no guarantee that the module is fully functional in any other environme
 
 ## Installation instruction
 Install manually
-*Extract the maksuturva package under Magento installation
-*Clean Magento cache
-*Configure the module
-*_Ask Maksuturva to enable "status OK" callback to Magento._ This is important to catch situations where customer fails to return to Magento after succesful payment.
-*Verify the payments work
+* Extract the maksuturva package under Magento installation
+* Clean Magento cache
+* Configure the module
+* _Ask Maksuturva to enable "status OK" callback to Magento._ This is important to catch situations where customer fails to return to Magento after succesful payment.
+* Verify the payments work
 
 ## Configuration
 Configuration for the module can be found from standard location under System -> Configuration -> Payment Methods -> Maksuturva.
