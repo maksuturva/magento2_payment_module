@@ -1,15 +1,15 @@
 # Piimega_Maksuturva
 
-
 ## Maksuturva magento2
+
 Contributors: maksuturva
 Tags: maksuturva, payment gateway
 Requires magento version at least: 2.x
-Tested up to: 2.2.0
+Tested up to: 2.3.1
 
 ## System requirement 
 The Maksuturva Payment Gateway module for Magento was tested on and requires the following set of applications in order to fully work:
-* Magento 2.1.2 - 2.2.0
+* Magento 2.1.2 - 2.3.1
 * PHP cURL support
 * PHP libxml support
 
@@ -17,29 +17,73 @@ There is no guarantee that the module is fully functional in any other environme
 
 ## Features
 * sub payments filter
-* cronjob to deal with delay Maksuturva payment
-* dropdown and icons payment methods selector
+* cronjob to deal with delayed Maksuturva payments
+* payment methods selector (dropdown or icons)
 
-## Changelog
+## Installation instructions
 
-### 1.0.2
-* Initial release
+1. Copy content under `app/code/`
+```
+Project root
+----- app
+------- code
+--------- Piimega
+----------- Maksuturva
+----------- MaksuturvaBase
+----------- MaksuturvaCard
+----------- MaksuturvaCod
+----------- ....
+```
 
+2. Run following commands in project root
 
-## Installation instruction
-Install manually
-* Extract the maksuturva package under Magento installation
-* Clean Magento cache
-* Configure the module
-* _Ask Maksuturva to enable "status OK" callback to Magento._ This is important to catch situations where customer fails to return to Magento after succesful payment.
-* Verify the payments work
+Enable maintenance mode (optional)
+```
+php bin/magento maintenance:enable
+```
 
-## Configuration
-Configuration for the module can be found from standard location under System -> Configuration -> Payment Methods -> Maksuturva.
+Enable needed Piimega_Maksuturva* modules (and clean generated static view files)
+```
+php bin/magento module:enable --clear-static-content Piimega_Maksuturva Piimega_MaksuturvaBase Piimega_MaksuturvaCard Piimega_MaksuturvaCod Piimega_MaksuturvaGeneric Piimega_MaksuturvaInvoice Piimega_MaksuturvaMasterpass Piimega_MaksuturvaPartPayment
+```
+
+Run setup:upgrade
+```
+php bin/magento setup:upgrade
+```
+
+Run the setup:di:compile command to generate classes.
+```
+php bin/magento setup:di:compile
+```
+
+Deploy static view files (read devdocs, --force parameter can be used in developer mode)
+https://devdocs.magento.com/guides/v2.2/config-guide/cli/config-cli-subcommands-static-view.html#config-cli-subcommands-staticview
+```
+php bin/magento setup:static-content:deploy
+```
+
+Disable maintenace mode (optional)
+```
+php bin/magento maintenance:disable
+```
+
+Flush cache
+```
+php bin/magento cache:flush
+```
+
+## Configuration via Magento Admin
+
+Configurations for the module is found from following locations
+
+General module configuration: `Stores >> Configuration >> Piimega >> Maksuturva Payment`
+
+Payment methods' configuration: `Stores >> Configuration >> Sales >> Payment Methods`
 
 ### Sandbox mode
 
-If enabled, communication url, seller id and secret key in sandbox fields are used, otherwise production parameters are used.
+If enabled, communication url, seller id and secret key in sandbox fields are used, otherwise personal credentials and communication url are used.
 
 ### Seller id and secret key
 
@@ -48,6 +92,8 @@ This parameter provided by Maksuturva. Please note that this key must not be sha
 ### Communication url
 
 API url to communicate with Maksuturva service. Should be usually kept as is.
+
+In case you want to test using personal test credentials, you must change this to https://test1.maksuturva.fi/. Please note that the url must end with slash `/`.
 
 ### Key Version
 
@@ -87,15 +133,15 @@ code1,code2,code3
 
 If enabled, will enable cronjob that queries Maksuturva API for order missing payment. This kind of orders might occasionally happen, if after successful payment customer does not return to webshop.
 
-Deprecated since 2.2.0 and should be disabled. Alternative and better way is to ask Maksuturva to enabled "status OK" callback to Magento.
+Deprecated since 2.2.0 and should be disabled. Alternative and **better way is to ask Maksuturva to enabled "status OK" callback** to Magento.
 
-### Enable settled cancellation
+### Enable cancellation of settled payments
 
-Allow cancellation of payments, which are already settled. This will be attempted if payment is already settled and can't be refunded normally. Requires already settled amount to be paid back to Maksuturva, which will then refund the customer.
+Allow cancellation of payments that have been settled to seller. This will be attempted if payment is already settled and therefore cannot be refunded normally. These require the refund amount to be paid back to Maksuturva, which will then refund the end customer.
 
-Send refund payment information with email
+### Send refund payment information with email
 
-### Send email containing information for paying back the settled amount of payment to Maksuturva. You can give email sender, recipients, and custom email template.
+Send email containing information for paying back the settled amount of payment to Maksuturva. You can give email sender, recipients, and custom email template.
 
 ## Sandbox testing
 
@@ -119,10 +165,9 @@ If sandbox testing passes but testing with test server fails, the reason most li
 
 API description and documentation can be found at:
 
-*Finnish: http://docs.maksuturva.fi/fi/html/pages/
-*English: http://docs.maksuturva.fi/en/html/pages/
+>http://docs.maksuturva.fi/
 
 ## Support
-In case of support question or bug in the module, please contact Maksuturva at it@maksuturva.fi.
 
-
+For general support, please contant tuki@maksuturva.fi.
+For technical support, please contact it@maksuturva.fi.
