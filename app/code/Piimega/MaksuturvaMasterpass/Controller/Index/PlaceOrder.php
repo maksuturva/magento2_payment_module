@@ -136,7 +136,7 @@ class PlaceOrder extends \Piimega\MaksuturvaMasterpass\Controller\AbstractContro
                 return false;
             } else {
                 $sellercosts_change = $requestFields['pmt_sellercosts'] - $responseXml->{'pmt_sellercosts'};
-                $msg = __("Payment captured by Maksuturva. NOTE: Change in the sellercosts + {$sellercosts_change} EUR.");
+                $msg = __("Payment captured by Maksuturva. NOTE: Change in the sellercosts + %1 EUR.", $sellercosts_change);
             }
         } else {
             $msg = __("Payment captured by Maksuturva");
