@@ -32,9 +32,9 @@ class Run extends \Magento\Backend\App\Action
                 $this->_maksuturvaCronModel->checkPaymentStatus("-2 hours");
             }
 
-            $this->messageManager->addSuccess(__('Run Query Maksuturva API for orders missing payments manually success'));
+            $this->messageManager->addSuccess(__('Successfully queried Maksuturva API for missing payments'));
         }catch (Exception $e){
-            $this->messageManager->addError(__('Unknown exception happen.'));
+            $this->messageManager->addError(__('Unknown exception occured.'));
         }
         $resultRedirect->setUrl($this->_redirect->getRefererUrl());
 

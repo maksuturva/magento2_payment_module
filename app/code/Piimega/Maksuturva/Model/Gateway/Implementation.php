@@ -473,11 +473,11 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
                     }else{
                         $processStatus = \Magento\Sales\Model\Order::STATE_PROCESSING;
                     }
-                    $order->setState($processState, true, __('Authorization identified by Maksuturva'));
-                    $order->setStatus($processStatus, true, __('Authorization identified by Maksuturva'));
+                    $order->setState($processState, true, __('Payment capture authorized by Maksuturva'));
+                    $order->setStatus($processStatus, true, __('Payment capture authorized by Maksuturva'));
                     $order->save();
 
-                    $result['message'] = __('Authorization identified by Maksuturva.');
+                    $result['message'] = __('Payment capture authorized by Maksuturva.');
                     $result['success'] = 'success';
                 } else {
                     if ($order->hasInvoices() == false) {
@@ -488,7 +488,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
                             $invoice->register();
                             $order->addRelatedObject($invoice);
 
-                            $result['message'] = __('Payment identified by Maksuturva. Invoice saved.');
+                            $result['message'] = __('Payment confirmed by Maksuturva. Invoice saved.');
                             $result['success'] = 'success';
 
                             $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
@@ -497,12 +497,12 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
                             }else{
                                 $processStatus = \Magento\Sales\Model\Order::STATE_PROCESSING;
                             }
-                            $order->setState($processState, true, __('Payment identified by Maksuturva'));
-                            $order->setStatus($processStatus, true, __('Payment identified by Maksuturva'));
+                            $order->setState($processState, true, __('Payment confirmed by Maksuturva'));
+                            $order->setStatus($processStatus, true, __('Payment confirmed by Maksuturva'));
                             $order->save();
                         }
                     } else {
-                        $result['message'] = __('Payment identified by Maksuturva. invoices already exist');
+                        $result['message'] = __('Payment confirmed by Maksuturva. Invoices already exist');
                         $result['success'] = 'success';
                     }
                 }
@@ -517,10 +517,10 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_RECLAMATION:
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_CANCELLED:
                 //Mark the order cancelled
-                $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled by Maksuturva'));
-                $order->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled by Maksuturva'));
+                $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Maksuturva'));
+                $order->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Maksuturva'));
                 $order->save();
-                $result['message'] = __('Payment canceled by Maksuturva');
+                $result['message'] = __('Payment canceled in Maksuturva');
                 $result['success'] = "error";
 
                 break;

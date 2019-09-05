@@ -30,7 +30,7 @@ class Error extends \Piimega\MaksuturvaMasterpass\Controller\AbstractController
                     break;
 
                 case \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH:
-                    $this->messageManager->addError(__('Shipping and payment costs returned from Maksuturva do not match.') . ' ' . $paramsArray['message']);
+                    $this->messageManager->addError(__('Shipping and handling costs returned by Maksuturva do not match.') . ' ' . $paramsArray['message']);
                     break;
 
                 default:
@@ -48,7 +48,7 @@ class Error extends \Piimega\MaksuturvaMasterpass\Controller\AbstractController
             if (isset($paramsArray['type']) && $paramsArray['type'] == \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH) {
                 $order->addStatusHistoryComment(__('Mismatch in seller costs returned from Maksuturva. New sellercosts: ' . $paramsArray["new_sellercosts"] . ' EUR,' . ' was ' . $paramsArray["old_sellercosts"] . ' EUR.'));
             } else {
-                $order->addStatusHistoryComment(__('Error on Maksuturva return'));
+                $order->addStatusHistoryComment(__('Error in Maksuturva return'));
             }
 
             $order->save();
