@@ -37,8 +37,6 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
 
     protected $_baseUrl = null;
 
-    protected $_statusQueryData = array();
-
     protected $_charset = 'UTF-8';
 
     protected $_charsethttp = 'UTF-8';
@@ -109,56 +107,5 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         curl_close($request);
 
         return $res;
-    }
-
-    protected function _verifyStatusQueryResponse($data)
-    {
-        $hashFields = array(
-            "pmtq_action",
-            "pmtq_version",
-            "pmtq_sellerid",
-            "pmtq_id",
-            "pmtq_amount",
-            "pmtq_returncode",
-            "pmtq_returntext",
-            "pmtq_sellercosts",
-            "pmtq_paymentmethod",
-            "pmtq_escrow",
-            "pmtq_certification",
-            "pmtq_paymentdate"
-        );
-
-        $optionalFields = array(
-            "pmtq_sellercosts",
-            "pmtq_paymentmethod",
-            "pmtq_escrow",
-            "pmtq_certification",
-            "pmtq_paymentdate"
-        );
-
-        $hashString = "";
-        foreach ($hashFields as $hashField) {
-            if (!isset($data[$hashField]) && !in_array($hashField, $optionalFields)) {
-                return false;
-                // optional fields
-            } elseif (!isset($data[$hashField])) {
-                continue;
-            }
-
-            if (isset($this->_statusQueryData[$hashField]) &&
-                ($data[$hashField] != $this->_statusQueryData[$hashField])
-            ) {
-                return false;
-            }
-            $hashString .= $data[$hashField] . "&";
-        }
-        $hashString .= $this->secretKey . '&';
-
-        $calcHash = strtoupper(hash($this->_hashAlgoDefined, $hashString));
-        if ($calcHash != $data["pmtq_hash"]) {
-            return false;
-        }
-
-        return true;
     }
 }
