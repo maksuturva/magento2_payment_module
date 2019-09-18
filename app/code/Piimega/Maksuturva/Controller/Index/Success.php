@@ -91,7 +91,7 @@ class Success extends \Piimega\Maksuturva\Controller\Maksuturva
                 if ($sellercosts_change > 0) {
                     $msg = __("Payment %1 by Maksuturva. NOTE: Change in the sellercosts + %2 EUR.", array($statusText, $sellercosts_change));
                 } else {
-                    $msg = __("Payment 1% by Maksuturva. NOTE: Change in the sellercosts %2 EUR.", array($statusText, $sellercosts_change));
+                    $msg = __("Payment %1 by Maksuturva. NOTE: Change in the sellercosts %2 EUR.", array($statusText, $sellercosts_change));
                 }
             } else {
                 $msg = __("Payment %1 by Maksuturva", $statusText);

@@ -20,7 +20,7 @@ class Cancel extends \Piimega\MaksuturvaMasterpass\Controller\AbstractController
             return;
         }
 
-        $this->messageManager->addWarning(__('You have cancelled your payment on Maksuturva.'));
+        $this->messageManager->addWarning(__('You have cancelled your payment in Maksuturva.'));
         $this->_redirect('checkout/cart');
     }
 
