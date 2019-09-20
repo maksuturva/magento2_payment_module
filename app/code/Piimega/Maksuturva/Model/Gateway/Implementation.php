@@ -415,25 +415,9 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             "pmtq_keygeneration" => $this->keyVersion
         );
 
-        // overrides with user-defined fields
         $statusQueryData = array_merge($defaultFields, $data);
 
-        // hash calculation
-        $hashFields = array(
-            "pmtq_action",
-            "pmtq_version",
-            "pmtq_sellerid",
-            "pmtq_id"
-        );
-        $hashString = '';
-        foreach ($hashFields as $hashField) {
-            $hashString .= $statusQueryData[$hashField] . '&';
-        }
-        $hashString .= $this->secretKey . '&';
-        // last step: the hash is placed correctly
-        $statusQueryData["pmtq_hash"] = strtoupper(hash($this->_hashAlgoDefined, $hashString));
-
-        $this->curlClient->setCredentials($this->sellerId, $this->_secretKey);
+        $this->curlClient->setCredentials($this->sellerId, $this->secretKey);
 
         try {
             $this->curlClient->setOptions([
@@ -473,6 +457,13 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             if (count($match) == 2) {
                 $parsedResponse[$responseField] = $match[1];
             }
+        }
+
+        if (!$this->_verifyStatusQueryResponse($parsedResponse)) {
+            throw new \Piimega\Maksuturva\Model\Gateway\Exception(
+                ["The authenticity of the answer could't be verified."],
+                self::EXCEPTION_CODE_HASHES_DONT_MATCH
+            );
         }
 
         return $parsedResponse;

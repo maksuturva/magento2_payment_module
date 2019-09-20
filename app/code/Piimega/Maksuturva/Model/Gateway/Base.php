@@ -30,7 +30,6 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
     const PAYMENT_STATUS_QUERY_URN = 'PaymentStatusQuery.pmt';
     const PAYMENT_ADD_DELIVERYINFO_URN = 'addDeliveryInfo.pmt';
 
-    protected $_secretKey = null;
     protected $_hashAlgoDefined = null;
     protected $_pmt_hashversion = null;
     protected $_statusQueryBaseUrl;
@@ -107,5 +106,46 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         curl_close($request);
 
         return $res;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function _verifyStatusQueryResponse($data)
+    {
+        $requiredFields = array(
+            "pmtq_action",
+            "pmtq_version",
+            "pmtq_sellerid",
+            "pmtq_id",
+            "pmtq_amount",
+            "pmtq_returncode",
+            "pmtq_returntext",
+            "pmtq_sellercosts",
+            "pmtq_paymentmethod",
+            "pmtq_escrow",
+            "pmtq_certification",
+            "pmtq_paymentdate"
+        );
+        $optionalFields = array(
+            "pmtq_sellercosts",
+            "pmtq_paymentmethod",
+            "pmtq_escrow",
+            "pmtq_certification",
+            "pmtq_paymentdate"
+        );
+
+
+        foreach ($requiredFields as $requiredField) {
+            if (!isset($data[$requiredField]) && !in_array($requiredField, $optionalFields)) {
+                return false;
+            } elseif (!isset($data[$requiredField])) {
+                continue;
+            }
+        }
+
+        return true;
     }
 }
