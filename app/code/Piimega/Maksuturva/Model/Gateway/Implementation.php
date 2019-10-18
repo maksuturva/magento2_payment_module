@@ -401,7 +401,9 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     public function statusQuery($data = array())
     {
         $payment = $this->getPayment();
-        $additional_data = $payment->getAdditionalData();
+        $additional_data = !is_array($payment->getAdditionalData())
+            ? $this->helper->getSerializer()->unserialize($payment->getAdditionalData())
+            : $payment->getAdditionalData();
         $pmt_id = $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
 
         $defaultFields = array(
@@ -479,8 +481,9 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID:
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID_DELIVERY:
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_COMPENSATED:
+                $maksuturvaModel = $order->getPayment()->getMethodInstance();
 
-                $isDelayedCapture = $this->_maksuturvaModel->isDelayedCaptureCase($response['pmtq_paymentmethod']);
+                $isDelayedCapture = $maksuturvaModel->isDelayedCaptureCase($response['pmtq_paymentmethod']);
                 if ($isDelayedCapture) {
                     $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
                     if($this->getConfigData('paid_order_status')){
