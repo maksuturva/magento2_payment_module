@@ -640,7 +640,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
     public function getPayment()
     {
-        return $this->payment;
+        return $this->payment !== null ? $this->payment : $this->getOrder()->getPayment();
     }
 
     public function setPayment($payment)
