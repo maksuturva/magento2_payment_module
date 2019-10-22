@@ -1,8 +1,4 @@
 <?php
-/**
- *  Copyright © Vaimo Group. All rights reserved.
- *  See LICENSE.txt for license details.
- */
 namespace Piimega\Maksuturva\Model\Observer;
 
 use Magento\Framework\Event\Observer as EventObserver;

@@ -63,7 +63,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         $this->_taxHelper = $taxHelper;
         $this->_calculationModel = $calculationModel;
         $this->_maksuturvaForm = $maksuturvaForm;
-        $this->eventManager = $eventManager;
+        $this->eventManager = $eventManager ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\Event\ManagerInterface::class);
     }
 
     public  function setConfig($config)
