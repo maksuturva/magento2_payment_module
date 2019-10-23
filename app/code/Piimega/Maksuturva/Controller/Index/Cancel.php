@@ -19,7 +19,7 @@ class Cancel extends \Piimega\Maksuturva\Controller\Maksuturva
         $additional_data = json_decode($payment->getAdditionalData(), true);
 
         if ($additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] !== $pmt_id) {
-            $this->_redirect('checkout');
+            $this->_redirect('checkout/cart');
             return;
         }
 
@@ -39,10 +39,10 @@ class Cancel extends \Piimega\Maksuturva\Controller\Maksuturva
             $this->messageManager->addError(__('You have cancelled your payment in Maksuturva.'));
         } else {
             $this->messageManager->addError(__('Unable to cancel order that has already been paid.'));
-            $this->_redirect('checkout');
+            $this->_redirect('checkout/cart');
             return;
         }
-        $this->_redirect('checkout');
+        $this->_redirect('checkout/cart');
     }
 
 }
