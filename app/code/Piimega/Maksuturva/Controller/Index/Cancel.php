@@ -16,7 +16,7 @@ class Cancel extends \Piimega\Maksuturva\Controller\Maksuturva
 
         $order = $this->getLastedOrder();
         $payment = $this->getPayment();
-        $additional_data = $payment->getAdditionalData();
+        $additional_data = json_decode($payment->getAdditionalData(), true);
 
         if ($additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] !== $pmt_id) {
             $this->_redirect('checkout');
