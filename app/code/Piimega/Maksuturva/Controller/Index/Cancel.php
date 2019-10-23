@@ -18,11 +18,6 @@ class Cancel extends \Piimega\Maksuturva\Controller\Maksuturva
         $payment = $this->getPayment();
         $additional_data = $payment->getAdditionalData();
 
-        if(!$this->validateReturnedOrder($order, $params)){
-            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on maksuturva payment module.')));
-            return;
-        }
-
         if ($additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] !== $pmt_id) {
             $this->_redirect('checkout');
             return;
