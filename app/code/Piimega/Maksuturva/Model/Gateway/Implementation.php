@@ -39,6 +39,11 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     protected $paymentDue;
     protected $eventManager;
 
+    /**
+     * @var \Magento\Framework\HTTP\Client\Curl
+     */
+    protected $curlClient;
+
     function __construct(
         \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
@@ -50,8 +55,9 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         \Magento\Tax\Helper\Data $taxHelper,
         \Magento\Tax\Model\Calculation $calculationModel,
         \Piimega\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm,
-        \Magento\Framework\Event\ManagerInterface $eventManager
-    ) {
+        \Magento\Framework\HTTP\Client\Curl $curl = null
+    )
+    {
         parent::__construct();
         $this->helper = $maksuturvaHelper;
         $this->_scopeConfig = $scopeConfig;
@@ -63,7 +69,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         $this->_taxHelper = $taxHelper;
         $this->_calculationModel = $calculationModel;
         $this->_maksuturvaForm = $maksuturvaForm;
-        $this->eventManager = $eventManager ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\Event\ManagerInterface::class);
+        $this->curlClient = $curl ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\HTTP\Client\Curl::class);
     }
 
     public  function setConfig($config)
@@ -403,9 +409,10 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     public function statusQuery($data = array())
     {
         $payment = $this->getPayment();
-        $additional_data = $payment->getAdditionalData();
+        $additional_data = !is_array($payment->getAdditionalData())
+            ? $this->helper->getSerializer()->unserialize($payment->getAdditionalData())
+            : $payment->getAdditionalData();
         $pmt_id = $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
-
 
         $defaultFields = array(
             "pmtq_action" => "PAYMENT_STATUS_QUERY",
@@ -418,25 +425,32 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             "pmtq_keygeneration" => $this->keyVersion
         );
 
-        // overrides with user-defined fields
-        $this->_statusQueryData = array_merge($defaultFields, $data);
+        $statusQueryData = array_merge($defaultFields, $data);
 
-        // hash calculation
-        $hashFields = array(
-            "pmtq_action",
-            "pmtq_version",
-            "pmtq_sellerid",
-            "pmtq_id"
-        );
-        $hashString = '';
-        foreach ($hashFields as $hashField) {
-            $hashString .= $this->_statusQueryData[$hashField] . '&';
+        $this->curlClient->setCredentials($this->sellerId, $this->secretKey);
+
+        try {
+            $this->curlClient->setOptions([
+                CURLOPT_HEADER => 0,
+                CURLOPT_FRESH_CONNECT => 1,
+                CURLOPT_FORBID_REUSE => 1,
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_CONNECTTIMEOUT => 60,
+            ]);
+
+            $this->curlClient->post($this->getStatusQueryUrl(), $statusQueryData);
+            if ($this->curlClient->getStatus() != 200) {
+                throw new \Piimega\Maksuturva\Model\Gateway\Exception(
+                    ["Failed to communicate with Maksuturva. Please check the network connection. URL: " . $this->getStatusQueryUrl()]
+                );
+            }
+        } catch (\Exception $e) {
+            throw new \Piimega\Maksuturva\Model\Gateway\Exception(
+                ["Failed to communicate with Maksuturva. Please check the network connection. URL: " . $this->getStatusQueryUrl() . " ERROR MESSAGE: " . $e->getMessage()]
+            );
         }
-        $hashString .= $this->secretKey . '&';
-        // last step: the hash is placed correctly
-        $this->_statusQueryData["pmtq_hash"] = strtoupper(hash($this->_hashAlgoDefined, $hashString));
 
-        $res = $this->getPostResponse($this->getStatusQueryUrl(), $this->_statusQueryData);
+        $body = $this->curlClient->getBody();
 
         // we will not rely on xml parsing - instead, the fields are going to be collected by means of preg_match
         $parsedResponse = array();
@@ -447,19 +461,21 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             "pmtq_buyername", "pmtq_buyeraddress1", "pmtq_buyeraddress2",
             "pmtq_buyerpostalcode", "pmtq_buyercity", "pmtq_hash"
         );
+
         foreach ($responseFields as $responseField) {
-            preg_match("/<$responseField>(.*)?<\/$responseField>/i", $res, $match);
+            preg_match("/<$responseField>(.*)?<\/$responseField>/i", $body, $match);
             if (count($match) == 2) {
                 $parsedResponse[$responseField] = $match[1];
             }
         }
 
-        // do not provide a response which is not valid
         if (!$this->_verifyStatusQueryResponse($parsedResponse)) {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("The authenticity of the answer could't be verified. Hashes didn't match."), self::EXCEPTION_CODE_HASHES_DONT_MATCH);
+            throw new \Piimega\Maksuturva\Model\Gateway\Exception(
+                ["The authenticity of the answer could't be verified."],
+                self::EXCEPTION_CODE_HASHES_DONT_MATCH
+            );
         }
 
-        // return the response - verified
         return $parsedResponse;
     }
 
@@ -473,8 +489,9 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID:
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID_DELIVERY:
             case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_COMPENSATED:
+                $maksuturvaModel = $order->getPayment()->getMethodInstance();
 
-                $isDelayedCapture = $this->_maksuturvaModel->isDelayedCaptureCase($response['pmtq_paymentmethod']);
+                $isDelayedCapture = $maksuturvaModel->isDelayedCaptureCase($response['pmtq_paymentmethod']);
                 if ($isDelayedCapture) {
                     $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
                     if($this->getConfigData('paid_order_status')){
@@ -634,7 +651,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
     public function getPayment()
     {
-        return $this->payment;
+        return $this->payment !== null ? $this->payment : $this->getOrder()->getPayment();
     }
 
     public function setPayment($payment)

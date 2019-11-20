@@ -30,14 +30,11 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
     const PAYMENT_STATUS_QUERY_URN = 'PaymentStatusQuery.pmt';
     const PAYMENT_ADD_DELIVERYINFO_URN = 'addDeliveryInfo.pmt';
 
-    protected $_secretKey = null;
     protected $_hashAlgoDefined = null;
     protected $_pmt_hashversion = null;
     protected $_statusQueryBaseUrl;
 
     protected $_baseUrl = null;
-
-    protected $_statusQueryData = array();
 
     protected $_charset = 'UTF-8';
 
@@ -111,9 +108,14 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         return $res;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
     protected function _verifyStatusQueryResponse($data)
     {
-        $hashFields = array(
+        $requiredFields = array(
             "pmtq_action",
             "pmtq_version",
             "pmtq_sellerid",
@@ -127,7 +129,6 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
             "pmtq_certification",
             "pmtq_paymentdate"
         );
-
         $optionalFields = array(
             "pmtq_sellercosts",
             "pmtq_paymentmethod",
@@ -136,27 +137,13 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
             "pmtq_paymentdate"
         );
 
-        $hashString = "";
-        foreach ($hashFields as $hashField) {
-            if (!isset($data[$hashField]) && !in_array($hashField, $optionalFields)) {
+
+        foreach ($requiredFields as $requiredField) {
+            if (!isset($data[$requiredField]) && !in_array($requiredField, $optionalFields)) {
                 return false;
-                // optional fields
-            } elseif (!isset($data[$hashField])) {
+            } elseif (!isset($data[$requiredField])) {
                 continue;
             }
-
-            if (isset($this->_statusQueryData[$hashField]) &&
-                ($data[$hashField] != $this->_statusQueryData[$hashField])
-            ) {
-                return false;
-            }
-            $hashString .= $data[$hashField] . "&";
-        }
-        $hashString .= $this->secretKey . '&';
-
-        $calcHash = strtoupper(hash($this->_hashAlgoDefined, $hashString));
-        if ($calcHash != $data["pmtq_hash"]) {
-            return false;
         }
 
         return true;
