@@ -350,7 +350,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     {
         $fields = array(
             "sellerid" => $this->sellerId,
-            "request_locale" => $this->_scopeConfig->getValue('maksuturva_payment/maksuturva_config/locale'), // allowed values: fi, sv, en
+            "request_locale" => $this->_scopeConfig->getValue('maksuturva_config/maksuturva_payment/locale'), // allowed values: fi, sv, en
             "totalamount" => number_format($total, 2, ",", ""),
         );
 
@@ -490,7 +490,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
                     $result['success'] = 'success';
                 } else {
                     if ($order->hasInvoices() == false) {
-                        if ($order->canInvoice() && $this->_scopeConfig->getValue('maksuturva_payment/maksuturva_config/generate_invoice')) {
+                        if ($order->canInvoice() && $this->_scopeConfig->getValue('maksuturva_config/maksuturva_payment/generate_invoice')) {
                             $invoice = $order->prepareInvoice();
                             $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_ONLINE);
                             //do capture in register step
@@ -629,7 +629,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
     public function getConfigData($path)
     {
-        return $this->_scopeConfig->getValue('maksuturva_payment/maksuturva_config/'.$path.'', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->_scopeConfig->getValue('maksuturva_config/maksuturva_payment/'.$path.'', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     public function getPayment()

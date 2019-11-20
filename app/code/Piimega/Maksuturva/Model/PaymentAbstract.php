@@ -219,15 +219,19 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
 
     public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        $getAdditionalDataUnserialized = $payment->getAdditionalData();
-        if (!is_array($getAdditionalDataUnserialized)) {
-            $additional_data = $payment->getAdditionalData();
+        $getAdditionalInformationUnserialized = $payment->getAdditionalInformation();
+        if (!is_array($getAdditionalInformationUnserialized)) {
+            $additional_information = unserialize($payment->getAdditionalInformation());
         } else {
-            $additional_data = $getAdditionalDataUnserialized;
+            $additional_information = $getAdditionalInformationUnserialized;
+        }
+
+        if (isset($additional_information[self::MAKSUTURVA_PRESELECTED_PAYMENT_METHOD])) {
+            $method = $additional_information[self::MAKSUTURVA_PRESELECTED_PAYMENT_METHOD];
+        } else {
+            $method = "";
         }
         
-        $method = $additional_data[self::MAKSUTURVA_PRESELECTED_PAYMENT_METHOD];
-
         if ($this->isDelayedCaptureCase($method)) {
             $result = $this->getGatewayImplementation()->addDeliveryInfo($payment);
 
