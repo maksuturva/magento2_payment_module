@@ -16,9 +16,10 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Implementation
         \Magento\Tax\Helper\Data $taxHelper,
         \Magento\Tax\Model\Calculation $calculationModel,
         \Piimega\Maksuturva\Model\Form $maksuturvaForm,
-        \Piimega\MaksuturvaMasterpass\Model\Form\MasterpassBaseForm $masterpassBaseForm
+        \Piimega\MaksuturvaMasterpass\Model\Form\MasterpassBaseForm $masterpassBaseForm,
+        \Magento\Framework\Event\ManagerInterface $eventManager
     ) {
-        parent::__construct($maksuturvaHelper, $storeManager, $scopeConfig, $urlBuilder, $groupFactory, $checkoutSession, $orderFactory, $taxHelper, $calculationModel, $maksuturvaForm);
+        parent::__construct($maksuturvaHelper, $storeManager, $scopeConfig, $urlBuilder, $groupFactory, $checkoutSession, $orderFactory, $taxHelper, $calculationModel, $maksuturvaForm, $eventManager);
         $this->baseForm = $masterpassBaseForm;
     }
 

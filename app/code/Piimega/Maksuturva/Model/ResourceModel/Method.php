@@ -27,7 +27,7 @@ class Method extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
          */
         if (!property_exists($object, "imageurl"))
         {   
-            error_log("Object imageurl is missing. Skipping object insert.");                                                                                                                                                                                                           error_log("Imageurl is missing. Skipping object.");
+            error_log("Object imageurl is missing. Skipping object insert.");
             return false;
         }   
 
