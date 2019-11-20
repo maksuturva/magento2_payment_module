@@ -37,6 +37,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     protected $commEncoding;
     protected $keyVersion;
     protected $paymentDue;
+    protected $eventManager;
 
     function __construct(
         \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
@@ -48,9 +49,9 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Tax\Helper\Data $taxHelper,
         \Magento\Tax\Model\Calculation $calculationModel,
-        \Piimega\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm
-    )
-    {
+        \Piimega\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm,
+        \Magento\Framework\Event\ManagerInterface $eventManager
+    ) {
         parent::__construct();
         $this->helper = $maksuturvaHelper;
         $this->_scopeConfig = $scopeConfig;
@@ -62,6 +63,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         $this->_taxHelper = $taxHelper;
         $this->_calculationModel = $calculationModel;
         $this->_maksuturvaForm = $maksuturvaForm;
+        $this->eventManager = $eventManager ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\Event\ManagerInterface::class);
     }
 
     public  function setConfig($config)
@@ -319,6 +321,13 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
             $options["pmt_rows"] = count($products_rows);
             $options["pmt_rows_data"] = $products_rows;
+
+            $transportObject = new \Magento\Framework\DataObject(array('order' => $order, 'options' => $options));
+            $this->eventManager->dispatch(
+                'maksuturva_gateway_implementation_get_form_after',
+                array('transport_object' => $transportObject)
+            );
+            $options = $transportObject->getOptions();
 
             $this->helper->maksuturvaLogger(var_export($options, true), null, 'maksuturva.log', true);
             $this->form = $this->_maksuturvaForm->setConfig(array('secretkey' => $this->secretKey, 'options' => $options, 'encoding' => $this->commEncoding, 'url' => $this->commUrl));

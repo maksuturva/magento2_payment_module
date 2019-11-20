@@ -161,6 +161,11 @@ For testing our payment service without using actual money, you need to set comm
 
 If sandbox testing passes but testing with test server fails, the reason most likely is in communication URL, seller id or secret key. In that case you should first check that they are correct and no extra spaces are added in the beginning or end of the inputs.
 
+
+## Known issues
+
+* Module supports Magento gift card, but not 3rd party gift card implementations. If you're using 3rd party modules, you may have to implement support for those by yourself.
+
 ## Maksuturva API documentation
 
 API description and documentation can be found at:

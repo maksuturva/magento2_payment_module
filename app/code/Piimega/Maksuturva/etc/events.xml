@@ -15,4 +15,8 @@
     <event name="payment_method_assign_data">
         <observer name="piimega_maksuturva_payment_method_assign_data" instance="Piimega\Maksuturva\Model\Observer\AssignAdditionalInformation" />
     </event>
+
+    <event name="maksuturva_gateway_implementation_get_form_after">
+        <observer name="piimega_maksuturva_gateway_implementation_get_form_after" instance="Piimega\Maksuturva\Model\Observer\AddGiftCardPaymentRow" />
+    </event>
 </config>
