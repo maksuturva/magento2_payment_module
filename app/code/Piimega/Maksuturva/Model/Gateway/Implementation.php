@@ -55,7 +55,8 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         \Magento\Tax\Helper\Data $taxHelper,
         \Magento\Tax\Model\Calculation $calculationModel,
         \Piimega\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm,
-        \Magento\Framework\HTTP\Client\Curl $curl = null
+        \Magento\Framework\HTTP\Client\Curl $curl = null,
+        \Magento\Framework\Event\ManagerInterface $eventManager
     )
     {
         parent::__construct();
@@ -69,8 +70,9 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         $this->_taxHelper = $taxHelper;
         $this->_calculationModel = $calculationModel;
         $this->_maksuturvaForm = $maksuturvaForm;
-        $this->curlClient = $curl ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\HTTP\Client\Curl::class);
-    }
+        $this->curlClient = $curl ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\HTTP\Client\Curl::class); 
+        $this->eventManager = $eventManager ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\Event\ManagerInterface::class);
+        }
 
     public  function setConfig($config)
     {
