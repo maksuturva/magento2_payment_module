@@ -571,17 +571,24 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
     public function addDeliveryInfo($payment)
     {
-        $additional_data = $payment->getAdditionalData();
-        $pkg_id = $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
-
-        $this->helper->maksuturvaLogger("Adding delivery info for pkg_id {$pkg_id}", null, 'maksuturva.log', true);
-
+        try
+        {                                                                                                                                                                                         
+            $additional_data = $payment->getAdditionalData();
+            $json_data = json_decode($additional_data, true);
+            $pkg_id = $json_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
+            $this->helper->maksuturvaLogger("Adding delivery info for pkg_id {$pkg_id}", null, 'maksuturva.log', true);                                                                        
+        } catch (Exception $e)
+        {                                                                                                                                                                                                                                                                                                                                                                                   
+            $this->helper->maksuturvaLogger("Add delivery info, additional data parse exception " . $e->getMessage());
+            return;
+        }
+        
         $deliveryData = array(
             "pkg_version" => "0002",
             "pkg_sellerid" => $this->sellerId,
             "pkg_id" => $pkg_id,
             "pkg_deliverymethodid" => $payment->getOrder()->getShippingMethod(),
-            "pkg_adddeliveryinfo" => "Deliveryed by ".$payment->getOrder()->getShippingMethod()."",
+            "pkg_adddeliveryinfo" => "Delivered by ".$payment->getOrder()->getShippingMethod()."",
             "pkg_allsent" => "Y",
             "pkg_resptype" => "XML",
             "pkg_hashversion" => $this->_pmt_hashversion,

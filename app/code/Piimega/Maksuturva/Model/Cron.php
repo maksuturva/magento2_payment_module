@@ -74,15 +74,20 @@ class Cron
             $model = $order->getPayment()->getMethodInstance();
             $this->helper->maksuturvaLogger("checking " . $order->getIncrementId());
             $implementation = $model->getGatewayImplementation();
-            $implementation->setOrder($order);
-            $config = $model->getConfigs();
-            $data = array('pmtq_keygeneration' => $config['keyversion']);
+            if ($implementation != NULL) 
+            {
+                $implementation->setOrder($order);
+                $config = $model->getConfigs();
+                $data = array('pmtq_keygeneration' => $config['keyversion']);
 
-            try {
-                $response = $implementation->statusQuery($data);
-                $result = $implementation->ProcessStatusQueryResult($response);
-                $this->helper->maksuturvaLogger($result['message']);
-            } catch (\Exception $e) {
+                try {
+                    $response = $implementation->statusQuery($data);
+                    $result = $implementation->ProcessStatusQueryResult($response);
+                    $this->helper->maksuturvaLogger($result['message']);
+                } catch (\Exception $e) 
+                {
+                    $this->helper->maksuturvaLogger("Order status query exception: " . $e->getMessage());
+                }
             }
         }
 
