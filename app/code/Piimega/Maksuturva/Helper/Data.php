@@ -33,7 +33,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Svea
     protected function getMaksuturvaLoggerHandler()
     {
         if(!$this->_loggerHandler){
-            $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/maksuturva.log');
+            $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/svea-maksuturva.log');
             $logger = new \Zend_Log();
             $logger->addWriter($writer);
             $this->_loggerHandler = $logger;
