@@ -4,7 +4,7 @@
         <payment>
             <maksuturva_invoice_payment>
                 <active>0</active>
-                <model>Piimega\MaksuturvaInvoice\Model\Invoice</model>
+                <model>Svea\MaksuturvaInvoice\Model\Invoice</model>
                 <order_status>pending</order_status>
                 <title>Maksuturva Invoice</title>
                 <method_filter>FI60;FI70;FI72;RBIN</method_filter>

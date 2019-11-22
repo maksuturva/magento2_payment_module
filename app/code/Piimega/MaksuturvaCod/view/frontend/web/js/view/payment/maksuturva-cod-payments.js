@@ -11,7 +11,7 @@ define(
         rendererList.push(
             {
                 type: 'maksuturva_cod_payment',
-                component: 'Piimega_MaksuturvaCod/js/view/payment/method-renderer/maksuturva-cod-method'
+                component: 'Svea_MaksuturvaCod/js/view/payment/method-renderer/maksuturva-cod-method'
             }
         );
         return Component.extend({});

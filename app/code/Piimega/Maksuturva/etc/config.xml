@@ -4,7 +4,7 @@
         <maksuturva_config>
             <maksuturva_payment>
                 <!--<active>0</active>-->
-                <!--<model>Piimega\Maksuturva\Model\Payment</model>-->
+                <!--<model>Svea\Maksuturva\Model\Payment</model>-->
                 <order_status>pending</order_status>
                 <title>Maksuturva</title>
                 <payment_action>sale</payment_action>

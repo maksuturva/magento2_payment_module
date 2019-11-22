@@ -6,7 +6,7 @@
  * Time: 17:55
  */
 
-namespace Piimega\Maksuturva\Model\Observer;
+namespace Svea\Maksuturva\Model\Observer;
 
 use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\Event\ObserverInterface;
@@ -18,7 +18,7 @@ class AddHtmlToOrderViewObserver implements ObserverInterface
     protected $_maksuturvaPaymentMethodRef;
 
     public function __construct(\Magento\Framework\View\LayoutInterface $layout,
-                                \Piimega\Maksuturva\Model\MethodFactory $methodModelFactory)
+                                \Svea\Maksuturva\Model\MethodFactory $methodModelFactory)
     {
         $this->layout = $layout;
         $this->_maksuturvaPaymentMethodRef = $methodModelFactory;
@@ -36,7 +36,7 @@ class AddHtmlToOrderViewObserver implements ObserverInterface
                 $block = $this->layout->createBlock('Magento\Framework\View\Element\Template');
                 $order->setData('maksuturva_preselected_payment_method_name', $maksuturvaPaymentMethodObj->getDisplayname());
                 $block->setOrder($order);
-                $block->setTemplate('Piimega_Maksuturva::maksuturva_payment_info.phtml');
+                $block->setTemplate('Svea_Maksuturva::maksuturva_payment_info.phtml');
                 $html = $observer->getTransport()->getOutput() . $block->toHtml();
                 $observer->getTransport()->setOutput($html);
             }

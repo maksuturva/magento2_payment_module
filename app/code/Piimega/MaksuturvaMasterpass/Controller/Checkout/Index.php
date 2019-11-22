@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Controller\Checkout;
+namespace Svea\MaksuturvaMasterpass\Controller\Checkout;
 
 class Index extends \Magento\Checkout\Controller\Index\Index
 {

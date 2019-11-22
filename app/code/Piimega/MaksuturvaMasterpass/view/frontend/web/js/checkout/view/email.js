@@ -14,7 +14,7 @@ define([
 
         return uiComponent.extend({
             defaults: {
-                template : 'Piimega_MaksuturvaMasterpass/checkout/form/element/email'
+                template : 'Svea_MaksuturvaMasterpass/checkout/form/element/email'
             },
 
             getQuoteEmail : function(){

@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Helper;
+namespace Svea\MaksuturvaMasterpass\Helper;
 
-class Data extends \Piimega\Maksuturva\Helper\Data
+class Data extends \Svea\Maksuturva\Helper\Data
 {
     const MASTERPASS_STATUS_CONFIG_PATH = "payment/maksuturva_masterpass/active";
 
@@ -29,8 +29,8 @@ class Data extends \Piimega\Maksuturva\Helper\Data
     public function getSerializedMaksuturvaPaymentId($payment)
     {
         $additional_data = $this->getPaymentAdditionData($payment);
-        if (isset($additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID])) {
-            return $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
+        if (isset($additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID])) {
+            return $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
         }
         return false;
     }
@@ -38,7 +38,7 @@ class Data extends \Piimega\Maksuturva\Helper\Data
     public function setPaymentMaksuturvaPmtId($payment, $pmt_id)
     {
         $additional_data = $this->getPaymentAdditionData($payment);
-        $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] = $pmt_id;
+        $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] = $pmt_id;
         $payment->setAdditionalData($this->getSerializer()->serialize($additional_data));
         $payment->setMaksuturvaPmtId($pmt_id);
         $payment->save();

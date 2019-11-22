@@ -3,7 +3,7 @@
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
-                <item name="maksuturva_cod_piimega_config_provider" xsi:type="object">Piimega\MaksuturvaCod\Model\CodConfigProvider</item>
+                <item name="maksuturva_cod_Svea_config_provider" xsi:type="object">Svea\MaksuturvaCod\Model\CodConfigProvider</item>
             </argument>
         </arguments>
     </type>

@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\MaksuturvaCard\Model;
+namespace Svea\MaksuturvaCard\Model;
 
-class Card extends \Piimega\Maksuturva\Model\PaymentAbstract
+class Card extends \Svea\Maksuturva\Model\PaymentAbstract
 {
     protected $_code = 'maksuturva_card_payment';
     protected $_allowedMethods = [];

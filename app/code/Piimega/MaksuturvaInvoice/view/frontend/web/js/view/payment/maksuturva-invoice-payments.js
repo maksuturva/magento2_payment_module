@@ -11,7 +11,7 @@ define(
         rendererList.push(
             {
                 type: 'maksuturva_invoice_payment',
-                component: 'Piimega_MaksuturvaInvoice/js/view/payment/method-renderer/maksuturva-invoice-method'
+                component: 'Svea_MaksuturvaInvoice/js/view/payment/method-renderer/maksuturva-invoice-method'
             }
         );
         return Component.extend({});

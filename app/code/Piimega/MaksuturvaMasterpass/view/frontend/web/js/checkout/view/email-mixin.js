@@ -27,7 +27,7 @@ define([
             var defaultsWrapper = wrapper.wrap(defaults, function (originalAction) {
                 var result = originalAction();
                 if (Object.keys(masterpassData).length) {
-                    result.template = 'Piimega_MaksuturvaMasterpass/checkout/form/element/email';
+                    result.template = 'Svea_MaksuturvaMasterpass/checkout/form/element/email';
                 }
                 return result;
             });

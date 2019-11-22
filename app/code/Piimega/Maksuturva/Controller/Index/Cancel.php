@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\Maksuturva\Controller\Index;
+namespace Svea\Maksuturva\Controller\Index;
 
-class Cancel extends \Piimega\Maksuturva\Controller\Maksuturva
+class Cancel extends \Svea\Maksuturva\Controller\Maksuturva
 {
     public function execute()
     {
@@ -10,7 +10,7 @@ class Cancel extends \Piimega\Maksuturva\Controller\Maksuturva
 
         if (empty($pmt_id)) {
             $this->messageManager->addError(__('Unknown error on maksuturva payment module.'));
-            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH));
+            $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH));
             return;
         }
 
@@ -18,7 +18,7 @@ class Cancel extends \Piimega\Maksuturva\Controller\Maksuturva
         $payment = $this->getPayment();
         $additional_data = json_decode($payment->getAdditionalData(), true);
 
-        if ($additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] !== $pmt_id) {
+        if ($additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] !== $pmt_id) {
             $this->_redirect('checkout/cart');
             return;
         }

@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Setup;
+namespace Svea\Maksuturva\Setup;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;

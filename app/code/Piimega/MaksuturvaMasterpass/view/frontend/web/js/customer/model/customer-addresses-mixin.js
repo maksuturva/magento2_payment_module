@@ -6,7 +6,7 @@
 define([
     'jquery',
     'mage/utils/wrapper',
-    'Piimega_MaksuturvaMasterpass/js/checkout/model/new-masterpass-address',
+    'Svea_MaksuturvaMasterpass/js/checkout/model/new-masterpass-address',
     'Magento_Checkout/js/action/select-billing-address'
 ], function ($, wrapper, NewMasterpassAddress,selectBillingAddress) {
     'use strict';

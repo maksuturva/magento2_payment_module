@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Controller\Index;
+namespace Svea\MaksuturvaMasterpass\Controller\Index;
 
-class PlaceOrder extends \Piimega\MaksuturvaMasterpass\Controller\AbstractController
+class PlaceOrder extends \Svea\MaksuturvaMasterpass\Controller\AbstractController
 {
     protected $msg;
     protected $paymentMandatoryFields = array(
@@ -96,7 +96,7 @@ class PlaceOrder extends \Piimega\MaksuturvaMasterpass\Controller\AbstractContro
             $responseXml = $gateway->paymentPost($requestFields, true);
         } catch (\Exception $e) {
             $this->_redirect('masterpass/authorize/error', array(
-                'type' => \Piimega\MaksuturvaMasterpass\Model\Masterpass::ERROR_COMMUNICATION_FAILED
+                'type' => \Svea\MaksuturvaMasterpass\Model\Masterpass::ERROR_COMMUNICATION_FAILED
             ));
             return false;
         }
@@ -126,13 +126,13 @@ class PlaceOrder extends \Piimega\MaksuturvaMasterpass\Controller\AbstractContro
         }
 
         if ($invalidField = $this->validatePaymentResponse($responseXml, $requestFields)) {
-            $this->_redirect('masterpass/authorize/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD, 'field' => $invalidField));
+            $this->_redirect('masterpass/authorize/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD, 'field' => $invalidField));
             return false;
         }
 
         if ($responseXml->{'pmt_sellercosts'} != $requestFields['pmt_sellercosts']) {
             if ($responseXml->{'pmt_sellercosts'} < $requestFields['pmt_sellercosts']) {
-                $this->_redirect('masterpass/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH));
+                $this->_redirect('masterpass/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH));
                 return false;
             } else {
                 $sellercosts_change = $requestFields['pmt_sellercosts'] - $responseXml->{'pmt_sellercosts'};

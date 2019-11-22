@@ -1,10 +1,10 @@
 <?php
-namespace Piimega\MaksuturvaCard\Model;
+namespace Svea\MaksuturvaCard\Model;
 
-class CardConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
+class CardConfigProvider extends \Svea\Maksuturva\Model\ConfigProvider
 {
     public function __construct(
-        \Piimega\MaksuturvaCard\Model\Card $maksuturvaModel,
+        \Svea\MaksuturvaCard\Model\Card $maksuturvaModel,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {

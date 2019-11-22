@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Model\Source;
+namespace Svea\Maksuturva\Model\Source;
 
 class AllowedLocale
 {

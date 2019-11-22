@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Plugin\Quote\Model;
+namespace Svea\MaksuturvaMasterpass\Plugin\Quote\Model;
 
 class QuotePlugin
 {

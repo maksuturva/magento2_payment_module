@@ -1,7 +1,7 @@
 define(
     [
         'ko',
-        'Piimega_Maksuturva/js/view/payment/method-renderer/maksuturva_payment'
+        'Svea_Maksuturva/js/view/payment/method-renderer/maksuturva_payment'
     ],
     function (ko, Component) {
         'use strict';

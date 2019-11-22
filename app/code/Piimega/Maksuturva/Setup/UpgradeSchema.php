@@ -1,6 +1,6 @@
 <?php
 
-namespace Piimega\Maksuturva\Setup;
+namespace Svea\Maksuturva\Setup;
 
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\ModuleContextInterface;

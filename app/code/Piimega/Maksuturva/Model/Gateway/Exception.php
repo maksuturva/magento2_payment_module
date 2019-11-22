@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Model\Gateway;
+namespace Svea\Maksuturva\Model\Gateway;
 class Exception extends \Exception
 {
 public function __construct($errors, $code = null)

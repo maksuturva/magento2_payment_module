@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Model;
+namespace Svea\Maksuturva\Model;
 
 use Magento\Framework\UrlInterface;
 use Magento\Framework\DataObject;
@@ -63,8 +63,8 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
         UrlInterface $urlInterface,
         \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Piimega\Maksuturva\Model\Gateway\Implementation $implementation,
-        \Piimega\Maksuturva\Model\ResourceModel\Method $methodResourceModel,
+        \Svea\Maksuturva\Model\Gateway\Implementation $implementation,
+        \Svea\Maksuturva\Model\ResourceModel\Method $methodResourceModel,
         CacheInterface $cache,
         \Magento\Checkout\Model\Cart $cart,
     	array $data = []

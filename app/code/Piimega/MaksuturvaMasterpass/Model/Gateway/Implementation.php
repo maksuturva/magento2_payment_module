@@ -1,12 +1,12 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Model\Gateway;
+namespace Svea\MaksuturvaMasterpass\Model\Gateway;
 
-class Implementation extends \Piimega\Maksuturva\Model\Gateway\Implementation
+class Implementation extends \Svea\Maksuturva\Model\Gateway\Implementation
 {
     protected $baseForm;
 
     public function __construct(
-        \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
+        \Svea\Maksuturva\Helper\Data $maksuturvaHelper,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\UrlInterface $urlBuilder,
@@ -15,8 +15,8 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Implementation
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Tax\Helper\Data $taxHelper,
         \Magento\Tax\Model\Calculation $calculationModel,
-        \Piimega\Maksuturva\Model\Form $maksuturvaForm,
-        \Piimega\MaksuturvaMasterpass\Model\Form\MasterpassBaseForm $masterpassBaseForm,
+        \Svea\Maksuturva\Model\Form $maksuturvaForm,
+        \Svea\MaksuturvaMasterpass\Model\Form\MasterpassBaseForm $masterpassBaseForm,
         \Magento\Framework\HTTP\Client\Curl $curl = null,
         \Magento\Framework\Event\ManagerInterface $eventManager 
     ) {
@@ -230,11 +230,11 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Implementation
     protected function getMaksuturvaPmtId($order, $payment)
     {
         $additional_data = $this->helper->getPaymentAdditionData($payment);
-        if (isset($additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID])) {
-            $pmt_id = $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
+        if (isset($additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID])) {
+            $pmt_id = $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
         } else {
             $pmt_id = $this->helper->generatePaymentId();
-            $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] = $pmt_id;
+            $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] = $pmt_id;
             $payment->setAdditionalData($this->helper->getSerializer()->serialize($additional_data));
             $payment->setMaksuturvaPmtId($pmt_id);
             $payment->save();

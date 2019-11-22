@@ -19,7 +19,7 @@
 
                 <field id="locale" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Locale</label>
-                    <source_model>Piimega\Maksuturva\Model\Source\AllowedLocale</source_model>
+                    <source_model>Svea\Maksuturva\Model\Source\AllowedLocale</source_model>
                 </field>
 
                 <field id="method_filter" translate="label" type="text" sortOrder="125" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -34,7 +34,7 @@
 
                 <field id="preselect_form_type" translate="label" type="select" sortOrder="155" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Preselect form type</label>
-                    <source_model>Piimega\Maksuturva\Model\System\Config\Source\Formtype</source_model>
+                    <source_model>Svea\Maksuturva\Model\System\Config\Source\Formtype</source_model>
                     <validate>required-entry</validate>
                 </field>
             </group>

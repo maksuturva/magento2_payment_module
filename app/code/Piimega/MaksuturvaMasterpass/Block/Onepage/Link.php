@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Block\Onepage;
+namespace Svea\MaksuturvaMasterpass\Block\Onepage;
 
 class Link extends \Magento\Checkout\Block\Onepage\Link
 {
@@ -12,7 +12,7 @@ class Link extends \Magento\Checkout\Block\Onepage\Link
 
     public function getMasterpassImageUrl()
     {
-        return $this->_assetRepo->getUrl('Piimega_MaksuturvaMasterpass::images/mp_chk_btn_147x034px.svg');
+        return $this->_assetRepo->getUrl('Svea_MaksuturvaMasterpass::images/mp_chk_btn_147x034px.svg');
     }
 
     public function isMasterpassEnabled()

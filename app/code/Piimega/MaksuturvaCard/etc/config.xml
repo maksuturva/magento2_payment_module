@@ -4,7 +4,7 @@
         <payment>
             <maksuturva_card_payment>
                 <active>0</active>
-                <model>Piimega\MaksuturvaCard\Model\Card</model>
+                <model>Svea\MaksuturvaCard\Model\Card</model>
                 <order_status>pending</order_status>
                 <title>Maksuturva Card</title>
                 <method_filter>FI50;FI51;FI52;FI53;FI54;</method_filter>

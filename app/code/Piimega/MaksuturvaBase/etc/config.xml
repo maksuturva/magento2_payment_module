@@ -4,7 +4,7 @@
         <payment>
             <maksuturva_base_payment>
                 <active>0</active>
-                <model>Piimega\MaksuturvaBase\Model\Base</model>
+                <model>Svea\MaksuturvaBase\Model\Base</model>
                 <order_status>pending</order_status>
                 <title>Maksuturva Service</title>
             </maksuturva_base_payment>

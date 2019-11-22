@@ -1,14 +1,14 @@
 <?php
-namespace Piimega\Maksuturva\Model;
+namespace Svea\Maksuturva\Model;
 
-class ConfigProvider implements \Piimega\Maksuturva\Model\ConfigProviderInterface
+class ConfigProvider implements \Svea\Maksuturva\Model\ConfigProviderInterface
 {
     protected $method;
     protected $scopeConfig;
     protected $preselectRequired = 1;
 
     public function __construct(
-        \Piimega\Maksuturva\Model\PaymentAbstract $maksuturvaModel,
+        \Svea\Maksuturva\Model\PaymentAbstract $maksuturvaModel,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
@@ -37,17 +37,17 @@ class ConfigProvider implements \Piimega\Maksuturva\Model\ConfigProviderInterfac
     }
 
     protected function getPreselectPaymentMethod(){
-        return $this->scopeConfig->getValue(\Piimega\Maksuturva\Helper\Data::CONFIG_PRESELECT_PAYMENT_METHOD);
+        return $this->scopeConfig->getValue(\Svea\Maksuturva\Helper\Data::CONFIG_PRESELECT_PAYMENT_METHOD);
     }
 
     protected function getTemplate()
     {
         switch ($this->getFormType()) {
-            case \Piimega\Maksuturva\Block\Form\Maksuturva::FORMTYPE_DROPDOWN:
-                $template = "Piimega_Maksuturva/payment/select_form";
+            case \Svea\Maksuturva\Block\Form\Maksuturva::FORMTYPE_DROPDOWN:
+                $template = "Svea_Maksuturva/payment/select_form";
                 break;
-            case \Piimega\Maksuturva\Block\Form\Maksuturva::FORMTYPE_ICONS:
-                $template = "Piimega_Maksuturva/payment/icons_form";
+            case \Svea\Maksuturva\Block\Form\Maksuturva::FORMTYPE_ICONS:
+                $template = "Svea_Maksuturva/payment/icons_form";
                 break;
             default:
                 throw new \Exception('unknown form type');

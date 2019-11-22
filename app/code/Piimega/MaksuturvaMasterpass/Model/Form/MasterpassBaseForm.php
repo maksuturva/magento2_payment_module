@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Model\Form;
+namespace Svea\MaksuturvaMasterpass\Model\Form;
 class MasterpassBaseForm extends \Magento\Framework\DataObject
 {
     protected $items;

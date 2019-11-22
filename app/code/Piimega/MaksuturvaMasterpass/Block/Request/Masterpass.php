@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Block\Request;
+namespace Svea\MaksuturvaMasterpass\Block\Request;
 
 class Masterpass extends \Magento\Payment\Block\Form
 {

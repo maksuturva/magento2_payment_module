@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Block\Form;
+namespace Svea\Maksuturva\Block\Form;
 class Maksuturva extends \Magento\Payment\Block\Form
 {
     protected $_template; 
@@ -10,7 +10,7 @@ class Maksuturva extends \Magento\Payment\Block\Form
     
     public function __construct( 
     		\Magento\Framework\View\Element\Template\Context $context,
-    		\Piimega\Maksuturva\Model\PaymentAbstract $maksuturvaModel,
+    		\Svea\Maksuturva\Model\PaymentAbstract $maksuturvaModel,
     		array $data = []
 	)
     {

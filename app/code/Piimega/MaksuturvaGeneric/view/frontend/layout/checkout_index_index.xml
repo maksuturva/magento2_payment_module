@@ -18,7 +18,7 @@
                                                             <!-- merge payment method renders here -->
                                                             <item name="children" xsi:type="array">
                                                                 <item name="maksuturva_generic_payment-payments" xsi:type="array">
-                                                                    <item name="component" xsi:type="string">Piimega_MaksuturvaGeneric/js/view/payment/maksuturva-generic-payments</item>
+                                                                    <item name="component" xsi:type="string">Svea_MaksuturvaGeneric/js/view/payment/maksuturva-generic-payments</item>
                                                                     <item name="methods" xsi:type="array">
                                                                         <item name="maksuturva_generic_payment" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>

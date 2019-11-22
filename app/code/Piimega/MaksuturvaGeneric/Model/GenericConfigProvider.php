@@ -1,10 +1,10 @@
 <?php
-namespace Piimega\MaksuturvaGeneric\Model;
+namespace Svea\MaksuturvaGeneric\Model;
 
-class GenericConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
+class GenericConfigProvider extends \Svea\Maksuturva\Model\ConfigProvider
 {
     public function __construct(
-        \Piimega\MaksuturvaGeneric\Model\Generic $maksuturvaModel,
+        \Svea\MaksuturvaGeneric\Model\Generic $maksuturvaModel,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {

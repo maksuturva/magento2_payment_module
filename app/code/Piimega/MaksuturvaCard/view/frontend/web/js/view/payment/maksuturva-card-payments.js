@@ -11,7 +11,7 @@ define(
         rendererList.push(
             {
                 type: 'maksuturva_card_payment',
-                component: 'Piimega_MaksuturvaCard/js/view/payment/method-renderer/maksuturva-card-method'
+                component: 'Svea_MaksuturvaCard/js/view/payment/method-renderer/maksuturva-card-method'
             }
         );
         return Component.extend({});

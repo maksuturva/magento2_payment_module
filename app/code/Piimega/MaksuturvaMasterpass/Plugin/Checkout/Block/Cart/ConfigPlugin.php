@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Plugin\Checkout\Block\Cart;
+namespace Svea\MaksuturvaMasterpass\Plugin\Checkout\Block\Cart;
 
 use Magento\Framework\UrlInterface;
 
@@ -12,7 +12,7 @@ class ConfigPlugin
     public function __construct(
         UrlInterface $url,
         \Magento\Framework\View\Asset\Repository $assetRepo,
-        \Piimega\MaksuturvaMasterpass\Helper\Data $masterpassHelper
+        \Svea\MaksuturvaMasterpass\Helper\Data $masterpassHelper
     ) {
         $this->url = $url;
         $this->_assetRepo = $assetRepo;
@@ -31,7 +31,7 @@ class ConfigPlugin
 
     public function getMasterpassImageUrl()
     {
-        return $this->_assetRepo->getUrl('Piimega_MaksuturvaMasterpass::images/mp_chk_btn_147x034px.svg');
+        return $this->_assetRepo->getUrl('Svea_MaksuturvaMasterpass::images/mp_chk_btn_147x034px.svg');
     }
 
     public function isMasterpassEnabled()

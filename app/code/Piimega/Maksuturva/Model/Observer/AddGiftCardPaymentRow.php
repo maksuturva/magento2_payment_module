@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Model\Observer;
+namespace Svea\Maksuturva\Model\Observer;
 
 use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\Event\ObserverInterface;

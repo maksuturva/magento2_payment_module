@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Model;
+namespace Svea\Maksuturva\Model;
 class Cron
 {
     protected $_scopeConfig;
@@ -10,7 +10,7 @@ class Cron
     protected $helper;
 
     function __construct(
-        \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
+        \Svea\Maksuturva\Helper\Data $maksuturvaHelper,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
         \Magento\Framework\Locale\ResolverInterface $localeResolver,

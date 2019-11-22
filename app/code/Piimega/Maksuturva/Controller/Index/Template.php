@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Controller\Index;
+namespace Svea\Maksuturva\Controller\Index;
 
 class Template extends \Magento\Framework\App\Action\Action
 {
@@ -16,7 +16,7 @@ class Template extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        $this->getResponse()->setBody($this->_resultPageFactory->create()->getLayout()->createBlock('Piimega\Maksuturva\Block\Form\Maksuturva')->toHtml());
+        $this->getResponse()->setBody($this->_resultPageFactory->create()->getLayout()->createBlock('Svea\Maksuturva\Block\Form\Maksuturva')->toHtml());
     }
 
 }

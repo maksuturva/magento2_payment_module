@@ -1,6 +1,6 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Model\Gateway;
-class Payment extends \Piimega\MaksuturvaMasterpass\Model\Gateway\Implementation
+namespace Svea\MaksuturvaMasterpass\Model\Gateway;
+class Payment extends \Svea\MaksuturvaMasterpass\Model\Gateway\Implementation
 {
     public function getForm()
     {

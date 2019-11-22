@@ -20,7 +20,7 @@
 
                 <field id="locale" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Locale</label>
-                    <source_model>Piimega\Maksuturva\Model\Source\AllowedLocale</source_model>
+                    <source_model>Svea\Maksuturva\Model\Source\AllowedLocale</source_model>
                 </field>
             </group>
         </section>

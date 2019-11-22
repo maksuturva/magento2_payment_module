@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Controller\Authorize;
+namespace Svea\MaksuturvaMasterpass\Controller\Authorize;
 
-class Error extends \Piimega\MaksuturvaMasterpass\Controller\AbstractController
+class Error extends \Svea\MaksuturvaMasterpass\Controller\AbstractController
 {
     public function execute()
     {
@@ -17,19 +17,19 @@ class Error extends \Piimega\MaksuturvaMasterpass\Controller\AbstractController
             $this->messageManager->addError(__('Maksuturva returned an error on your payment.'));
         } else if(isset($paramsArray['type'])){
             switch ($paramsArray['type']) {
-                case \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_INVALID_HASH:
+                case \Svea\Maksuturva\Model\PaymentAbstract::ERROR_INVALID_HASH:
                     $this->messageManager->addError(__('Invalid hash returned'));
                     break;
 
-                case \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD:
+                case \Svea\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD:
                     $this->messageManager->addError(__('Gateway returned an empty field') . ' ' . $paramsArray['field']);
                     break;
 
-                case \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH:
+                case \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH:
                     $this->messageManager->addError(__('Value returned from Maksuturva does not match:') . ' ' . @$paramsArray['message']);
                     break;
 
-                case \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH:
+                case \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH:
                     $this->messageManager->addError(__('Shipping and handling costs returned by Maksuturva do not match.') . ' ' . $paramsArray['message']);
                     break;
 
@@ -39,13 +39,13 @@ class Error extends \Piimega\MaksuturvaMasterpass\Controller\AbstractController
             }
         }
 
-        if ($additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] !== $pmt_id) {
+        if ($additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] !== $pmt_id) {
             $this->_redirect('checkout/cart');
             return;
         }
 
         if ($order->getState() == \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT || $order->getState() == \Magento\Sales\Model\Order::STATE_NEW) {
-            if (isset($paramsArray['type']) && $paramsArray['type'] == \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH) {
+            if (isset($paramsArray['type']) && $paramsArray['type'] == \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH) {
                 $order->addStatusHistoryComment(__('Mismatch in seller costs returned from Maksuturva. New sellercosts: ' . $paramsArray["new_sellercosts"] . ' EUR,' . ' was ' . $paramsArray["old_sellercosts"] . ' EUR.'));
             } else {
                 $order->addStatusHistoryComment(__('Error in Maksuturva return'));

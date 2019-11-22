@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Api;
+namespace Svea\Maksuturva\Api;
 
 interface ConfigProviderInterface
 {

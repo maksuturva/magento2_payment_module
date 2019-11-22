@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Piimega_MaksuturvaGeneric" setup_version="1.0.0">
+    <module name="Svea_MaksuturvaGeneric" setup_version="1.0.0">
         <sequence>
-            <module name="Piimega_Maksuturva" />
+            <module name="Svea_Maksuturva" />
         </sequence>
     </module>
 </config>

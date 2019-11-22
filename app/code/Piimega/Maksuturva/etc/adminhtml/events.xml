@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
   <event name="core_layout_render_element">
-    <observer name="piimega_maksuturva_add_maksuturva_info_to_order_view" instance="Piimega\Maksuturva\Model\Observer\AddHtmlToOrderViewObserver" />
+    <observer name="Svea_maksuturva_add_maksuturva_info_to_order_view" instance="Svea\Maksuturva\Model\Observer\AddHtmlToOrderViewObserver" />
   </event>
 </config>

@@ -1,8 +1,8 @@
 <?php
-namespace Piimega\Maksuturva\Controller;
+namespace Svea\Maksuturva\Controller;
 
 use Magento\Framework\Api\SortOrder;
-use Piimega\Maksuturva\Model\Gateway\Exception;
+use Svea\Maksuturva\Model\Gateway\Exception;
 
 abstract class Maksuturva extends \Magento\Framework\App\Action\Action
 {
@@ -38,7 +38,7 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Checkout\Model\Session $checkoutsession,
-        \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
+        \Svea\Maksuturva\Helper\Data $maksuturvaHelper,
         \Magento\Sales\Model\OrderRepository $orderRepository,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         \Magento\Framework\Api\SortOrderBuilder $sortOrderBuilder,

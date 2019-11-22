@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Model;
+namespace Svea\MaksuturvaMasterpass\Model;
 
 class Masterpass extends \Magento\Payment\Model\Method\AbstractMethod
 {
@@ -24,8 +24,8 @@ class Masterpass extends \Magento\Payment\Model\Method\AbstractMethod
         \Magento\Payment\Helper\Data $paymentData,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Payment\Model\Method\Logger $logger,
-        \Piimega\MaksuturvaMasterpass\Model\Gateway\Implementation $implementationGateway,
-        \Piimega\MaksuturvaMasterpass\Helper\Data $masterpassHelper,
+        \Svea\MaksuturvaMasterpass\Model\Gateway\Implementation $implementationGateway,
+        \Svea\MaksuturvaMasterpass\Helper\Data $masterpassHelper,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Directory\Model\RegionFactory $regionFactory,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,

@@ -11,7 +11,7 @@ define(
         rendererList.push(
             {
                 type: 'maksuturva_generic_payment',
-                component: 'Piimega_MaksuturvaGeneric/js/view/payment/method-renderer/maksuturva-generic-method'
+                component: 'Svea_MaksuturvaGeneric/js/view/payment/method-renderer/maksuturva-generic-method'
             }
         );
         return Component.extend({});

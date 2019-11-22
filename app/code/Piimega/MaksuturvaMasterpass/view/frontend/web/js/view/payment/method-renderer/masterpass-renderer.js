@@ -16,7 +16,7 @@ define(
         'use strict';
         return Component.extend({
             defaults: {
-                template: 'Piimega_MaksuturvaMasterpass/payment/masterpass',
+                template: 'Svea_MaksuturvaMasterpass/payment/masterpass',
             },
 
             getCode: function() {

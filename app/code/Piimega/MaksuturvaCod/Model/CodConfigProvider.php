@@ -1,10 +1,10 @@
 <?php
-namespace Piimega\MaksuturvaCod\Model;
+namespace Svea\MaksuturvaCod\Model;
 
-class CodConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
+class CodConfigProvider extends \Svea\Maksuturva\Model\ConfigProvider
 {
     public function __construct(
-        \Piimega\MaksuturvaCod\Model\Cod $maksuturvaModel,
+        \Svea\MaksuturvaCod\Model\Cod $maksuturvaModel,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {

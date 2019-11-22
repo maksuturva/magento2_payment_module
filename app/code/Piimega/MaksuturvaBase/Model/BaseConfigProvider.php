@@ -1,9 +1,9 @@
 <?php
-namespace Piimega\MaksuturvaBase\Model;
-class BaseConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
+namespace Svea\MaksuturvaBase\Model;
+class BaseConfigProvider extends \Svea\Maksuturva\Model\ConfigProvider
 {
     public function __construct(
-        \Piimega\MaksuturvaBase\Model\Base $maksuturvaModel,
+        \Svea\MaksuturvaBase\Model\Base $maksuturvaModel,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {
@@ -13,7 +13,7 @@ class BaseConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
 
     protected function getTemplate()
     {
-        $template = "Piimega_Maksuturva/payment/icon";
+        $template = "Svea_Maksuturva/payment/icon";
         return $template;
     }
 }

@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\Maksuturva\Model\Gateway;
+namespace Svea\Maksuturva\Model\Gateway;
 
-class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
+class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 {
     const MAKSUTURVA_PKG_RESULT_SUCCESS = 00;
     const MAKSUTURVA_PKG_RESULT_PAYMENT_NOT_FOUND = 10;
@@ -45,7 +45,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
     protected $curlClient;
 
     function __construct(
-        \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
+        \Svea\Maksuturva\Helper\Data $maksuturvaHelper,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\UrlInterface $urlBuilder,
@@ -54,7 +54,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Tax\Helper\Data $taxHelper,
         \Magento\Tax\Model\Calculation $calculationModel,
-        \Piimega\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm,
+        \Svea\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm,
         \Magento\Framework\HTTP\Client\Curl $curl = null,
         \Magento\Framework\Event\ManagerInterface $eventManager
     )
@@ -273,11 +273,11 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
             if(is_string($additional_data)){
                 $additional_data = $this->helper->getSerializer()->unserialize($additional_data);
             }
-            if (isset($additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID])) {
-                $pmt_id = $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
+            if (isset($additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID])) {
+                $pmt_id = $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
             } else {
                 $pmt_id = $this->helper->generatePaymentId();
-                $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] = $pmt_id;
+                $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] = $pmt_id;
                 $payment->setAdditionalData($this->helper->getSerializer()->serialize($additional_data));
                 $payment->save();
             }
@@ -364,7 +364,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
         try {
             $response = $this->getPostResponse($this->getPaymentMethodsUrl(), $fields, 5);
-        } catch (\Piimega\Maksuturva\Model\Gateway\Exception $e) {
+        } catch (\Svea\Maksuturva\Model\Gateway\Exception $e) {
 
             return false;
         }
@@ -381,22 +381,22 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
     public function getPaymentMethodsUrl()
     {
-        return $this->commUrl . \Piimega\Maksuturva\Model\Gateway\Base::PAYMENT_METHOD_URN;
+        return $this->commUrl . \Svea\Maksuturva\Model\Gateway\Base::PAYMENT_METHOD_URN;
     }
 
     public function getPaymentRequestUrl()
     {
-        return $this->commUrl . \Piimega\Maksuturva\Model\Gateway\Base::PAYMENT_SERVICE_URN;
+        return $this->commUrl . \Svea\Maksuturva\Model\Gateway\Base::PAYMENT_SERVICE_URN;
     }
 
     public function getStatusQueryUrl()
     {
-        return $this->commUrl . \Piimega\Maksuturva\Model\Gateway\Base::PAYMENT_STATUS_QUERY_URN;
+        return $this->commUrl . \Svea\Maksuturva\Model\Gateway\Base::PAYMENT_STATUS_QUERY_URN;
     }
 
     public function getAddDeliveryInfoUrl()
     {
-        return $this->commUrl . \Piimega\Maksuturva\Model\Gateway\Base::PAYMENT_ADD_DELIVERYINFO_URN;
+        return $this->commUrl . \Svea\Maksuturva\Model\Gateway\Base::PAYMENT_ADD_DELIVERYINFO_URN;
     }
 
     protected function getPreselectedMethod()
@@ -414,7 +414,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         $additional_data = !is_array($payment->getAdditionalData())
             ? $this->helper->getSerializer()->unserialize($payment->getAdditionalData())
             : $payment->getAdditionalData();
-        $pmt_id = $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
+        $pmt_id = $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
 
         $defaultFields = array(
             "pmtq_action" => "PAYMENT_STATUS_QUERY",
@@ -442,12 +442,12 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
             $this->curlClient->post($this->getStatusQueryUrl(), $statusQueryData);
             if ($this->curlClient->getStatus() != 200) {
-                throw new \Piimega\Maksuturva\Model\Gateway\Exception(
+                throw new \Svea\Maksuturva\Model\Gateway\Exception(
                     ["Failed to communicate with Maksuturva. Please check the network connection. URL: " . $this->getStatusQueryUrl()]
                 );
             }
         } catch (\Exception $e) {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(
                 ["Failed to communicate with Maksuturva. Please check the network connection. URL: " . $this->getStatusQueryUrl() . " ERROR MESSAGE: " . $e->getMessage()]
             );
         }
@@ -472,7 +472,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         }
 
         if (!$this->_verifyStatusQueryResponse($parsedResponse)) {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(
                 ["The authenticity of the answer could't be verified."],
                 self::EXCEPTION_CODE_HASHES_DONT_MATCH
             );
@@ -488,9 +488,9 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
         switch ($response["pmtq_returncode"]) {
             // set as paid if not already set
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID_DELIVERY:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_COMPENSATED:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID_DELIVERY:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_COMPENSATED:
                 $maksuturvaModel = $order->getPayment()->getMethodInstance();
 
                 $isDelayedCapture = $maksuturvaModel->isDelayedCaptureCase($response['pmtq_paymentmethod']);
@@ -539,11 +539,11 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
             // set payment cancellation with the notice
             // stored in response_text
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_CANCELLED:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_CANCELLED_PARTIAL:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_CANCELLED_PARTIAL_RETURN:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_RECLAMATION:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_CANCELLED:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_CANCELLED:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_CANCELLED_PARTIAL:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_CANCELLED_PARTIAL_RETURN:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_RECLAMATION:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_CANCELLED:
                 //Mark the order cancelled
                 $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Maksuturva'));
                 $order->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Maksuturva'));
@@ -553,12 +553,12 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
 
                 break;
 
-            // no news for buyer and seller\Piimega\Maksuturva\Model\Gateway\Implementation
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_NOT_FOUND:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_FAILED:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_WAITING:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_UNPAID:
-            case \Piimega\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_UNPAID_DELIVERY:
+            // no news for buyer and seller\Svea\Maksuturva\Model\Gateway\Implementation
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_NOT_FOUND:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_FAILED:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_WAITING:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_UNPAID:
+            case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_UNPAID_DELIVERY:
             default:
                 // no action here
                 $result['message'] = __('No change, still awaiting payment');
@@ -575,7 +575,7 @@ class Implementation extends \Piimega\Maksuturva\Model\Gateway\Base
         {                                                                                                                                                                                         
             $additional_data = $payment->getAdditionalData();
             $json_data = json_decode($additional_data, true);
-            $pkg_id = $json_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
+            $pkg_id = $json_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
             $this->helper->maksuturvaLogger("Adding delivery info for pkg_id {$pkg_id}", null, 'maksuturva.log', true);                                                                        
         } catch (Exception $e)
         {                                                                                                                                                                                                                                                                                                                                                                                   

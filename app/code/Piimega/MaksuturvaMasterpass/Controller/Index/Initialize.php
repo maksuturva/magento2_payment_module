@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Controller\Index;
+namespace Svea\MaksuturvaMasterpass\Controller\Index;
 
-class Initialize extends \Piimega\MaksuturvaMasterpass\Controller\AbstractController
+class Initialize extends \Svea\MaksuturvaMasterpass\Controller\AbstractController
 {
     protected $invalidField;
 
@@ -48,7 +48,7 @@ class Initialize extends \Piimega\MaksuturvaMasterpass\Controller\AbstractContro
             $responseXml = $this->_initializePayment();
         } catch (\Exception $e) {
             $this->_redirect('masterpass/authorize/error', array(
-                'type' => \Piimega\MaksuturvaMasterpass\Model\Masterpass::ERROR_COMMUNICATION_FAILED
+                'type' => \Svea\MaksuturvaMasterpass\Model\Masterpass::ERROR_COMMUNICATION_FAILED
             ));
             $this->messageManager->addError(__('Communication with Maksuturva failed.'));
         }
@@ -103,8 +103,8 @@ class Initialize extends \Piimega\MaksuturvaMasterpass\Controller\AbstractContro
         $payment = $quote->getPayment();
         $additional_data = $this->getHelper()->getPaymentAdditionData($payment);
 
-        $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_PRESELECTED_PAYMENT_METHOD] = 'FI55';
-        $additional_data[\Piimega\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_PRESELECTED_PAYMENT_METHOD_DESCRIPTION] = 'Masterpass';
+        $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_PRESELECTED_PAYMENT_METHOD] = 'FI55';
+        $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_PRESELECTED_PAYMENT_METHOD_DESCRIPTION] = 'Masterpass';
         $payment->setAdditionalData($this->getHelper()->getSerializer()->serialize($additional_data));
         $payment->setMethod($method->getCode())->save();
         $quote->collectTotals()->save();
@@ -120,21 +120,21 @@ class Initialize extends \Piimega\MaksuturvaMasterpass\Controller\AbstractContro
             $responseXml = $this->getGateWay()->paymentPost($requestFields, true);
         } catch (\Exception $e) {
             $this->_redirect('masterpass/authorize/error', array(
-                'type' => \Piimega\MaksuturvaMasterpass\Model\Masterpass::ERROR_COMMUNICATION_FAILED
+                'type' => \Svea\MaksuturvaMasterpass\Model\Masterpass::ERROR_COMMUNICATION_FAILED
             ));
             return false;
         }
 
         if ($responseXml->error) {
             $this->_redirect('masterpass/authorize/error', array(
-                'type' => \Piimega\MaksuturvaMasterpass\Model\Masterpass::ERROR_MAKSUTURVA_RETURN
+                'type' => \Svea\MaksuturvaMasterpass\Model\Masterpass::ERROR_MAKSUTURVA_RETURN
             ));
             return false;
         }
 
         if (!$this->validateAuthResponse($responseXml, $requestFields)) {
             $this->_redirect('masterpass/authorize/error', array(
-                'type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD,
+                'type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD,
                 'field' => $this->invalidField
             ));
             return false;

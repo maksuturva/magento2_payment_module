@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="sales_order_shipment_save_after">
-        <observer name="piimega_maksuturva_shipment_save_after" instance="Piimega\Maksuturva\Model\Observer\PlaceShipmentAfter" />
+        <observer name="Svea_maksuturva_shipment_save_after" instance="Svea\Maksuturva\Model\Observer\PlaceShipmentAfter" />
     </event>
 
     <event name="sales_model_service_quote_submit_before">
-        <observer name="piimega_maksuturva_sales_model_service_quote_submit_before" instance="Piimega\Maksuturva\Model\Observer\SaveMaksuturvaPreselectedPaymentMethod"/>
+        <observer name="Svea_maksuturva_sales_model_service_quote_submit_before" instance="Svea\Maksuturva\Model\Observer\SaveMaksuturvaPreselectedPaymentMethod"/>
     </event>
 
     <event name="payment_method_is_active">
-        <observer name="piimega_maksuturva_payment_method_is_active" instance="Piimega\Maksuturva\Model\Observer\PaymentMethodIsActive" />
+        <observer name="Svea_maksuturva_payment_method_is_active" instance="Svea\Maksuturva\Model\Observer\PaymentMethodIsActive" />
     </event>
 
     <event name="payment_method_assign_data">
-        <observer name="piimega_maksuturva_payment_method_assign_data" instance="Piimega\Maksuturva\Model\Observer\AssignAdditionalInformation" />
+        <observer name="Svea_maksuturva_payment_method_assign_data" instance="Svea\Maksuturva\Model\Observer\AssignAdditionalInformation" />
     </event>
 
     <event name="maksuturva_gateway_implementation_get_form_after">
-        <observer name="piimega_maksuturva_gateway_implementation_get_form_after" instance="Piimega\Maksuturva\Model\Observer\AddGiftCardPaymentRow" />
+        <observer name="Svea_maksuturva_gateway_implementation_get_form_after" instance="Svea\Maksuturva\Model\Observer\AddGiftCardPaymentRow" />
     </event>
 </config>

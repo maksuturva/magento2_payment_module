@@ -1,10 +1,10 @@
 <?php
-namespace Piimega\MaksuturvaPartPayment\Model;
+namespace Svea\MaksuturvaPartPayment\Model;
 
-class PartPaymentConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
+class PartPaymentConfigProvider extends \Svea\Maksuturva\Model\ConfigProvider
 {
     public function __construct(
-        \Piimega\MaksuturvaPartPayment\Model\PartPayment $maksuturvaModel,
+        \Svea\MaksuturvaPartPayment\Model\PartPayment $maksuturvaModel,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {

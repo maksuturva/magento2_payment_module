@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Controller\Adminhtml\Index;
+namespace Svea\Maksuturva\Controller\Adminhtml\Index;
 
 class Run extends \Magento\Backend\App\Action
 {
@@ -9,7 +9,7 @@ class Run extends \Magento\Backend\App\Action
 
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Piimega\Maksuturva\Model\Cron $maksuturvaCron,
+        \Svea\Maksuturva\Model\Cron $maksuturvaCron,
         \Magento\Checkout\Model\Session $checkoutsession,
         \Magento\Framework\Registry $registry
     )

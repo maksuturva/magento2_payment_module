@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Block\Redirect;
+namespace Svea\Maksuturva\Block\Redirect;
 
 class Maksuturva extends \Magento\Payment\Block\Form
 {

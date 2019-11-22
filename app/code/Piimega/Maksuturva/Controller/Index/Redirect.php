@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\Maksuturva\Controller\Index;
+namespace Svea\Maksuturva\Controller\Index;
 
-class Redirect extends \Piimega\Maksuturva\Controller\Maksuturva
+class Redirect extends \Svea\Maksuturva\Controller\Maksuturva
 {
     protected $_checkoutSession;
     protected $_salesOrder;
@@ -14,7 +14,7 @@ class Redirect extends \Piimega\Maksuturva\Controller\Maksuturva
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Checkout\Model\Session $checkoutsession,
-        \Piimega\Maksuturva\Helper\Data $maksuturvaHelper,
+        \Svea\Maksuturva\Helper\Data $maksuturvaHelper,
         \Magento\Sales\Model\OrderRepository $orderRepository,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         \Magento\Framework\Api\SortOrderBuilder $sortOrderBuilder,
@@ -36,7 +36,7 @@ class Redirect extends \Piimega\Maksuturva\Controller\Maksuturva
         //after restoreQuote, we can not get order IncrementId by loadByIncrementId() anymore
         $this->_checkoutSession->restoreQuote();
         $this->getResponse()->setBody(
-            $this->_resultPageFactory->create()->getLayout()->createBlock('Piimega\Maksuturva\Block\Redirect\Maksuturva')
+            $this->_resultPageFactory->create()->getLayout()->createBlock('Svea\Maksuturva\Block\Redirect\Maksuturva')
                 ->setPaymentMethodInstance($paymentMethod)
                 ->setOrder($order)->toHtml()
         );

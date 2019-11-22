@@ -4,7 +4,7 @@
         <payment>
             <maksuturva_masterpass>
                 <active>0</active>
-                <model>Piimega\MaksuturvaMasterpass\Model\Masterpass</model>
+                <model>Svea\MaksuturvaMasterpass\Model\Masterpass</model>
                 <order_status>pending</order_status>
                 <title>Maksuturva Masterpass</title>
                 <keyversion>1</keyversion>

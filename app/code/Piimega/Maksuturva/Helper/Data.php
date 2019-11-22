@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\Maksuturva\Helper;
+namespace Svea\Maksuturva\Helper;
 
-class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Piimega\Maksuturva\Api\MaksuturvaHelperInterface
+class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Svea\Maksuturva\Api\MaksuturvaHelperInterface
 {
     const CONFIG_PRESELECT_PAYMENT_METHOD = "maksuturva_config\maksuturva_payment\preselect_payment_method";
     const CONFIG_PATH_GENERATE_INVOICE_AUTOMATICALLY = "maksuturva_config/maksuturva_payment/generate_invoice";
@@ -44,7 +44,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Piim
     public function getPmtReferenceNumber($number)
     {
         if ($number < 100) {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("Cannot generate reference numbers for an ID smaller than 100"), \Piimega\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_REFERENCE_NUMBER_UNDER_100);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(array("Cannot generate reference numbers for an ID smaller than 100"), \Svea\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_REFERENCE_NUMBER_UNDER_100);
         }
 
         // Painoarvot

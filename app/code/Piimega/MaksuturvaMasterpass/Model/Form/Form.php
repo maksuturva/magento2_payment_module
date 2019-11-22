@@ -1,6 +1,6 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Model\Form;
-class Form extends \Piimega\Maksuturva\Model\Form
+namespace Svea\MaksuturvaMasterpass\Model\Form;
+class Form extends \Svea\Maksuturva\Model\Form
 {
     protected $_formData;
     protected $_compulsoryData = array(
@@ -99,6 +99,6 @@ class Form extends \Piimega\Maksuturva\Model\Form
     public function setConfig($args)
     {
         parent::setConfig($args);
-        $this->_formData['pmt_paymentmethod'] = \Piimega\MaksuturvaMasterpass\Model\Masterpass::MAKSUTURVA_MASTERPASS_METHOD_CODE;
+        $this->_formData['pmt_paymentmethod'] = \Svea\MaksuturvaMasterpass\Model\Masterpass::MAKSUTURVA_MASTERPASS_METHOD_CODE;
     }
 }

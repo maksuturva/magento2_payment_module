@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Block\Form;
+namespace Svea\Maksuturva\Block\Form;
 class Button extends \Magento\Config\Block\System\Config\Form\Field
 {
     protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)

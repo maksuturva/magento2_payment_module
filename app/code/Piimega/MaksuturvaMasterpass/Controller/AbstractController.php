@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Controller;
+namespace Svea\MaksuturvaMasterpass\Controller;
 
-abstract class AbstractController extends \Piimega\Maksuturva\Controller\Maksuturva
+abstract class AbstractController extends \Svea\Maksuturva\Controller\Maksuturva
 {
     protected $masterpass;
     protected $checkoutHelper;
@@ -22,8 +22,8 @@ abstract class AbstractController extends \Piimega\Maksuturva\Controller\Maksutu
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Checkout\Model\Session $checkoutsession,
-        \Piimega\MaksuturvaMasterpass\Helper\Data $maksuturvaHelper,
-        \Piimega\MaksuturvaMasterpass\Model\Masterpass $masterpass,
+        \Svea\MaksuturvaMasterpass\Helper\Data $maksuturvaHelper,
+        \Svea\MaksuturvaMasterpass\Model\Masterpass $masterpass,
         \Magento\Checkout\Helper\Data $checkoutHelper,
         \Magento\Sales\Model\OrderRepository $orderRepository,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,

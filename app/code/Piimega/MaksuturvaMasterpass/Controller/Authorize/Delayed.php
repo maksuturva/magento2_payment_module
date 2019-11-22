@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Controller\Authorize;
+namespace Svea\MaksuturvaMasterpass\Controller\Authorize;
 
-class Delayed extends \Piimega\Maksuturva\Controller\Index\Delayed
+class Delayed extends \Svea\Maksuturva\Controller\Index\Delayed
 {}

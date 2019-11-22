@@ -1,10 +1,10 @@
 <?php
-namespace Piimega\MaksuturvaInvoice\Model;
+namespace Svea\MaksuturvaInvoice\Model;
 
-class InvoiceConfigProvider extends \Piimega\Maksuturva\Model\ConfigProvider
+class InvoiceConfigProvider extends \Svea\Maksuturva\Model\ConfigProvider
 {
     public function __construct(
-        \Piimega\MaksuturvaInvoice\Model\Invoice $maksuturvaModel,
+        \Svea\MaksuturvaInvoice\Model\Invoice $maksuturvaModel,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     )
     {

@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\Maksuturva\Model\Gateway;
+namespace Svea\Maksuturva\Model\Gateway;
 abstract class Base extends \Magento\Framework\Model\AbstractModel
 {
     const STATUS_QUERY_NOT_FOUND = "00";
@@ -46,7 +46,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
     public function __construct()
     {
         if (!function_exists("curl_init")) {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("cURL is needed in order to communicate with the maksuturva's server. Check your PHP installation."), self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(array("cURL is needed in order to communicate with the maksuturva's server. Check your PHP installation."), self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED);
         }
 
         $hashAlgos = hash_algos();
@@ -64,7 +64,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
             $this->_pmt_hashversion = 'MD5';
             $this->_hashAlgoDefined = "md5";
         } else {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array('the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!'), self::EXCEPTION_CODE_ALGORITHMS_NOT_SUPORTED);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(array('the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!'), self::EXCEPTION_CODE_ALGORITHMS_NOT_SUPORTED);
         }
     }
 
@@ -101,7 +101,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
 
         $res = curl_exec($request);
         if ($res === false) {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("Failed to communicate with Maksuturva. Please check the network connection. URL: " . $url . " ERROR MESSAGE: " . curl_error($request)));
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(array("Failed to communicate with Maksuturva. Please check the network connection. URL: " . $url . " ERROR MESSAGE: " . curl_error($request)));
         }
         curl_close($request);
 

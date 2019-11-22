@@ -1,7 +1,7 @@
 <?php
-namespace Piimega\Maksuturva\Model;
+namespace Svea\Maksuturva\Model;
 
-class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Maksuturva\Api\MaksuturvaFormInterface
+class Form extends \Magento\Framework\Model\AbstractModel implements \Svea\Maksuturva\Api\MaksuturvaFormInterface
 {
     protected $_errors;
     private $_originalFormData = array();
@@ -212,7 +212,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
             $this->_formData['pmt_hashversion'] = 'MD5';
             $this->_hashAlgoDefined = "md5";
         } else {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array('the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!'), \Piimega\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_ALGORITHMS_NOT_SUPORTED);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(array('the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!'), \Svea\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_ALGORITHMS_NOT_SUPORTED);
         }
         return $this;
     }
@@ -231,7 +231,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
             $value = preg_replace('!\s+!', ' ', $value);
             $this->_formData[$name] = $value;
         } else {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("Field $name is not part of the form"), \Piimega\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_FIELD_MISSING);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(array("Field $name is not part of the form"), \Svea\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_FIELD_MISSING);
         }
     }
 
@@ -345,7 +345,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
 
             return $returnArray;
         } else {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception($this->getErrors(), \Piimega\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_FIELD_ARRAY_GENERATION_ERRORS);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception($this->getErrors(), \Svea\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_FIELD_ARRAY_GENERATION_ERRORS);
         }
     }
 
@@ -354,7 +354,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
         if (in_array($dataKey, $this->_rowCompulsoryData) || $dataKey($dataKey, $this->_rowOptionalData)) {
             $this->_formData['pmt_rows_data'][$index][$dataKey] = $value;
         } else {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("Item field $dataKey is not part of the form"), \Piimega\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_FIELD_MISSING);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(array("Item field $dataKey is not part of the form"), \Svea\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_FIELD_MISSING);
         }
     }
 
@@ -370,7 +370,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
     public function addItem($data)
     {
         if (!$this->itemIsValid($data)) {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception($this->getErrors(), \Piimega\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_INVALID_ITEM);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception($this->getErrors(), \Svea\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_INVALID_ITEM);
         }
 
         $this->_formData['pmt_rows_data'][] = $data;
@@ -392,7 +392,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
                 array_key_exists($key, $this->_fieldLength) && in_array($key, $this->_rowCompulsoryData)
             ) {
                 if (mb_strlen($data) < $this->_fieldLength[$key][0]) {
-                    throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("Field " . $key . " should be at least " . $this->_fieldLength[$key][0] . " characters long."));
+                    throw new \Svea\Maksuturva\Model\Gateway\Exception(array("Field " . $key . " should be at least " . $this->_fieldLength[$key][0] . " characters long."));
                 } else if (mb_strlen($data) > $this->_fieldLength[$key][1]) {
                     $this->_formData[$key] = mb_substr($data, 0, $this->_fieldLength[$key][1]);
                     $this->_formData[$key] = mb_convert_encoding($this->_formData[$key], $this->_charset, $this->_charset);
@@ -403,7 +403,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
                 (array_key_exists($key, $this->_fieldLength) && in_array($key, $this->_rowOptionalData) && mb_strlen($data))
             ) {
                 if (mb_strlen($data) < $this->_fieldLength[$key][0]) {
-                    throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("Field " . $key . " should be at least " . $this->_fieldLength[$key][0] . " characters long."));
+                    throw new \Svea\Maksuturva\Model\Gateway\Exception(array("Field " . $key . " should be at least " . $this->_fieldLength[$key][0] . " characters long."));
                 } else if (mb_strlen($data) > $this->_fieldLength[$key][1]) {
                     $this->_formData[$key] = mb_substr($data, 0, $this->_fieldLength[$key][1]);
                     $this->_formData[$key] = mb_convert_encoding($this->_formData[$key], $this->_charset, $this->_charset);
@@ -428,7 +428,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
                     array_key_exists($key, $this->_fieldLength) && in_array($key, $this->_rowCompulsoryData)
                 ) {
                     if (mb_strlen($data) < $this->_fieldLength[$key][0]) {
-                        throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("Field " . $key . " should be at least " . $this->_fieldLength[$key][0] . " characters long."));
+                        throw new \Svea\Maksuturva\Model\Gateway\Exception(array("Field " . $key . " should be at least " . $this->_fieldLength[$key][0] . " characters long."));
                     } else if (mb_strlen($data) > $this->_fieldLength[$key][1]) {
                         // auto trim
                         $this->_formData["pmt_rows_data"][$i][$key] = mb_substr($data, 0, $this->_fieldLength[$key][1]);
@@ -440,7 +440,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
                     (array_key_exists($key, $this->_fieldLength) && in_array($key, $this->_rowOptionalData) && mb_strlen($data))
                 ) {
                     if (mb_strlen($data) < $this->_fieldLength[$key][0]) {
-                        throw new \Piimega\Maksuturva\Model\Gateway\Exception(array("Field " . $key . " should be at least " . $this->_fieldLength[$key][0] . " characters long."));
+                        throw new \Svea\Maksuturva\Model\Gateway\Exception(array("Field " . $key . " should be at least " . $this->_fieldLength[$key][0] . " characters long."));
                     } else if (mb_strlen($data) > $this->_fieldLength[$key][1]) {
                         $this->_formData["pmt_rows_data"][$i][$key] = mb_substr($data, 0, $this->_fieldLength[$key][1]);
                         $this->_formData["pmt_rows_data"][$i][$key] = mb_convert_encoding($this->_formData["pmt_rows_data"][$i][$key], $this->_charset, $this->_charset);
@@ -539,7 +539,7 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Piimega\Ma
             $this->_formData['pmt_hashversion'] = 'MD5';
             $this->_hashAlgoDefined = "md5";
         } else {
-            throw new \Piimega\Maksuturva\Model\Gateway\Exception(array('the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!'), \Piimega\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_ALGORITHMS_NOT_SUPORTED);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(array('the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!'), \Svea\Maksuturva\Model\Gateway\Base::EXCEPTION_CODE_ALGORITHMS_NOT_SUPORTED);
         }
         return $this;
     }

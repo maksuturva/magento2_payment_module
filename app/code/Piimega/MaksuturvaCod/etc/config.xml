@@ -4,7 +4,7 @@
         <payment>
             <maksuturva_cod_payment>
                 <active>0</active>
-                <model>Piimega\MaksuturvaCod\Model\Cod</model>
+                <model>Svea\MaksuturvaCod\Model\Cod</model>
                 <order_status>pending</order_status>
                 <title>Maksuturva Cod</title>
                 <method_filter>FI30</method_filter>

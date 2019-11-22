@@ -1,6 +1,6 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Model\Form;
-class InitializePayment extends \Piimega\MaksuturvaMasterpass\Model\Form\Form
+namespace Svea\MaksuturvaMasterpass\Model\Form;
+class InitializePayment extends \Svea\MaksuturvaMasterpass\Model\Form\Form
 {
     public function setConfig($params)
     {

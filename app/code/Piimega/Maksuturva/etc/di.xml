@@ -16,17 +16,17 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="maksuturvaGateway" type="Piimega\Maksuturva\Model\Gateway\Implementation">
+    <virtualType name="maksuturvaGateway" type="Svea\Maksuturva\Model\Gateway\Implementation">
         <arguments>
-            <argument name="maksuturvaForm" xsi:type="object">Piimega\Maksuturva\Model\Form</argument>
+            <argument name="maksuturvaForm" xsi:type="object">Svea\Maksuturva\Model\Form</argument>
         </arguments>
     </virtualType>
 
-    <type name="Piimega\Maksuturva\Model\PaymentAbstract">
+    <type name="Svea\Maksuturva\Model\PaymentAbstract">
         <arguments>
             <argument name="implementation" xsi:type="object">maksuturvaGateway</argument>
         </arguments>
     </type>
-    <preference for="Piimega\Maksuturva\Api\MaksuturvaFormInterface" type="Piimega\Maksuturva\Model\Form"/>
+    <preference for="Svea\Maksuturva\Api\MaksuturvaFormInterface" type="Svea\Maksuturva\Model\Form"/>
 
 </config>

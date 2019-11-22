@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Plugin\Checkout\Model;
+namespace Svea\MaksuturvaMasterpass\Plugin\Checkout\Model;
 
 class DefaultConfigProviderPlugin
 {

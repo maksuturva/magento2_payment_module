@@ -11,7 +11,7 @@ define(
         rendererList.push(
             {
                 type: 'maksuturva_masterpass',
-                component: 'Piimega_MaksuturvaMasterpass/js/view/payment/method-renderer/masterpass-renderer'
+                component: 'Svea_MaksuturvaMasterpass/js/view/payment/method-renderer/masterpass-renderer'
             }
         );
         return Component.extend({});

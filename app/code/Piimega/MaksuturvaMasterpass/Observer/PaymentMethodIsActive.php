@@ -1,5 +1,5 @@
 <?php
-namespace Piimega\MaksuturvaMasterpass\Observer;
+namespace Svea\MaksuturvaMasterpass\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 
