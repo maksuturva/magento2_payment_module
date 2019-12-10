@@ -27,52 +27,41 @@ class Cron
     }
 
     public function checkPaymentStatusInShortTime(){
-        $this->checkPaymentStatus("-2 hours");
+        $this->checkPaymentStatus("-4 hours");
     }
 
     public function checkPaymentStatusInLongTime(){
         $this->checkPaymentStatus("-2 weeks");
     }
 
-    public function checkPaymentStatus($lookback = "-2 hours")
+    public function checkPaymentStatus($lookback = "-4 hours")
     {
         if (!$this->_scopeConfig->isSetFlag('maksuturva_config/maksuturva_payment/cron_active') && !$this->registry->registry('run_cron_manually')) {
             return;
         }
-
         $this->_localeResolver->emulate(0);
 
-        $this->helper->maksuturvaLogger("starting maksuturva order status check");
+        $this->helper->maksuturvaLogger("Starting Maksuturva payment status check");
 
         $from = $this->_localeDate->date();
         $from->modify($lookback);
 
+        /*
         $to = $this->_localeDate->date();
-        $to->modify("-15 minutes");
-
-        $orderCollection = $this->_orderCollectionFactory->create();
-        $resource = $orderCollection->getResource();
-        $con = $resource->getConnection();
-
-        $q1 = "SELECT `main_table`.* FROM `sales_order` AS `main_table` WHERE (`created_at` >= '2017-11-20 14:02:36')";
-        $q1 = "SELECT * FROM sales_order WHERE created_at >= '2017-11-20 14:42:13'";
-        $stmnt = $con->query($q1);
-       // $stmnt = $con->execute();
-        $result = $stmnt->fetchAll();
-
-
+        $to->modify("-5 minutes");
+        */
         $orderCollection = $this->_orderCollectionFactory->create()
-            //->join(array('payment' => 'sales_order_payment'), 'main_table.entity_id=parent_id', 'method')
-           // ->addFieldToFilter('main_table.status', "pending")
-            //->addFieldToFilter('payment.method', array('like' => 'maksuturva_%'))
-            ->addAttributeToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s')));
+           ->join(array('payment' => 'sales_order_payment'), 'main_table.entity_id=parent_id', 'method')
+           ->addFieldToFilter('status', "pending")
+           ->addFieldToFilter('payment.method', array('like' => 'maksuturva_%'))
+           ->addAttributeToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s')));
            // ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
 
         $this->helper->maksuturvaLogger("found " . $orderCollection->count() . " orders to check");
 
         foreach ($orderCollection as $order) {
             $model = $order->getPayment()->getMethodInstance();
-            $this->helper->maksuturvaLogger("checking " . $order->getIncrementId());
+            $this->helper->maksuturvaLogger("Checking order " . $order->getIncrementId() . " created at " . $order->getCreatedAt());
             $implementation = $model->getGatewayImplementation();
             if ($implementation != NULL) 
             {

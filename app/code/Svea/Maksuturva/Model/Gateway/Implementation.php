@@ -337,7 +337,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             );
             $options = $transportObject->getOptions();
 
-            $this->helper->maksuturvaLogger(var_export($options, true), null, 'maksuturva.log', true);
             $this->form = $this->_maksuturvaForm->setConfig(array('secretkey' => $this->secretKey, 'options' => $options, 'encoding' => $this->commEncoding, 'url' => $this->commUrl));
         }
 
@@ -485,6 +484,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     {
         $order = $this->getOrder();
         $result = array('success' => 'error', 'message' => '');
+        $this->helper->maksuturvaLogger("Check successful, order " . $order->getIncrementId() . " payment status is " . strval($response["pmtq_returncode"]));
 
         switch ($response["pmtq_returncode"]) {
             // set as paid if not already set
@@ -492,7 +492,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAID_DELIVERY:
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_COMPENSATED:
                 $maksuturvaModel = $order->getPayment()->getMethodInstance();
-
                 $isDelayedCapture = $maksuturvaModel->isDelayedCaptureCase($response['pmtq_paymentmethod']);
                 if ($isDelayedCapture) {
                     $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
@@ -517,24 +516,18 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                             $order->addRelatedObject($invoice);
 
                             $result['message'] = __('Payment confirmed by Maksuturva. Invoice saved.');
-                            $result['success'] = 'success';
-
-                            $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
-                            if($this->getConfigData('paid_order_status')){
-                                $processStatus = $this->getConfigData('paid_order_status');
-                            }else{
-                                $processStatus = \Magento\Sales\Model\Order::STATE_PROCESSING;
-                            }
-                            $order->setState($processState, true, __('Payment confirmed by Maksuturva'));
-                            $order->setStatus($processStatus, true, __('Payment confirmed by Maksuturva'));
-                            $order->save();
+                            $this->setOrderAsPaid($order);
                         }
                     } else {
                         $result['message'] = __('Payment confirmed by Maksuturva. Invoices already exist');
-                        $result['success'] = 'success';
+                        /* resolve case when invoice exists but status in database is still pending payment */
+                        if ($order->getStatus()==$this->getConfigData('order_status'))
+                        {
+                            $this->setOrderAsPaid($order);
+                        }
                     }
+                    $result['success'] = 'success';
                 }
-
                 break;
 
             // set payment cancellation with the notice
@@ -569,6 +562,19 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         return $result;
     }
 
+    private function setOrderAsPaid($order)
+    {
+        $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
+        if($this->getConfigData('paid_order_status')){
+            $processStatus = $this->getConfigData('paid_order_status');
+        }else{
+            $processStatus = \Magento\Sales\Model\Order::STATE_PROCESSING;
+        }
+        $order->setState($processState, true, __('Payment confirmed by Maksuturva'));
+        $order->setStatus($processStatus, true, __('Payment confirmed by Maksuturva'));
+        $order->save();
+    }
+    
     public function addDeliveryInfo($payment)
     {
         try
