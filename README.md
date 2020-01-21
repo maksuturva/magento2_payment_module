@@ -173,5 +173,5 @@ API description and documentation can be found at:
 
 # Support
 
-For general support, please contant tuki@maksuturva.fi.
-For technical support, please contact it@maksuturva.fi.
+For general support, please contant support.payments@svea.fi    
+For technical support, please contact info.payments@svea.fi  
