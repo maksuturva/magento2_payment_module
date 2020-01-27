@@ -286,6 +286,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $pmt_id = $this->helper->generatePaymentId();
                 $additional_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID] = $pmt_id;
                 $payment->setAdditionalData($this->helper->getSerializer()->serialize($additional_data));
+                $payment->setMaksuturvaPmtId($pmt_id);
                 $payment->save();
             }
             $refernceNumber = $this->helper->getPmtReferenceNumber($order->getIncrementId() + 100);
