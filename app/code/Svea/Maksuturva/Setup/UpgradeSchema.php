@@ -6,7 +6,10 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\DB\Ddl\Table;
 
-class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface{
+class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface {
+
+    const TABLE_ORDER_PAYMENT = 'sales_order_payment';
+    const COLUMN_MAKSUTURVA_PMT_ID = 'maksuturva_pmt_id';
 
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context){
         ini_set('display_errors', 1);

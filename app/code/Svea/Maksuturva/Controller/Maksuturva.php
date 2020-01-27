@@ -3,6 +3,7 @@ namespace Svea\Maksuturva\Controller;
 
 use Magento\Framework\Api\SortOrder;
 use Svea\Maksuturva\Model\Gateway\Exception;
+use Svea\Maksuturva\Setup\UpgradeSchema;
 
 abstract class Maksuturva extends \Magento\Framework\App\Action\Action
 {
