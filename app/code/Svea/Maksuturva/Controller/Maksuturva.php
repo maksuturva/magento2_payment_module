@@ -5,6 +5,7 @@ use Magento\Framework\Api\SortOrder;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\TransactionInterface;
 use Svea\Maksuturva\Model\Gateway\Exception;
+use Svea\Maksuturva\Setup\UpgradeSchema;
 
 abstract class Maksuturva extends \Magento\Framework\App\Action\Action
 {
