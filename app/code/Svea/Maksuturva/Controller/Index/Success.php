@@ -5,6 +5,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
 {
     protected $orderSender;
     protected $_resultPageFactory;
+    protected $_orderPaymentRepository;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -18,12 +19,14 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         \Magento\Sales\Model\OrderRepository $orderRepository,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         \Magento\Framework\Api\SortOrderBuilder $sortOrderBuilder,
+        \Magento\Sales\Api\OrderPaymentRepositoryInterface $orderPaymentRepository,
         array $data = []
     )
     {
         parent::__construct($context, $orderFactory, $scopeConfig, $quoteRepository, $checkoutsession, $maksuturvaHelper, $orderRepository, $searchCriteriaBuilder, $sortOrderBuilder, $data);
         $this->_resultPageFactory = $resultLayoutFactory;
         $this->orderSender = $orderSender;
+        $this->_orderPaymentRepository = $orderPaymentRepository;
     }
 
     public function execute()
@@ -39,9 +42,21 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
                 return;
             }
         }
-        //can not laod lastedRealOrderId like this way. Because of the quote was restoreQuoted
-        //load order id according to quote id. The last item will be current order.
-        $order = $this->getLastedOrder();
+
+        try {
+            $order = $this->getOrderByPaymentId($values['pmt_id']);
+        } catch (\Exception $e) {
+            $this->_maksuturvaHelper->maksuturvaLogger($e);
+            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Order matching the payment id could not be found.')));
+            return;
+        }
+
+        $this->checkoutSession
+            ->setLastOrderId($order->getId())
+            ->setLastQuoteId($order->getQuoteId())
+            ->setLastSuccessQuoteId($order->getQuoteId())
+            ->setLastRealOrderId($order->getIncrementId())
+            ->setLastOrderStatus($order->getStatus());
 
         if(!$this->validateReturnedOrder($order, $params)){
             $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on maksuturva payment module.')));
@@ -58,6 +73,8 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         }
 
         $implementation->setOrder($order);
+        $implementation->setPayment($order->getPayment());
+
         if (!$order->canInvoice()) {
             $this->messageManager->addError(__('Your order is not valid or is already paid.'));
             $this->_redirect('checkout/cart');
