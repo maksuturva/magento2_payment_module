@@ -28,6 +28,44 @@ class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface{
 
             $setup->getConnection()->createTable($fileTable);
         }
+
+        if (version_compare($context->getVersion(), '1.0.3', '<')) {
+            $this->addMaksuturvaIdForPayment($setup);
+        }
+
         $setup->endSetup();
     }
+
+    /**
+     * Add maksuturva_pmt_id for sales_order_payment
+     *
+     * @param SchemaSetupInterface $setup
+     */
+    protected function addMaksuturvaIdForPayment($setup)
+    {
+        $connection = $setup->getConnection();
+
+        $paymentTable = $setup->getTable(self::TABLE_ORDER_PAYMENT);
+        if (!$connection->tableColumnExists($paymentTable, self::COLUMN_MAKSUTURVA_PMT_ID)) {
+            $connection->addColumn(
+                $paymentTable,
+                self::COLUMN_MAKSUTURVA_PMT_ID,
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => 255,
+                    'nullable' => true,
+                    'comment' => 'Maksuturva payment id'
+                ]
+            );
+
+            $setup->getConnection()->addIndex(
+                $setup->getTable(self::TABLE_ORDER_PAYMENT),
+                $setup->getIdxName($setup->getTable(self::TABLE_ORDER_PAYMENT), [self::COLUMN_MAKSUTURVA_PMT_ID]),
+                self::COLUMN_MAKSUTURVA_PMT_ID,
+                \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX
+            );
+
+        }
+    }
+
 }
