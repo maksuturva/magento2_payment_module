@@ -134,6 +134,30 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
         return $this;
     }
 
+    /**
+     * @param $paymentId
+     * @return \Magento\Sales\Api\Data\OrderInterface
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    protected function getOrderByPaymentId($paymentId)
+    {
+        $searchCriteria = $this->searchCriteriaBuilder
+            ->addFilter(UpgradeSchema::COLUMN_MAKSUTURVA_PMT_ID, $paymentId)
+            ->create();
+
+        $payments = $this->orderPaymentRepository->getList($searchCriteria)->getItems();
+
+        if(empty($payments)) {
+            throw new \Magento\Framework\Exception\NoSuchEntityException(__('Payment with id %1 not found', $paymentId));
+        }
+
+        $payment = reset($payments);
+        $order = $this->orderRepository->get($payment->getParentId());
+
+        return $order;
+    }
+
     public function getLastedOrder()
     {
         if(!$this->_checkoutSession->getLastRealOrderId()){
