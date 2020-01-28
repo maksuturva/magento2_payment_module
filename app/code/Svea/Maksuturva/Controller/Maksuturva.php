@@ -32,7 +32,7 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
     protected $orderRepository;
     protected $searchCriteriaBuilder;
     protected $sortOrderBuilder;
-    protected $_orderPaymentRepository;
+    protected $orderPaymentRepository;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -57,7 +57,7 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->_orderFactory = $orderFactory;
         $this->sortOrderBuilder = $sortOrderBuilder;
-        $this->_orderPaymentRepository = $orderPaymentRepository;
+        $this->orderPaymentRepository = $orderPaymentRepository;
     }
 
     protected function _createInvoice($order)
