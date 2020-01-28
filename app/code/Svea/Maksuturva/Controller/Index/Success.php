@@ -47,7 +47,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             $order = $this->getOrderByPaymentId($values['pmt_id']);
         } catch (\Exception $e) {
             $this->_maksuturvaHelper->maksuturvaLogger($e);
-            $this->_redirect('maksuturva/index/error', array('type' => \Piimega\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Order matching the payment id could not be found.')));
+            $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Order matching the payment id could not be found.')));
             return;
         }
 
