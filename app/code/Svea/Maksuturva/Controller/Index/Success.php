@@ -51,7 +51,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             return;
         }
 
-        $this->checkoutSession
+        $this->_checkoutSession
             ->setLastOrderId($order->getId())
             ->setLastQuoteId($order->getQuoteId())
             ->setLastSuccessQuoteId($order->getQuoteId())
