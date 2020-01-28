@@ -5,7 +5,6 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
 {
     protected $orderSender;
     protected $_resultPageFactory;
-    protected $_orderPaymentRepository;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
