@@ -3,15 +3,15 @@
 Contributors: maksuturva  
 Tags: maksuturva, payment gateway  
 Requires magento version at least: 2.x  
-Tested up to: 2.3.3  
+Tested up to: 2.3.4  
 
 # System requirements
-* Magento 2.1.2 - 2.3.3
-* PHP 7.2
+* Magento 2.1.2 - 2.3.4
+* PHP 7.2 or 7.3
 * PHP cURL support
 * PHP libxml support
 
-There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements.
+There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements. Magento 2.3.x is a preferred platform.
 
 # Features
 * sub payments filter
@@ -27,21 +27,29 @@ There is no guarantee that the module is fully functional in any other environme
 2. Install 
 
 Don't run commands as root. Use www user.
+```
+su www-data
+```
 
-
-Enable maintenance mode (optional)
+Enable the maintenance mode (optional)
 ```
 php bin/magento maintenance:enable
 ```
 
-Copy module source to Magento www directory
+Copy the module source to Magento www directory (as www-user)
 ```
-su www-user
 cd /var/www/html
 cp -r /usr/src/magento2_payment_module/app/code app/.
 ```
 
-Enable Svea_Maksuturva* modules (and clean generated static view files)
+Enable Svea_Maksuturva* modules (and clean generated static view files).  
+  
+Minimum set  
+```
+php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaGeneric
+```
+  
+Alternatively, if you want all modules  
 ```
 php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaCard Svea_MaksuturvaCod Svea_MaksuturvaGeneric Svea_MaksuturvaInvoice Svea_MaksuturvaMasterpass Svea_MaksuturvaPartPayment
 ```
@@ -100,7 +108,7 @@ This parameter provided by Maksuturva. Check your secret key version and input t
 
 ## Communication encoding
 
-Specifies which encoding is used. Will be deprecated in future, and only UTF8 will be supported. Do not change this.
+Specifies which encoding is used. Only UTF8 will be supported. Do not change this.
 
 ## Preselect payment method in webshop
 
@@ -169,7 +177,7 @@ If sandbox testing passes but testing with test server fails, the reason most li
 
 API description and documentation can be found at:
 
->http://docs.maksuturva.fi/
+>http://docs.sveapayments.fi/api/
 
 # Support
 
