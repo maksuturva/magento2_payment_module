@@ -22,8 +22,9 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
     protected $_isGateway = true;
     protected $_canAuthorize = true;
     protected $_canCapture = true;
-    protected $_canCapturePartial = false;
-    protected $_canRefund = false;
+    protected $_canCapturePartial = true;
+    protected $_canRefund = true;
+    protected $_canRefundInvoicePartial = true;
     protected $_canVoid = false;
     protected $_canUseInternal = false;
     protected $_canUseCheckout = true;
@@ -212,6 +213,11 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
     public function isDelayedCaptureCase($method)
     {
         $delayedMethods = $this->getBaseConfigData('delayed_capture');
+
+        if (empty($method) || $delayedMethods === null) {
+            return false;
+        }
+
         $delayedMethods = explode(',', $delayedMethods);
 
         return in_array($method, $delayedMethods);
@@ -242,6 +248,25 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
             $payment->setTransactionAdditionalInfo(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS, $result);
         }
         return $this;
+    }
+
+    /**
+     * @param \Magento\Payment\Model\InfoInterface $payment
+     * @param float $amount
+     * @return $this|\Magento\Payment\Model\Method\AbstractMethod
+     * @throws \Exception
+     */
+    public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    {
+        if (!$this->canRefund()) {
+            throw new \Exception(\__('Refund action is not available.'));
+        }
+
+        $this->getGatewayImplementation()
+            ->changePaymentTransaction($payment, $amount);
+
+        return $this;
+
     }
 
     public function getBaseConfigData($field, $storeId = null)

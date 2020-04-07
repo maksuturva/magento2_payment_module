@@ -100,6 +100,12 @@
                     <label>Canceled Order Status</label>
                     <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
                 </field>
+
+                <field id="can_cancel_settled" translate="label" type="select" sortOrder="190" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable settled cancellation</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Allow the canceling of settled payments. This will be attempted, if normal canceling fails.]]></comment>
+                </field>
             </group>
         </section>
     </system>

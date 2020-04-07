@@ -2,6 +2,8 @@
 namespace Svea\Maksuturva\Controller;
 
 use Magento\Framework\Api\SortOrder;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\TransactionInterface;
 use Svea\Maksuturva\Model\Gateway\Exception;
 
 abstract class Maksuturva extends \Magento\Framework\App\Action\Action
@@ -56,6 +58,10 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
         $this->sortOrderBuilder = $sortOrderBuilder;
     }
 
+    /**
+     * @param OrderInterface $order
+     * @return bool
+     */
     protected function _createInvoice($order)
     {
         // TODO: Check and test change below. Commented line is original. Hene 20.11.2019
@@ -63,9 +69,27 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
         if (!$order->canInvoice() || (!$this->_scopeConfig->getValue('maksuturva_config/maksuturva_payment/generate_invoice'))) {
             return false;
         }
+
+        /**
+         * Add transaction info to payment
+         */
+        $payment = $order->getPayment();
+        $payment->setTransactionId(
+            \json_decode($order->getPayment()->getAdditionalData(), true)['maksuturva_transaction_id']
+            )
+            ->setTransactionClosed(0);
+        $order->save();
+
         $invoice = $order->prepareInvoice();
-        $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_OFFLINE);
+        $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_ONLINE);
         $invoice->register();
+
+        /**
+         * Create transaction
+         */
+        $payment->setCreatedInvoice($invoice);
+        $payment->addTransaction(TransactionInterface::TYPE_CAPTURE, $invoice, true);
+
         if ($invoice->canCapture()) {
             $invoice->capture();
         }

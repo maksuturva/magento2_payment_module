@@ -1,6 +1,10 @@
 <?php
 namespace Svea\MaksuturvaMasterpass\Model\Gateway;
 
+use Magento\Framework\Convert\Xml;
+use Magento\Framework\Message\ManagerInterface;
+use Svea\Maksuturva\Model\Config\Config;
+
 class Implementation extends \Svea\Maksuturva\Model\Gateway\Implementation
 {
     protected $baseForm;
@@ -18,9 +22,28 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Implementation
         \Svea\Maksuturva\Model\Form $maksuturvaForm,
         \Svea\MaksuturvaMasterpass\Model\Form\MasterpassBaseForm $masterpassBaseForm,
         \Magento\Framework\HTTP\Client\Curl $curl = null,
-        \Magento\Framework\Event\ManagerInterface $eventManager 
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        Xml $xmlConvert,
+        ManagerInterface $messageManager,
+        Config $config
     ) {
-        parent::__construct($maksuturvaHelper, $storeManager, $scopeConfig, $urlBuilder, $groupFactory, $checkoutSession, $orderFactory, $taxHelper, $calculationModel, $maksuturvaForm, $curl, $eventManager);
+        parent::__construct(
+            $maksuturvaHelper,
+            $storeManager,
+            $scopeConfig,
+            $urlBuilder,
+            $groupFactory,
+            $checkoutSession,
+            $orderFactory,
+            $taxHelper,
+            $calculationModel,
+            $maksuturvaForm,
+            $curl,
+            $eventManager,
+            $xmlConvert,
+            $messageManager,
+            $config
+        );
         $this->baseForm = $masterpassBaseForm;
     }
 

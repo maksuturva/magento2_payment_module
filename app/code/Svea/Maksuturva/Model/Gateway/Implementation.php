@@ -1,6 +1,13 @@
 <?php
 namespace Svea\Maksuturva\Model\Gateway;
 
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Payment\Model\InfoInterface;
+use Magento\Sales\Api\Data\InvoiceInterface;
+use Magento\Framework\Convert\Xml;
+use Magento\Framework\Message\ManagerInterface;
+use Svea\Maksuturva\Model\Config\Config;
+
 class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 {
     const MAKSUTURVA_PKG_RESULT_SUCCESS = 00;
@@ -56,10 +63,13 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         \Magento\Tax\Model\Calculation $calculationModel,
         \Svea\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm,
         \Magento\Framework\HTTP\Client\Curl $curl = null,
-        \Magento\Framework\Event\ManagerInterface $eventManager
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        Xml $xmlConvert,
+        ManagerInterface $messageManager,
+        Config $config
     )
     {
-        parent::__construct();
+        parent::__construct($xmlConvert, $messageManager, $config);
         $this->helper = $maksuturvaHelper;
         $this->_scopeConfig = $scopeConfig;
         $this->_storeManager = $storeManager;
@@ -398,6 +408,14 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         return $this->commUrl . \Svea\Maksuturva\Model\Gateway\Base::PAYMENT_ADD_DELIVERYINFO_URN;
     }
 
+    /**
+     * @return string
+     */
+    public function getPaymentCancelUrl()
+    {
+        return $this->commUrl . 'PaymentCancel.pmt';
+    }
+
     protected function getPreselectedMethod()
     {
         if ($this->preSelectPaymentMethod) {
@@ -636,6 +654,165 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $customerGroup = $this->_scopeConfig->getValue('customer/create_account/default_group');
         }
         return $this->_groupFactory->create()->load($customerGroup)->getTaxClassId();
+    }
+
+    /**
+     * @param InfoInterface $payment
+     * @param float $amount
+     * @throws \Exception
+     * @return $this
+     */
+    public function changePaymentTransaction($payment, $amount)
+    {
+        /** @var OrderInterface $order */
+        $order = $payment->getOrder();
+        /** @var InvoiceInterface $invoice */
+        $invoice = $payment->getCreditmemo()->getInvoice();
+
+        $canRefundMore = $invoice->canRefund();
+        $refunds = $amount + (float)$order->getBaseTotalOnlineRefunded()
+            + (float)$order->getBaseTotalOfflineRefunded();
+
+        /** Do full refund, if we can't refund more and refunds cover grand total */
+        if (!$canRefundMore && (0.0001 > (float)$order->getBaseGrandTotal() - $refunds) ) {
+            $cancelType = 'FULL_REFUND';
+        } else {
+            $cancelType = 'PARTIAL_REFUND';
+        }
+
+        $parsedResponse = $this->cancel($payment, $amount, $cancelType);
+
+        if ($parsedResponse['pmtc_returncode'] === self::PAYMENT_CANCEL_OK) {
+
+            if($cancelType === 'FULL_REFUND') {
+                $payment->setTransactionId($parsedResponse['pmtc_id'] . '-refund');
+            } else {
+                $id = time();
+                $payment->setTransactionId($parsedResponse['pmtc_id'] . $id . '-refund');
+            }
+
+            $payment->setIsTransactionClosed(1)
+                ->setShouldCloseParentTransaction(!$canRefundMore);
+
+        } elseif ($parsedResponse['pmtc_returncode'] === self::PAYMENT_CANCEL_ALREADY_SETTLED) {
+            $this->refundAfterSettlement($payment, $amount);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Payment refund after settlement
+     *
+     * @param InfoInterface $payment
+     * @param float $amount
+     * @throws \Exception
+     */
+    public function refundAfterSettlement($payment, $amount)
+    {
+        $this->canCancelSettled();
+
+        /** @var OrderInterface $order */
+        $order = $payment->getOrder();
+        /** @var InvoiceInterface $invoice */
+        $invoice = $payment->getCreditmemo()->getInvoice();
+
+        $canRefundMore = $invoice->canRefund();
+
+        $parsedResponse = $this->cancel($payment, $amount, 'REFUND_AFTER_SETTLEMENT');
+
+        if ($parsedResponse['pmtc_returncode'] === self::PAYMENT_CANCEL_OK) {
+
+            $pay = [
+                'payReference' => $parsedResponse['pmtc_pay_with_reference'],
+                'payRecipientName' => $parsedResponse['pmtc_pay_with_recipientname'],
+                'payAmount' => $parsedResponse['pmtc_pay_with_amount'],
+                'payIban' => $parsedResponse['pmtc_pay_with_iban'],
+            ];
+
+            $msg = \__("Send refund money to") . PHP_EOL;
+            $msg .= \__("Name: %s", $pay['payName']) . PHP_EOL;
+            $msg .= \__("Iban: %s", $pay['payIban']) . PHP_EOL;
+            $msg .= \__("Reference: %s", $pay['payReference']) . PHP_EOL;
+            $msg .= \__("Amount: %s", $pay['payAmount']) . PHP_EOL;
+            $msg .= \__("Maksuturva will refund the payer after receiving money.") . PHP_EOL;
+
+            /** Add information to order & creditmemo for paying refund money to Maksuturva */
+            $order->addStatusHistoryComment($msg);
+            $payment->getCreditmemo()->addComment($msg);
+
+            $id = time();
+            $payment->setTransactionId($parsedResponse['pmtc_id'] . $id . '-refund');
+            $payment->setIsTransactionClosed(1)
+                ->setShouldCloseParentTransaction(!$canRefundMore);
+
+            $this->sendPaymentInformationEmail($order, $pay);
+        }
+    }
+
+    /**
+     * @param InfoInterface $payment
+     * @param float $amount
+     * @param string $cancelType
+     * @return mixed
+     * @throws \Exception
+     */
+    private function cancel($payment, $amount, $cancelType)
+    {
+        $transactionId = $this->getTransactionId($payment);
+
+        if (!$transactionId) {
+            throw new \Exception('Can\'t refund online because transaction id is missing');
+        }
+
+        /** @var OrderInterface $order */
+        $order = $payment->getOrder();
+
+        $fields = [
+            'pmtc_action' => ($cancelType === 'REFUND_AFTER_SETTLEMENT') ? 'REFUND_AFTER_SETTLEMENT' : 'CANCEL',
+            'pmtc_version' => '0005',
+            'pmtc_sellerid' => $this->sellerId,
+            'pmtc_id' => $transactionId,
+            'pmtc_amount' => number_format($order->getGrandTotal(), 2, ',', ''),
+            'pmtc_currency' => $order->getBaseCurrencyCode(),
+            'pmtc_canceltype' => $cancelType,
+            'pmtc_resptype' => 'XML',
+            'pmtc_hashversion' => $this->_pmt_hashversion,
+            'pmtc_keygeneration' => '001'
+        ];
+
+        $hashFields = [
+            'pmtc_action',
+            'pmtc_version',
+            'pmtc_sellerid',
+            'pmtc_id',
+            'pmtc_amount',
+            'pmtc_currency',
+            'pmtc_canceltype'
+        ];
+
+        /** If not full refund, add cancel amount */
+        if ($fields['pmtc_canceltype'] !== 'FULL_REFUND'){
+            $fields['pmtc_cancelamount'] = number_format($amount, 2, ',', '');
+            $hashFields[] = 'pmtc_cancelamount';
+        }
+
+        $fields['pmtc_hash'] = $this->calculateHash($fields, $hashFields);
+        $response = $this->getPostResponse($this->getPaymentCancelUrl(), $fields);
+
+        return $this->processCancelPaymentResponse($response);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function canCancelSettled()
+    {
+        if (!$this->config->canCancelSettled()){
+            throw new \Exception('Can\'t refund settled payments. Make sure module configurations are correct.');
+        }
+
+        return;
     }
 
     public function getQuote()
