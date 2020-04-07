@@ -1,5 +1,11 @@
 <?php
 namespace Svea\Maksuturva\Model\Gateway;
+
+use Magento\Framework\Convert\Xml;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Payment\Model\InfoInterface;
+use Svea\Maksuturva\Model\Config\Config;
+
 abstract class Base extends \Magento\Framework\Model\AbstractModel
 {
     const STATUS_QUERY_NOT_FOUND = "00";
@@ -30,6 +36,13 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
     const PAYMENT_STATUS_QUERY_URN = 'PaymentStatusQuery.pmt';
     const PAYMENT_ADD_DELIVERYINFO_URN = 'addDeliveryInfo.pmt';
 
+    const PAYMENT_CANCEL_OK = "00";
+    const PAYMENT_CANCEL_NOT_FOUND = "20";
+    const PAYMENT_CANCEL_ALREADY_SETTLED = "30";
+    const PAYMENT_CANCEL_MISMATCH = "31";
+    const PAYMENT_CANCEL_ERROR = "90";
+    const PAYMENT_CANCEL_FAILED = "99";
+
     protected $_hashAlgoDefined = null;
     protected $_pmt_hashversion = null;
     protected $_statusQueryBaseUrl;
@@ -42,9 +55,37 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
 
     private $_errors = array();
 
+    /**
+     * @var Xml
+     */
+    private $xmlConvert;
 
-    public function __construct()
-    {
+    /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
+
+    /**
+     * @var Config
+     */
+    protected $config;
+
+
+    /**
+     * Base constructor.
+     * @param Xml $xmlConvert
+     * @param ManagerInterface $messageManager
+     * @param Config $config
+     * @throws Exception
+     */
+    public function __construct(
+        Xml $xmlConvert,
+        ManagerInterface $messageManager,
+        Config $config
+    ) {
+        $this->xmlConvert = $xmlConvert;
+        $this->messageManager = $messageManager;
+        $this->config = $config;
         if (!function_exists("curl_init")) {
             throw new \Svea\Maksuturva\Model\Gateway\Exception(array("cURL is needed in order to communicate with the maksuturva's server. Check your PHP installation."), self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED);
         }
@@ -80,7 +121,6 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
 
         return strtoupper(hash($this->_hashAlgoDefined, $hashString));
     }
-
 
     public function getErrors()
     {
@@ -147,5 +187,134 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         }
 
         return true;
+    }
+
+    /**
+     * @param $response
+     * @return array
+     * @throws Exception
+     */
+    protected function processCancelPaymentResponse($response)
+    {
+        $hashFields = array(
+            'pmtc_action',
+            'pmtc_version',
+            'pmtc_sellerid',
+            'pmtc_id',
+            'pmtc_returntext',
+            'pmtc_returncode'
+        );
+
+        $parsedResponse = $this->parseResponse($response);
+
+        /** If response was ok, check hash. */
+        if ($parsedResponse['pmtc_returncode']=== self::PAYMENT_CANCEL_OK){
+
+            $calcHash = $this->calculateHash($parsedResponse, $hashFields);
+
+            if ($calcHash !== $parsedResponse['pmtc_hash']) {
+                $this->messageManager->addErrorMessage(
+                    "The authenticity of the answer could't be verified. Hashes didn't match.
+                     Verify cancel in Maksuturva account and make offline refund, if needed."
+                );
+                throw new Exception(
+                    array("The authenticity of the answer could't be verified. Hashes didn't match."),
+                    self::EXCEPTION_CODE_HASHES_DONT_MATCH
+                );
+            }
+        }
+
+        switch($parsedResponse['pmtc_returncode']){
+
+            case self::PAYMENT_CANCEL_OK:
+                $error = false;
+                break;
+            case self::PAYMENT_CANCEL_NOT_FOUND:
+                $error = true;
+                $msg = "Payment not found";
+                break;
+            case self::PAYMENT_CANCEL_ALREADY_SETTLED:
+                if ($this->config->canCancelSettled()){
+                    $error = false;
+                } else {
+                    $error = true;
+                    $msg = "Payment already settled and cannot be cancelled.";
+                }
+                break;
+            case self::PAYMENT_CANCEL_MISMATCH:
+                $error = true;
+                $msg = "Cancel parameters from seller and payer do not match";
+                break;
+            case self::PAYMENT_CANCEL_ERROR:
+                $error = true;
+                $msg = "Errors in input data";
+                if (isset($parsedResponse['errors'])) {
+                    $msg .= PHP_EOL;
+                    $msg .= implode(PHP_EOL, $parsedResponse['errors']);
+                }
+                break;
+            case self::PAYMENT_CANCEL_FAILED:
+                $error = true;
+                $msg = "Payment cancellation failed.";
+                if (isset($parsedResponse['pmtc_returntext'])) {
+                    $msg .= PHP_EOL . $parsedResponse['pmtc_returntext'];
+                }
+                break;
+            default:
+                $error = true;
+                $msg = "Refund failed";
+                break;
+        }
+
+        /** If canceling failed, throw error */
+        if ($error){
+            $this->messageManager->addErrorMessage($msg);
+            throw new Exception(
+                [$msg],
+                $parsedResponse['pmtc_returncode']
+            );
+        }
+
+        return $parsedResponse;
+    }
+
+    /**
+     * @param $response
+     * @return array
+     */
+    private function parseResponse($response)
+    {
+        $xml = simplexml_load_string($response, 'SimpleXMLElement', LIBXML_NOERROR|LIBXML_NOWARNING);
+
+        return $this->xmlConvert->xmlToAssoc($xml);
+
+    }
+
+    /**
+     * @param array $fields
+     * @param array $hashFields
+     * @return string
+     */
+    public function calculateHash($fields, $hashFields)
+    {
+        /** Generate hash */
+        $hashString = '';
+        foreach ($hashFields as $hashField) {
+            if (isset($fields[$hashField]) && !empty($fields[$hashField])) {
+                $hashString .= $fields[$hashField] . '&';
+            }
+        }
+        $hashString .= $this->secretKey . '&';
+
+        return strtoupper(hash($this->_hashAlgoDefined, $hashString));
+    }
+
+    /**
+     * @param InfoInterface $payment
+     * @return mixed
+     */
+    public function getTransactionId($payment)
+    {
+        return $payment->getParentTransactionId() ? $payment->getParentTransactionId() : $payment->getLastTransId();
     }
 }

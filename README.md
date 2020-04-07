@@ -17,6 +17,7 @@ There is no guarantee that the module is fully functional in any other environme
 * sub payments filter
 * cronjob to deal with delayed Maksuturva payments
 * payment methods selector (dropdown or icons)
+* credit memo support (partial and full refund)
 
 # Installation instructions
 
@@ -178,6 +179,10 @@ If sandbox testing passes but testing with test server fails, the reason most li
 API description and documentation can be found at:
 
 >http://docs.sveapayments.fi/api/
+
+# Partial and full refund
+
+Partial and full refund is supported through credit memo. Creating one can be done from the order's invoice.
 
 # Support
 
