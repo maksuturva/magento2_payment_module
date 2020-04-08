@@ -5,7 +5,6 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Sales\Api\Data\InvoiceInterface;
 use Magento\Framework\Convert\Xml;
-use Magento\Framework\Message\ManagerInterface;
 use Svea\Maksuturva\Model\Config\Config;
 
 class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
@@ -65,11 +64,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         \Magento\Framework\HTTP\Client\Curl $curl = null,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         Xml $xmlConvert,
-        ManagerInterface $messageManager,
         Config $config
     )
     {
-        parent::__construct($xmlConvert, $messageManager, $config);
+        parent::__construct($xmlConvert, $config);
         $this->helper = $maksuturvaHelper;
         $this->_scopeConfig = $scopeConfig;
         $this->_storeManager = $storeManager;

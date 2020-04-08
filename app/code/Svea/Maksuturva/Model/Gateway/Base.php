@@ -2,7 +2,6 @@
 namespace Svea\Maksuturva\Model\Gateway;
 
 use Magento\Framework\Convert\Xml;
-use Magento\Framework\Message\ManagerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Svea\Maksuturva\Model\Config\Config;
 
@@ -61,11 +60,6 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
     private $xmlConvert;
 
     /**
-     * @var ManagerInterface
-     */
-    private $messageManager;
-
-    /**
      * @var Config
      */
     protected $config;
@@ -74,17 +68,14 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
     /**
      * Base constructor.
      * @param Xml $xmlConvert
-     * @param ManagerInterface $messageManager
      * @param Config $config
      * @throws Exception
      */
     public function __construct(
         Xml $xmlConvert,
-        ManagerInterface $messageManager,
         Config $config
     ) {
         $this->xmlConvert = $xmlConvert;
-        $this->messageManager = $messageManager;
         $this->config = $config;
         if (!function_exists("curl_init")) {
             throw new \Svea\Maksuturva\Model\Gateway\Exception(array("cURL is needed in order to communicate with the maksuturva's server. Check your PHP installation."), self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED);
@@ -213,12 +204,10 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
             $calcHash = $this->calculateHash($parsedResponse, $hashFields);
 
             if ($calcHash !== $parsedResponse['pmtc_hash']) {
-                $this->messageManager->addErrorMessage(
-                    "The authenticity of the answer could't be verified. Hashes didn't match.
-                     Verify cancel in Maksuturva account and make offline refund, if needed."
-                );
                 throw new Exception(
-                    array("The authenticity of the answer could't be verified. Hashes didn't match."),
+                    array("The authenticity of the answer could't be verified. Hashes didn't match.
+                    Verify cancel in Maksuturva account and make offline refund, if needed."
+                    ),
                     self::EXCEPTION_CODE_HASHES_DONT_MATCH
                 );
             }
@@ -268,7 +257,6 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
 
         /** If canceling failed, throw error */
         if ($error){
-            $this->messageManager->addErrorMessage($msg);
             throw new Exception(
                 [$msg],
                 $parsedResponse['pmtc_returncode']
