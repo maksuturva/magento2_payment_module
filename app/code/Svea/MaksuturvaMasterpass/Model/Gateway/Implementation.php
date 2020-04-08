@@ -2,7 +2,6 @@
 namespace Svea\MaksuturvaMasterpass\Model\Gateway;
 
 use Magento\Framework\Convert\Xml;
-use Magento\Framework\Message\ManagerInterface;
 use Svea\Maksuturva\Model\Config\Config;
 
 class Implementation extends \Svea\Maksuturva\Model\Gateway\Implementation
@@ -24,7 +23,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Implementation
         \Magento\Framework\HTTP\Client\Curl $curl = null,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         Xml $xmlConvert,
-        ManagerInterface $messageManager,
         Config $config
     ) {
         parent::__construct(
@@ -41,7 +39,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Implementation
             $curl,
             $eventManager,
             $xmlConvert,
-            $messageManager,
             $config
         );
         $this->baseForm = $masterpassBaseForm;
