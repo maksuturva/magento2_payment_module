@@ -171,7 +171,6 @@ class MasterpassBaseForm extends \Magento\Framework\DataObject
     protected function _buildOrderItem($itemId, $item)
     {
         $productName = $item->getName();
-        $productDescription = $item->getProduct()->getShortDescription() ? $item->getProduct()->getShortDescription() : "SKU: " . $item->getSku();
 
         $sku = $item->getSku();
         if (mb_strlen($sku) > 10) {
@@ -186,7 +185,7 @@ class MasterpassBaseForm extends \Magento\Framework\DataObject
 
         $row = array(
             'pmt_row_name' => $productName,                                                        //alphanumeric        max lenght 40             -
-            'pmt_row_desc' => $productDescription,                                                       //alphanumeric        max lenght 1000      min lenght 1
+            'pmt_row_desc' => $sku,                                                       //alphanumeric        max lenght 1000      min lenght 1
             'pmt_row_quantity' => str_replace('.', ',', sprintf("%.2f", $itemQty)),                                                     //numeric             max lenght 8         min lenght 1
             'pmt_row_articlenr' => $sku,
             'pmt_row_deliverydate' => date("d.m.Y"),                                                   //alphanumeric        max lenght 10        min lenght 10        dd.MM.yyyy
@@ -248,8 +247,8 @@ class MasterpassBaseForm extends \Magento\Framework\DataObject
 
             $row['pmt_row_articlenr'] = $childSku;
         }
-        if (strlen($child->getProduct()->getShortDescription()) > 0) {
-            $row['pmt_row_desc'] = $child->getProduct()->getShortDescription();
+        if (strlen($childSku) > 0) {
+            $row['pmt_row_desc'] = $childSku;
         }
         $this->totalAmount += $item->getPriceInclTax() * $item->getQtyToInvoice();
         return $row;

@@ -117,7 +117,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             foreach ($items as $itemId => $item) {
                 $itemData = $item->getData();
                 $productName = $item->getName();
-                $productDescription = $item->getProduct()->getShortDescription() ? $item->getProduct()->getShortDescription() : "SKU: " . $item->getSku();
 
                 $sku = $item->getSku();
                 if (mb_strlen($sku) > 10) {
@@ -126,7 +125,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
                 $row = array(
                     'pmt_row_name' => $productName,
-                    'pmt_row_desc' => $productDescription,
+                    'pmt_row_desc' => $sku,
                     'pmt_row_quantity' => str_replace('.', ',', sprintf("%.2f", $item->getQtyToInvoice())),
                     'pmt_row_articlenr' => $sku,
                     'pmt_row_deliverydate' => date("d.m.Y"),
@@ -160,8 +159,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
                         $row['pmt_row_articlenr'] = $childSku;
                     }
-                    if (strlen($child->getProduct()->getShortDescription()) > 0) {
-                        $row['pmt_row_desc'] = $child->getProduct()->getShortDescription();
+                    if (strlen($childSku) > 0) {
+                        $row['pmt_row_desc'] = $childSku;
                     }
                     $totalAmount += $itemData["base_price_incl_tax"] * $item->getQtyToInvoice();
 
