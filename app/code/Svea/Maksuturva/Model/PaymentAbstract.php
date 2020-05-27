@@ -189,7 +189,8 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
                 }
             }
         }
-        return $this->_methods;
+        
+        return $this->_methods ?: [];
     }
 
     public function canUseCheckout()
