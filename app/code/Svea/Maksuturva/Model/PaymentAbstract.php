@@ -106,7 +106,8 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
     public function getGatewayImplementation()
     {
         if($this->implementation === null){
-            $this->implementation = $this->_implementation->setConfig($this->getConfigs())->setPayment($this->getOrder()->getPayment());
+            $salesObject = $this->getOrder() ? $this->getOrder() : $this->cart->getQuote();
+            $this->implementation = $this->_implementation->setConfig($this->getConfigs())->setPayment($salesObject->getPayment());
         }
         return $this->implementation;
     }
@@ -117,7 +118,11 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
 
         {
             $this->_currentOrder = $this->_orderFactory->create();
-            $this->_currentOrder->loadByIncrementId($this->getCheckout()->getLastRealOrderId());
+            try {
+                $this->_currentOrder->loadByIncrementId($this->getCheckout()->getLastRealOrderId());
+            } catch (\Exception $e) {
+                $this->_currentOrder = null;
+            }
         }
         return $this->_currentOrder;
     }
