@@ -18,11 +18,12 @@ class Redirect extends \Svea\Maksuturva\Controller\Maksuturva
         \Magento\Sales\Model\OrderRepository $orderRepository,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         \Magento\Framework\Api\SortOrderBuilder $sortOrderBuilder,
+        \Magento\Sales\Api\OrderPaymentRepositoryInterface $orderPaymentRepository,
         array $data = []
     )
     {
         $this->_isScopePrivate = true;
-        parent::__construct($context, $orderFactory, $scopeConfig, $quoteRepository, $checkoutsession, $maksuturvaHelper, $orderRepository, $searchCriteriaBuilder, $sortOrderBuilder, $data);
+        parent::__construct($context, $orderFactory, $scopeConfig, $quoteRepository, $checkoutsession, $maksuturvaHelper, $orderRepository, $searchCriteriaBuilder, $sortOrderBuilder, $orderPaymentRepository, $data);
         $this->_resultPageFactory = $resultLayoutFactory;
         $this->_salesOrder = $orderFactory->create();
         $this->_checkoutSession = $checkoutsession;
