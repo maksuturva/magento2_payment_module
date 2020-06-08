@@ -19,7 +19,7 @@
 "Shipping and payment costs returned do not match.", "Toimituksen ja maksun kulut eivät täsmää."
 "Unknown error on Svea Payments payment module.", "Tuntematon virhe Svea Payments moduulissa."
 "Error on Svea Payments return", "Virhe Svea Payments paluussa"
-"Choose payment method…", "Valitse maksutapa…"
+"Choose payment method...", "Valitse maksutapa…"
 "Shipping", "Toimitus"
 "Payment fee", "Maksun kulut"
 "Authorization identified by Svea Payments", "Valtuutus tunnistetaan Svea Payments"
