@@ -254,7 +254,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $shippingTax = 0;
             }
 
-            $shippingTaxRate = floatval($this->_calculationModel->getRate($request));
+            $shippingTaxRate = floatval(($shippingTax / $shippingCost) * 100);
 
             $row = array(
                 'pmt_row_name' => __('Shipping'),

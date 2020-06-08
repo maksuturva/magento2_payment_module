@@ -28,9 +28,10 @@ abstract class AbstractController extends \Svea\Maksuturva\Controller\Maksuturva
         \Magento\Sales\Model\OrderRepository $orderRepository,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         \Magento\Framework\Api\SortOrderBuilder $sortOrderBuilder,
-        \Magento\Customer\Model\Session $customerSession
+        \Magento\Customer\Model\Session $customerSession,
+        \Magento\Sales\Api\OrderPaymentRepositoryInterface $orderPaymentRepository
     ) {
-        parent::__construct($context, $orderFactory, $scopeConfig, $quoteRepository, $checkoutsession, $maksuturvaHelper, $orderRepository, $searchCriteriaBuilder, $sortOrderBuilder);
+        parent::__construct($context, $orderFactory, $scopeConfig, $quoteRepository, $checkoutsession, $maksuturvaHelper, $orderRepository, $searchCriteriaBuilder, $sortOrderBuilder, $orderPaymentRepository);
         $this->masterpass = $masterpass;
         $this->checkoutHelper = $checkoutHelper;
         $this->_customerSession = $customerSession;
