@@ -254,7 +254,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $shippingTax = 0;
             }
 
-            $shippingTaxRate = floatval(($shippingTax / $shippingCost) * 100);
+            $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
 
             $row = array(
                 'pmt_row_name' => __('Shipping'),
@@ -652,6 +652,15 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $customerGroup = $this->_scopeConfig->getValue('customer/create_account/default_group');
         }
         return $this->_groupFactory->create()->load($customerGroup)->getTaxClassId();
+    }
+
+    private function getShippingTaxRate($shippingTax, $shippingCost)
+    {
+        if ($shippingCost == 0) {
+            return 0;
+        }
+
+        return floatval(($shippingTax / $shippingCost) * 100);
     }
 
     /**
