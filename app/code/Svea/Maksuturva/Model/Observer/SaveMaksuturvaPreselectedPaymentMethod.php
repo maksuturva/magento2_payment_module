@@ -17,6 +17,10 @@ class SaveMaksuturvaPreselectedPaymentMethod implements \Magento\Framework\Event
         }else{
             $order->setMaksuturvaPreselectedPaymentMethod('');
         }
+
+        $handlingFee = $quote->getHandlingFee();
+        $order->setHandlingFee($handlingFee);
+
         return $this;
     }
 }

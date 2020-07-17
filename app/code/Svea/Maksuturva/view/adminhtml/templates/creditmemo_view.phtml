@@ -1,0 +1,10 @@
+<?php $_order = $block->getOrder() ?>
+
+<tr>
+    <td class="label">
+        <div class="summary-collapse" tabindex="0"><?= /* @escapeNotVerified */ \__('Handling Fee') ?></div>
+    </td>
+    <td>
+        <span class="price"><?= $_order->getBaseCurrency()->format((float)$_order->getHandlingFee(), null, false) ?></span>
+    </td>
+</tr>
