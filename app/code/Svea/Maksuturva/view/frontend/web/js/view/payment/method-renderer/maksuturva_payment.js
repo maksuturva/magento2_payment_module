@@ -11,16 +11,17 @@ define(
         'Magento_Customer/js/model/customer',
         'Magento_Checkout/js/model/payment/additional-validators',
         'Magento_Checkout/js/action/place-order',
+        'Magento_Checkout/js/model/full-screen-loader',
+        'Magento_Checkout/js/action/get-totals',
         'mage/validation'
     ],
-    function ($, ko, Component, selectPaymentMethodAction,quote, checkoutData, urlBuilder, url,customer, additionalValidators, placeOrderAction) {
+    function ($, ko, Component, selectPaymentMethodAction,quote, checkoutData, urlBuilder, url,customer, additionalValidators, placeOrderAction, fullScreenLoader, getTotalsAction) {
         'use strict';
 
         var selectedMethod = ko.observable();
+        var selectedSveaMethod = checkoutData.getSelectedPaymentMethod();
 
         return Component.extend({
-
-
             //be implemented in sub-class
             getCode: function() {},
 

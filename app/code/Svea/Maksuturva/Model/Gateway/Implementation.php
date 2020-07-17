@@ -269,6 +269,22 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $totalSellerCosts += $shippingCost + $shippingTax;
             array_push($products_rows, $row);
 
+            $handlingFee = $order->getHandlingFee();
+
+            //Row type 3
+            $row = [
+                'pmt_row_name' => \__('Handling Fee'),
+                'pmt_row_desc' => \__('Added handling fee to total'),
+                'pmt_row_quantity' => 1,
+                'pmt_row_deliverydate' => date("d.m.Y"),
+                'pmt_row_price_net' => str_replace('.', ',', sprintf("%.2f", $handlingFee)),
+                'pmt_row_vat' => "0,00",
+                'pmt_row_discountpercentage' => "0,00",
+                'pmt_row_type' => 3
+            ];
+            $totalSellerCosts += $handlingFee;
+            $products_rows[] = $row;
+
             $options = array();
             $options["pmt_keygeneration"] = $this->keyVersion;
 

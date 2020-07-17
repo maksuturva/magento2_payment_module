@@ -19,4 +19,8 @@
     <event name="maksuturva_gateway_implementation_get_form_after">
         <observer name="Svea_maksuturva_gateway_implementation_get_form_after" instance="Svea\Maksuturva\Model\Observer\AddGiftCardPaymentRow" />
     </event>
+
+    <event name="sales_order_creditmemo_refund">
+        <observer name="set_refunded_handling_fee" instance="Svea\Maksuturva\Observer\SetHandlingFeeRefund" />
+    </event>
 </config>
