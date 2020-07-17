@@ -660,7 +660,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             return 0;
         }
 
-        return floatval(($shippingTax / $shippingCost) * 100);
+        return floatval(round(($shippingTax / $shippingCost) * 100 * 2) / 2);
     }
 
     /**
