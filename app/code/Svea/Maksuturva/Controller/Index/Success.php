@@ -118,6 +118,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             if (!$order->getEmailSent()) {
                 try {
                     $this->orderSender->send($order);
+                    $order->setEmailSent(true);
                     $this->_maksuturvaHelper->statusQuery($order);
                 } catch (\Exception $e) {
                     $this->_maksuturvaHelper->maksuturvaLogger($e);
