@@ -106,6 +106,7 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[Allow the canceling of settled payments. This will be attempted, if normal canceling fails.]]></comment>
                 </field>
+
             </group>
         </section>
     </system>

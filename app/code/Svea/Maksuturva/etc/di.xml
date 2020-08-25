@@ -29,4 +29,6 @@
     </type>
     <preference for="Svea\Maksuturva\Api\MaksuturvaFormInterface" type="Svea\Maksuturva\Model\Form"/>
 
+    <preference for="Magento\Sales\Model\Order\CreditmemoFactory" type="Svea\Maksuturva\Model\Order\CreditMemoFactory"/>
+
 </config>

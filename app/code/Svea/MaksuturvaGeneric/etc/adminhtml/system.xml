@@ -37,6 +37,11 @@
                     <source_model>Svea\Maksuturva\Model\System\Config\Source\Formtype</source_model>
                     <validate>required-entry</validate>
                 </field>
+
+                <field id="handling_fee" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Handling Fee</label>
+                    <comment><![CDATA[Input amount of handling fee which will be added to total when the payment method is selected.]]></comment>
+                </field>
             </group>
         </section>
     </system>
