@@ -36,6 +36,11 @@ class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface {
             $this->addMaksuturvaIdForPayment($setup);
         }
 
+
+        if (\version_compare($context->getVersion(), '1.0.4') < 0) {
+            $this->version104($setup);
+        }
+
         $setup->endSetup();
     }
 
@@ -70,5 +75,53 @@ class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface {
 
         }
     }
+
+
+    /**
+     * @param \Magento\Framework\Setup\SchemaSetupInterface $setup
+     */
+    public function version104(SchemaSetupInterface $setup)
+    {
+        $connection = $setup->getConnection();
+        $tables = ['quote', 'quote_address', 'sales_order'];
+
+        foreach ($tables as $table) {
+            $connection->addColumn(
+                $setup->getTable($table),
+                'handling_fee',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length' => '12,4',
+                    'default' => null,
+                    'nullable' => true,
+                    'comment' => 'Handling Fee Amount',
+                ]
+            );
+            $connection->addColumn(
+                $setup->getTable($table),
+                'base_handling_fee',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length' => '12,4',
+                    'default' => null,
+                    'nullable' => true,
+                    'comment' => 'Base Handling Fee Amount',
+                ]
+            );
+        }
+
+        $connection->addColumn(
+            $setup->getTable('sales_order'),
+            'refunded_handling_fee',
+            [
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                'length' => '12,4',
+                'default' => null,
+                'nullable' => true,
+                'comment' => 'Refunded Handling Fee',
+            ]
+        );
+    }
+
 
 }
