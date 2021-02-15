@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <sales>
+            <ordercomments>
+                <enabled>1</enabled>
+                <comment_help>Do you have any comments regarding the order?</comment_help>
+                <show_in_account>1</show_in_account>
+                <collapse_state>0</collapse_state>
+            </ordercomments>
+        </sales>
+        <maksuturva_config>
+            <maksuturva_terms>
+                <enabled>1</enabled>
+                <text>By using Svea Payments payment service you agree to the service terms</text>
+                <terms_url>https://www.sveapayments.fi/hubfs/Payments/Sopimusehdot_selosteet/Kayttoehdot_(ostaja)_ENG.pdf</terms_url>
+                <url_part>service terms</url_part>
+            </maksuturva_terms>
+        </maksuturva_config>
+    </default>
+</config>

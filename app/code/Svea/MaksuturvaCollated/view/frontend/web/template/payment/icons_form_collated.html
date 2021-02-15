@@ -1,0 +1,120 @@
+<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title field choice">
+        <input type="radio"
+               name="payment[method]"
+               class="radio"
+               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()" />
+        <label data-bind="attr: {'for': getCode()}" class="label">
+            <span data-bind="text: getTitle()"></span>
+        </label>
+
+    </div>
+
+    <div class="payment-method-content">
+        <!-- ko foreach: getRegion('messages') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+        <div class="payment-method-billing-address">
+            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+        <div>
+            <span class="payment-prompt" data-bind="i18n: 'How would you like to pay?'"></span>
+        </div>
+        <!-- ko if: payments_pay_later -->
+        <span class="subpayment-title" data-bind="text: title_pay_later"></span>
+        <form data-bind="attr: {id: getLaterCode() +'-form'}, data-role: getLaterCode() + '-form'" class="form form-purchase-order" >
+            <div class="maksuturva-payment-methods" data-bind="attr: {id: 'payment_form_'+ getLaterCode()}">
+                <!-- ko foreach: { data: payments_pay_later, as: 'subpayment' } -->
+                <div class="payment-method">
+                    <input class="payment-method-radio"
+                        type="radio"
+                        data-bind="
+                            attr: { id: 'maksuturva_' + subpayment.code, name: 'maksuturva_' + subpayment.code },
+                            value:subpayment.code,
+                            checked: $parent.selectedPayment,
+                            event:{ click: $parent.selectSubMethod.bind($parent)}
+                        "
+                        tabindex="0"
+                        data-validate="{required:true}">
+                    <label class="payment-method-label" data-bind="attr: {for: 'maksuturva_' + subpayment.code}">
+                        <img data-bind="attr: {src: subpayment.imageurl, alt: subpayment.displayname} "/>
+                    </label>
+                </div>
+                <!--/ko-->
+            </div>
+        </form>
+        <!--/ko-->
+        <!-- ko if: payments_pay_other -->
+        <span class="subpayment-title" data-bind="text: title_pay_other"></span>
+        <form data-bind="attr: {id: getOtherCode() +'-form'}, data-role: getOtherCode() + '-form'" class="form form-purchase-order" >
+            <div class="maksuturva-payment-methods" data-bind="attr: {id: 'payment_form_'+ getOtherCode()}">
+                <!-- ko foreach: { data: payments_pay_other, as: 'subpayment' } -->
+                <div class="payment-method">
+                    <input class="payment-method-radio"
+                           type="radio"
+                           data-bind="
+                            attr: { id: 'maksuturva_' + subpayment.code, name: 'maksuturva_' + subpayment.code },
+                            value:subpayment.code,
+                            checked: $parent.selectedPayment,
+                            event:{ click: $parent.selectSubMethod.bind($parent)}
+                        "
+                           tabindex="0"
+                           data-validate="{required:true}">
+                    <label class="payment-method-label" data-bind="attr: {for: 'maksuturva_' + subpayment.code}">
+                        <img data-bind="attr: {src: subpayment.imageurl, alt: subpayment.displayname} "/>
+                    </label>
+                </div>
+                <!--/ko-->
+            </div>
+        </form>
+        <!--/ko-->
+        <!-- ko if: payments_pay_bank -->
+        <span class="subpayment-title" data-bind="text: title_pay_bank"></span>
+        <form data-bind="attr: {id: getCode() +'-form'}, data-role: getCode() + '-form'" class="form form-purchase-order" >
+            <div class="maksuturva-payment-methods" data-bind="attr: {id: 'payment_form_'+ getCode()}">
+                <!-- ko foreach: { data: payments_pay_bank, as: 'subpayment' } -->
+                <div class="payment-method">
+                    <input class="payment-method-radio"
+                           type="radio"
+                           data-bind="
+                            attr: { id: 'maksuturva_' + subpayment.code, name: 'maksuturva_' + subpayment.code },
+                            value:subpayment.code,
+                            checked: $parent.selectedPayment,
+                            event:{ click: $parent.selectSubMethod.bind($parent)}
+                        "
+                           tabindex="0"
+                           data-validate="{required:true}">
+                    <label class="payment-method-label" data-bind="attr: {for: 'maksuturva_' + subpayment.code}">
+                        <img data-bind="attr: {src: subpayment.imageurl, alt: subpayment.displayname} "/>
+                    </label>
+                </div>
+                <!--/ko-->
+            </div>
+        </form>
+        <!--/ko-->
+
+
+        <div class="checkout-agreements-block">
+            <!-- ko foreach: $parent.getRegion('before-place-order') -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+        <div class="actions-toolbar">
+            <div class="primary">
+                <button class="action primary checkout"
+                        type="submit"
+                        data-bind="
+                        click: placeOrder,
+                        attr: {'title': $t('Place Order')},
+                        enable: (getCode() == isChecked()),
+                        css: {disabled: !isPlaceOrderActionAllowed()}
+                        "
+                        disabled>
+                    <span data-bind="i18n: 'Place Order'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

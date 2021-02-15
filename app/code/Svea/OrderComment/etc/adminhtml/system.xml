@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <!-- order comments config-->
+        <section id="sales">
+            <group id="ordercomments" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Order Comment</label>
+                <field id="enabled" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Is functionality enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="comment_help" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Infotext for the comment box</label>
+                </field>
+                <field id="max_length" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Maximum length in characters</label>
+                    <comment>Leave empty for no limit</comment>
+                </field>
+                <field id="show_in_account" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Show comments in customer account</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="collapse_state" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Initial collapse state on checkout page</label>
+                    <source_model>Svea\OrderComment\Model\Config\Source\Collapse</source_model>
+                </field>
+            </group>
+        </section>
+        <!-- additional terms config-->
+        <section id="maksuturva_config">
+            <group id="maksuturva_terms" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Maksuturva Terms</label>
+                <field id="enabled" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Are separate terms shown?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="text" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions text</label>
+                    <comment>Set the terms and conditions text</comment>
+                </field>
+                <field id="terms_url" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions Url</label>
+                    <comment>Enter the link where the terms and conditions can be viewed</comment>
+                </field>
+                <field id="url_part" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Which part of the text is the link</label>
+                    <comment>Enter the substring that you want to use as the link</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

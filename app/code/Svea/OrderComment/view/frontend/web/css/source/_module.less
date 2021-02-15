@@ -1,0 +1,92 @@
+
+@checkout-order-comment__toggle-arrow__color: @color-black;
+
+//
+//  Common
+//  _____________________________________________
+
+& when (@media-common = true) {
+    .checkout-payment-method ._error {
+        .order-comment-input {
+            outline: none;
+            border: 2px solid @checkout-field-validation__border-color;
+
+            &:focus {
+                outline: none;
+                border: 2px solid @checkout-field-validation__border-color;
+                box-shadow: 0 0 3px @checkout-field-validation__border-color;
+            }
+        }
+
+        .payment-option._collapsible.comment {
+            .payment-option-content {
+                display: block;
+            }
+        }
+    }
+
+    //  Order comment toggle
+    //  _____________________________________________
+
+    .payment-option._collapsible.comment {
+        .action-toggle {
+            cursor: pointer;
+            position: relative;
+            padding: 0 15px 0 0;
+
+            &:after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                right: 0;
+                margin-top: -1px;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 6px 4px 0 4px;
+                border-color: @checkout-order-comment__toggle-arrow__color transparent transparent transparent;
+
+                .modal-popup & {
+                    margin-top: -2px;
+                }
+            }
+        }
+
+        &._active {
+            .action-toggle:after {
+                margin-top: -3px;
+                border-width: 0 4px 6px 4px;
+                border-color: transparent transparent @checkout-order-comment__toggle-arrow__color transparent;
+
+                .modal-popup & {
+                    margin-top: -3px;
+                }
+            }
+
+            .payment-option-title.field {
+                margin-bottom: 1.6rem;
+            }
+
+            .payment-option-inner .field {
+                margin: 0;
+            }
+        }
+
+        .payment-option-inner .label {
+            display: none;
+        }
+    }
+
+    //  Order comment form
+    //  _____________________________________________
+
+    .order-comment {
+        &-form {
+            &:extend(.form-discount all);
+        }
+
+        &__form-characters-title {
+            &:extend(.abs-colon all);
+        }
+    }
+}
