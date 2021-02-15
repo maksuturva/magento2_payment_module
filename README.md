@@ -89,6 +89,8 @@ General module configuration: `Stores >> Configuration >> Svea >> Maksuturva Pay
 
 Payment methods' configuration: `Stores >> Configuration >> Sales >> Payment Methods`
 
+Order comment configuration: `Stores >> Configuration >> Sales >> Sales >> Order Comment`
+
 ## Sandbox mode
 
 If enabled, communication url, seller id and secret key in sandbox fields are used, otherwise personal credentials and communication url are used.
