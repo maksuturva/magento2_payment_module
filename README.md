@@ -3,15 +3,15 @@
 Contributors: maksuturva  
 Tags: maksuturva, payment gateway  
 Requires magento version at least: 2.3.x  
-Tested up to: 2.3.4  
+Tested up to: 2.4.2  
 
 # System requirements
-* Magento 2.3.0 - 2.3.4
+* Magento 2.3.4 - 2.4.2
 * PHP 7.2 or 7.3
 * PHP cURL support
 * PHP libxml support
 
-There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements. Magento 2.3.x is a preferred platform.
+There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements. 
 
 # Features
 * sub payments filter
