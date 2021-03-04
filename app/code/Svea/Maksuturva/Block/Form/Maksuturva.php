@@ -7,7 +7,8 @@ class Maksuturva extends \Magento\Payment\Block\Form
 
 	const FORMTYPE_DROPDOWN = 0;
 	const FORMTYPE_ICONS = 1;
-    
+	const COLLATED_ICONS = 2;
+
     public function __construct( 
     		\Magento\Framework\View\Element\Template\Context $context,
     		\Svea\Maksuturva\Model\PaymentAbstract $maksuturvaModel,

@@ -13,6 +13,9 @@ class Config
     const GENERIC_HANDLING_FEE = "payment/maksuturva_generic_payment/handling_fee";
     const INVOICE_HANDLING_FEE = "payment\maksuturva_invoice_payment/handling_fee";
     const PART_HANDLING_FEE = "payment/maksuturva_part_payment_payment/handling_fee";
+    const COLLATED_LATER_HANDLING_FEE = "payment/maksuturva_collated_payment/maksuturva_collated_subpayments/pay_later_handling_fee";
+    const COLLATED_NOW_HANDLING_FEE = "payment/maksuturva_collated_payment/maksuturva_collated_subpayments/pay_now_other_handling_fee";
+    const COLLATED_BANK_HANDLING_FEE = "payment/maksuturva_collated_payment/maksuturva_collated_subpayments/pay_now_bank_handling_fee";
 
     /**
      * @var ScopeConfigInterface
@@ -98,6 +101,42 @@ class Config
     }
 
     /**
+     * @return array
+     */
+    public function getCollatedPayLaterFees()
+    {
+        $value = [
+            HandlingFeeResource::COLLATED_LATER_PAYMENT => $this->scopeConfig->getValue(self::COLLATED_LATER_HANDLING_FEE)
+        ];
+
+        return $this->formatValue($value);
+    }
+
+    /**
+     * @return array
+     */
+    public function getCollatedPayNowOtherFees()
+    {
+        $value = [
+            HandlingFeeResource::COLLATED_NOW_PAYMENT => $this->scopeConfig->getValue(self::COLLATED_NOW_HANDLING_FEE)
+        ];
+
+        return $this->formatValue($value);
+    }
+
+    /**
+     * @return array
+     */
+    public function getCollatedPayNowBankFees()
+    {
+        $value = [
+            HandlingFeeResource::COLLATED_BANK_PAYMENT => $this->scopeConfig->getValue(self::COLLATED_BANK_HANDLING_FEE)
+        ];
+
+        return $this->formatValue($value);
+    }
+
+    /**
      * @return false|string[]
      */
     public function getHandlingFee()
@@ -107,7 +146,10 @@ class Config
             $this->getCodHandlingFee(),
             $this->getGenericHandlingFee(),
             $this->getInvoiceHandlingFee(),
-            $this->getPartHandlingFee()
+            $this->getPartHandlingFee(),
+            $this->getCollatedPayLaterFees(),
+            $this->getCollatedPayNowOtherFees(),
+            $this->getCollatedPayNowBankFees()
         );
 
         return \array_filter($value);
