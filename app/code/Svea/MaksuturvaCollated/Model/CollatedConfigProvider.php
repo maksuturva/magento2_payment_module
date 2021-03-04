@@ -1,6 +1,8 @@
 <?php
 namespace Svea\MaksuturvaCollated\Model;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
+
 /**
  * Class CollatedConfigProvider
  *
@@ -67,7 +69,7 @@ class CollatedConfigProvider extends \Svea\Maksuturva\Model\ConfigProvider
     {
         $titles = [];
         foreach (self::SUBPAYMENT_STEPS as $SUBPAYMENT_STEP) {
-            $titles[$SUBPAYMENT_STEP] = $this->scopeConfig->getValue(self::CONFIG_SUBPAYMENT_PATH . $SUBPAYMENT_STEP);
+            $titles[$SUBPAYMENT_STEP] = $this->scopeConfig->getValue(self::CONFIG_SUBPAYMENT_PATH . $SUBPAYMENT_STEP, 'store' );
         }
         return $titles;
     }
