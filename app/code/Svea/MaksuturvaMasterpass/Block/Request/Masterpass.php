@@ -34,7 +34,7 @@ class Masterpass extends \Magento\Payment\Block\Form
         }
 
         $html = '<html><head></head><body>';
-        $html .= __('You will be redirected to the Maksuturva website in a few seconds.');
+        $html .= __('You will be redirected to the Svea Payments website in a few seconds.');
         $html .= $form->toHtml();
         $html .= '<script type="text/javascript">document.getElementById("new_masterpass_payment").submit();</script>';
         $html .= '</body></html>';

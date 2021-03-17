@@ -1,7 +1,7 @@
-# Svea Payment module for Magento 2 (former Maksuturva)
+# Svea Payments Oy module for Magento 2
 
-Contributors: maksuturva  
-Tags: maksuturva, payment gateway  
+Contributors: Svea Payments Oy  
+Tags: svea, payment gateway  
 Requires magento version at least: 2.3.x  
 Tested up to: 2.4.2  
 
@@ -14,16 +14,20 @@ Tested up to: 2.4.2
 There is no guarantee that the module is fully functional in any other environment which does not fulfill the requirements. 
 
 # Features
+
+* dynamic loading for payment method icons
 * sub payments filter
-* cronjob to deal with delayed Maksuturva payments
+* cronjob to deal with delayed Svea payments
 * payment methods selector (dropdown or icons)
 * credit memo support (partial and full refund)
 
 # Installation instructions
 
 1. Clone repository
-`cd /usr/src`
-`git clone https://github.com/maksuturva/magento2_payment_module.git`
+```
+cd /usr/src
+git clone https://github.com/maksuturva/magento2_payment_module.git
+```
 
 2. Install 
 
@@ -32,7 +36,7 @@ Don't run commands as root. Use www user.
 su www-data
 ```
 
-Enable the maintenance mode (optional)
+Enable the maintenance mode
 ```
 php bin/magento maintenance:enable
 ```
@@ -65,8 +69,7 @@ Run the setup:di:compile command to generate classes.
 php bin/magento setup:di:compile
 ```
 
-Deploy static view files (read devdocs, --force parameter can be used in developer mode)
-https://devdocs.magento.com/guides/v2.2/config-guide/cli/config-cli-subcommands-static-view.html#config-cli-subcommands-staticview
+Deploy static view files
 ```
 php bin/magento setup:static-content:deploy
 ```
@@ -85,9 +88,11 @@ php bin/magento cache:flush
 
 Configurations for the module is found from following locations
 
-General module configuration: `Stores >> Configuration >> Svea >> Maksuturva Payment`
+General module configuration: `Stores >> Configuration >> Svea >> Svea Payment`
 
 Payment methods' configuration: `Stores >> Configuration >> Sales >> Payment Methods`
+
+For minimum setup, you could enable only the `Maksuturva Service` payment method and configure the title to `Svea Payments`. This payment method will automatically display payment method icons on payment page that are enabled to your account in the backend configuration.
 
 ## Sandbox mode
 
@@ -95,17 +100,17 @@ If enabled, communication url, seller id and secret key in sandbox fields are us
 
 ## Seller id and secret key
 
-This parameter provided by Maksuturva. Please note that this key must not be shared with any person, since it allows many operations to be done in your Maksuturva account.
+This parameter provided by Svea Payments. Please note that this key must not be shared with any person, since it allows many operations to be done in your Svea Payments account.
 
 ## Communication url
 
-API url to communicate with Maksuturva service. Should be usually kept as is.
+API url to communicate with Svea Payments service. Should be usually kept as is.
 
 In case you want to test using personal test credentials, you must change this to https://test1.maksuturva.fi/. Please note that the url must end with slash `/`.
 
 ## Key Version
 
-This parameter provided by Maksuturva. Check your secret key version and input this value into the configuration field.
+This parameter provided by Svea Payments. Check your secret key version and input this value into the configuration field.
 
 ## Communication encoding
 
@@ -113,9 +118,9 @@ Specifies which encoding is used. Only UTF8 will be supported. Do not change thi
 
 ## Preselect payment method in webshop
 
-Enables selection of Maksuturva payment method directly on Magento checkout, instead of redirecting to Maksuturva service and selecting it there. List of allowed payment methods are fetched from Maksuturva API based on cart total. Certain methods like part payment might be available only when cart total exceed the configured limit.
+Enables selection of Svea Payments payment method directly on Magento checkout, instead of redirecting to  Svea Payments service and selecting it there. List of allowed payment methods are fetched from  Svea Payments API based on cart total. Certain methods like part payment might be available only when cart total exceed the configured limit.
 
-Please note that this service needs to be enabled by Maksuturva first.
+Please note that this service needs to be enabled by  Svea Payments first.
 
 ## Preselect form type
 
@@ -123,37 +128,37 @@ Specifies which styling is used on preselection form on checkout. Option to use 
 ```
 Payment fees
 ```
-Only supported when preselect payment method in webshop is enabled. Currently requires module Vaimo_PaymentFee, this might change to more generic way in future versions.
+Only supported when preselect payment method in webshop is enabled. Currently requires module `Vaimo_PaymentFee`, this might change to more generic way in future versions.
 
 ## Delayed capture methods
 
-In case part payment or invoice payment methods are used, this can be used to specify delayed capture for these methods. In normal operation all payments are marked as captured when user returns to webshop from Maksuturva service. When a method is marked as delayed capture method, on return to webshop it will not be marked as captured. In order to capture these, creation of invoice with capture case set to "online" is required.
+In case part payment or invoice payment methods are used, this can be used to specify delayed capture for these methods. In normal operation all payments are marked as captured when user returns to webshop from Svea Payments service. When a method is marked as delayed capture method, on return to webshop it will not be marked as captured. In order to capture these, creation of invoice with capture case set to "online" is required.
 
 This is usually used if capture should be done only after shipping the goods to the customer. In case of ERP integration, the integration is responsible of creating the invoice and thus triggering the capture.
 
-Please note that only few methods support delayed capture, these need to be verified from Maksuturva.
+Please note that only few methods support delayed capture, these need to be verified from Svea Payments.
 
 The methods are given as comma separated list, example:
 ```
 code1,code2,code3
 ```
-## Query Maksuturva API for orders missing payments (deprecated)
+## Query Svea Payments API for orders missing payments (deprecated)
 
-If enabled, will enable cronjob that queries Maksuturva API for order missing payment. This kind of orders might occasionally happen, if after successful payment customer does not return to webshop.
+If enabled, will enable cronjob that queries Svea Payments API for order missing payment. This kind of orders might occasionally happen, if after successful payment customer does not return to webshop.
 
-Deprecated since 2.2.0 and should be disabled. Alternative and **better way is to ask Maksuturva to enabled "status OK" callback** to Magento.
+Deprecated since 2.2.0 and should be disabled. Alternative and **better way is to ask Svea Payments to enabled "status OK" callback** to Magento.
 
 ## Enable cancellation of settled payments
 
-Allow cancellation of payments that have been settled to seller. This will be attempted if payment is already settled and therefore cannot be refunded normally. These require the refund amount to be paid back to Maksuturva, which will then refund the end customer.
+Allow cancellation of payments that have been settled to seller. This will be attempted if payment is already settled and therefore cannot be refunded normally. These require the refund amount to be paid back to Svea Payments, which will then refund the end customer.
 
 ## Send refund payment information with email
 
-Send email containing information for paying back the settled amount of payment to Maksuturva. You can give email sender, recipients, and custom email template.
+Send email containing information for paying back the settled amount of payment to Svea Payments. You can give email sender, recipients, and custom email template.
 
 # Sandbox testing
 
-Most simple way to test the payment module is to switch the Sandbox / Testing mode on. In the sandbox mode after confirming the order, the user is directed to a test page where you can see all the passed information and locate possible errors. In the sandbox page you can also test ok-, error-, cancel- and delayed payment -responses that Maksuturva service might send to your service.
+Most simple way to test the payment module is to switch the Sandbox / Testing mode on. In the sandbox mode after confirming the order, the user is directed to a test page where you can see all the passed information and locate possible errors. In the sandbox page you can also test ok-, error-, cancel- and delayed payment -responses that Svea Payments service might send to your service.
 
 # Testing with a separate test account
 
@@ -169,12 +174,11 @@ For testing our payment service without using actual money, you need to set comm
 
 If sandbox testing passes but testing with test server fails, the reason most likely is in communication URL, seller id or secret key. In that case you should first check that they are correct and no extra spaces are added in the beginning or end of the inputs.
 
-
 # Known issues
 
 * Module supports Magento gift card, but not 3rd party gift card implementations. If you're using 3rd party modules, you may have to implement support for those by yourself.
 
-# Maksuturva API documentation
+# Svea Payments API documentation
 
 API description and documentation can be found at:
 
@@ -183,6 +187,10 @@ API description and documentation can be found at:
 # Partial and full refund
 
 Partial and full refund is supported through credit memo. Creating one can be done from the order's invoice.
+
+# Troubleshooting
+
+* If you get `No payment methods available` on payment page, you might check the sellerid, secret key and communication url once more. Try to use sandbox mode.
 
 # Support
 

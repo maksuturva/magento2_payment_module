@@ -9,7 +9,7 @@ class Delayed extends \Svea\Maksuturva\Controller\Maksuturva
         $order = $this->getLastedOrder();
 
         if(!$this->validateReturnedOrder($order, $params)){
-            $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on maksuturva payment module.')));
+            $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on Svea Payments payment module.')));
             return;
         }
 
@@ -17,7 +17,7 @@ class Delayed extends \Svea\Maksuturva\Controller\Maksuturva
             $order = $this->getLastedOrder();
 
             if ($order->getId()) {
-                $order->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT, true, __('Waiting for delayed payment confirmation from Maksuturva'))->save();
+                $order->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT, true, __('Waiting for delayed payment confirmation from Svea Payments'))->save();
             }
             $this->disableQuote($order);
         }

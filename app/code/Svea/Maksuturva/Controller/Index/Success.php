@@ -104,9 +104,9 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             if ($form->{'pmt_sellercosts'} != $values['pmt_sellercosts']) {
                 $sellercosts_change = $values['pmt_sellercosts'] - $form->{'pmt_sellercosts'};
                 if ($sellercosts_change > 0) {
-                    $msg = __("Payment %1 by Maksuturva. NOTE: Change in the sellercosts + %2 EUR.", array($statusText, $sellercosts_change));
+                    $msg = __("Payment %1 by Svea Payments. NOTE: Change in the sellercosts + %2 EUR.", array($statusText, $sellercosts_change));
                 } else {
-                    $msg = __("Payment %1 by Maksuturva. NOTE: Change in the sellercosts %2 EUR.", array($statusText, $sellercosts_change));
+                    $msg = __("Payment %1 by Svea Payments. NOTE: Change in the sellercosts %2 EUR.", array($statusText, $sellercosts_change));
                 }
             } else {
                 $msg = __("Payment %1 by Maksuturva", $statusText);

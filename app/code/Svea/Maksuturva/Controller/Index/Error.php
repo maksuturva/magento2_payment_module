@@ -35,7 +35,7 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
                     break;
 
                 default:
-                    $this->messageManager->addError(__('Unknown error on maksuturva payment module.'));
+                    $this->messageManager->addError(__('Unknown error on Svea Payments payment module.'));
                     break;
             }
         }
@@ -47,9 +47,9 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
 
         if ($order->getState() == \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT || $order->getState() == \Magento\Sales\Model\Order::STATE_NEW) {
             if (isset($paramsArray['type']) && $paramsArray['type'] == \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH) {
-                $order->addStatusHistoryComment(__('Mismatch in seller costs returned from Maksuturva. New sellercosts: ' . $paramsArray["new_sellercosts"] . ' EUR,' . ' was ' . $paramsArray["old_sellercosts"] . ' EUR.'));
+                $order->addStatusHistoryComment(__('Mismatch in seller costs returned from Svea Payments. New sellercosts: ' . $paramsArray["new_sellercosts"] . ' EUR,' . ' was ' . $paramsArray["old_sellercosts"] . ' EUR.'));
             } else {
-                $order->addStatusHistoryComment(__('Error on Maksuturva return'));
+                $order->addStatusHistoryComment(__('Error on Svea Payments return'));
             }
 
             $order->save();

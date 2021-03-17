@@ -26,11 +26,11 @@ class Error extends \Svea\MaksuturvaMasterpass\Controller\AbstractController
                     break;
 
                 case \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH:
-                    $this->messageManager->addError(__('Value returned from Maksuturva does not match:') . ' ' . @$paramsArray['message']);
+                    $this->messageManager->addError(__('Value returned from Svea Payments does not match:') . ' ' . @$paramsArray['message']);
                     break;
 
                 case \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH:
-                    $this->messageManager->addError(__('Shipping and handling costs returned by Maksuturva do not match.') . ' ' . $paramsArray['message']);
+                    $this->messageManager->addError(__('Shipping and handling costs returned by Svea Payments do not match.') . ' ' . $paramsArray['message']);
                     break;
 
                 default:
@@ -46,9 +46,9 @@ class Error extends \Svea\MaksuturvaMasterpass\Controller\AbstractController
 
         if ($order->getState() == \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT || $order->getState() == \Magento\Sales\Model\Order::STATE_NEW) {
             if (isset($paramsArray['type']) && $paramsArray['type'] == \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH) {
-                $order->addStatusHistoryComment(__('Mismatch in seller costs returned from Maksuturva. New sellercosts: ' . $paramsArray["new_sellercosts"] . ' EUR,' . ' was ' . $paramsArray["old_sellercosts"] . ' EUR.'));
+                $order->addStatusHistoryComment(__('Mismatch in seller costs returned from Svea Payments. New sellercosts: ' . $paramsArray["new_sellercosts"] . ' EUR,' . ' was ' . $paramsArray["old_sellercosts"] . ' EUR.'));
             } else {
-                $order->addStatusHistoryComment(__('Error in Maksuturva return'));
+                $order->addStatusHistoryComment(__('Error in Svea Payments return'));
             }
 
             $order->save();

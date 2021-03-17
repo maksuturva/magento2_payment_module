@@ -50,7 +50,7 @@ class Initialize extends \Svea\MaksuturvaMasterpass\Controller\AbstractControlle
             $this->_redirect('masterpass/authorize/error', array(
                 'type' => \Svea\MaksuturvaMasterpass\Model\Masterpass::ERROR_COMMUNICATION_FAILED
             ));
-            $this->messageManager->addError(__('Communication with Maksuturva failed.'));
+            $this->messageManager->addError(__('Communication with Svea Payments failed.'));
         }
 
         if ($responseXml instanceof \SimpleXMLElement) {

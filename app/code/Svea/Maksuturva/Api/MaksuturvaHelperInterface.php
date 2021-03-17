@@ -2,14 +2,14 @@
 namespace Svea\Maksuturva\Api;
 interface MaksuturvaHelperInterface{
 /**
- * generate Maksuturva payment Id
+ * generate backend payment Id
  *
  * @return string
  */
 public static function generatePaymentId();
 
 /**
- * generate Maksuturva referencenumber acccording to order increment Id
+ * generate backend referencenumber acccording to order increment Id
  *
  * @param int
  * @return string
