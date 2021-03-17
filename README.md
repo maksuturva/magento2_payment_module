@@ -1,4 +1,4 @@
-# Svea Payments Oy module for Magento 2
+# Svea Payments module for Magento 2
 
 Contributors: Svea Payments Oy  
 Tags: svea, payment gateway  

@@ -4,6 +4,12 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.4.0] - 2021-03-17
+### Added
+ - Maksuturva Generic dynamic payment method icons on Payment page
+### Changed
+ - some Maksuturva -> Svea Payments text changes 
+
 ## [1.3.0] - 2020-04-07
 ### Added
  - Credit memo Refund feature
