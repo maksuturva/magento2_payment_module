@@ -56,7 +56,7 @@ php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_Maksut
   
 Alternatively, if you want all modules  
 ```
-php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaCard Svea_MaksuturvaCod Svea_MaksuturvaGeneric Svea_MaksuturvaInvoice Svea_MaksuturvaMasterpass Svea_MaksuturvaPartPayment
+php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaCard Svea_MaksuturvaCod Svea_MaksuturvaGeneric Svea_MaksuturvaInvoice Svea_MaksuturvaPartPayment
 ```
 
 Run setup:upgrade
