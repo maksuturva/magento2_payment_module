@@ -187,7 +187,7 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
             if ($this->_methods) {
                 $this->cache->save(serialize($this->_methods), $cacheKey, array("MAKSUTURVA"), 60 * 5);
                 // added instanceof check as is_countable is only available PHP >7.3
-                if ($this->_methods && $this->_methods instanceof Countable && count($this->_methods) > 0){
+                if ($this->_methods && (is_array($this->_methods) || $this->_methods instanceof Countable) && count($this->_methods) > 0){
                     foreach($this->_methods as $method){
                         $this->_methodResourceModel->insert($method);
                     }
