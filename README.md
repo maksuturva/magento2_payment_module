@@ -153,6 +153,79 @@ Allow cancellation of payments that have been settled to seller. This will be at
 
 Send email containing information for paying back the settled amount of payment to Maksuturva. You can give email sender, recipients, and custom email template.
 
+# Maksuturva Collated
+
+## Settings required to display payment methods at the checkout
+
+* make sure the currency is set to EURO (`Stores >> Configuration >> General >> Currency Setup >> Base Currency`),
+
+* make sure the "Preselect payment method in webshop" in Svea settings is enabled (`Stores >> Configurations >> Svea >> Maksuturva Payment >> Preselect payment method in webshop`)
+
+* disable other Maksuturva payment methods,
+
+* use default country as Finland (`Stores >> Configurations >> General >>> General >> Default Country`) - recomended,
+ 
+
+## Basic settings
+
+Main level of configuration for this "grouped" view is under "Maksuturva Collated" payment method is illustrated below
+Settings: `Stores >> Configuration >> Sales >> Payment Methods >> Maksuturva Collated`
+
+![image](https://user-images.githubusercontent.com/41151878/114890710-8ea5ee00-9e0b-11eb-9791-10cad6fd2bfd.png)
+
+## Settings for "Maksuturva Collated Payment Separation"
+
+You can enable "Enable subpayment division" (above settings), then you can use "Maksuturva Collated Payment Separation" section to group methods per type (Method filter):
+
+![image](https://user-images.githubusercontent.com/41151878/114892275-e5f88e00-9e0c-11eb-9f0a-a4a336ba7f70.png)
+
+Titles are store-specific, so they can be customized for different views and languages. Below are sample settings for each section of the "Method Filter":
+
+* Pay Later:
+```
+FI70;FI71;FI72
+```
+* Pay Now via Mobile etc:
+```
+FI30;FI50;FI51;FI52;FI53;FI54
+```
+* Pay Now via Online Banking:
+```
+FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15;FI16;FI17;FI18;FI19;FI20
+```
+![image](https://user-images.githubusercontent.com/41151878/114894359-dbd78f00-9e0e-11eb-9cc2-12280b716fe9.png)
+
+## Order Comment
+
+Functionality that allows you to add an optional comment when placing an order. 
+Settings: `Stores >> Configuration >> Sales >> Sales >> Order Comment`
+
+To get the optimal placement for the comment field (under the billing address box), the following setting should be set:
+`Stores >> Configuration >> Sales >> Checkout Options >> Display Billing Address On: Payment Page`
+
+![image](https://user-images.githubusercontent.com/41151878/114896385-95832f80-9e10-11eb-889c-ffb2c9025734.png)
+
+![image](https://user-images.githubusercontent.com/41151878/114896633-cbc0af00-9e10-11eb-98ff-6af557e32d95.png)
+
+## Terms
+
+Configuration options for separate terms can be found under `Stores >> Configuration >> Sales >> Svea Maksuturva Payment >> Maksuturva Terms`
+
+![image](https://user-images.githubusercontent.com/41151878/114896988-1c380c80-9e11-11eb-9b6d-bf4c020e29fb.png)
+
+There are two ways the terms can work: 
+
+1. part of the text can be a hyperlink to the terms (automatically created if the `Which part of the text is the link`, field
+is set to a value that is within the Terms and Conditions text field),
+
+![image](https://user-images.githubusercontent.com/41151878/114897671-bf892180-9e11-11eb-8c53-db7e04cb1bc5.png)
+
+
+2. appended to the end of the Terms and Conditions text field value
+
+![image](https://user-images.githubusercontent.com/41151878/114897738-cfa10100-9e11-11eb-8b9e-2519d5a04419.png)
+
+
 # Sandbox testing
 
 Most simple way to test the payment module is to switch the Sandbox / Testing mode on. In the sandbox mode after confirming the order, the user is directed to a test page where you can see all the passed information and locate possible errors. In the sandbox page you can also test ok-, error-, cancel- and delayed payment -responses that Maksuturva service might send to your service.
