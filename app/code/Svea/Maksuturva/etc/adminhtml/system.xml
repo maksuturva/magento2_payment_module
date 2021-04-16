@@ -6,11 +6,11 @@
             <label>Svea</label>
         </tab>
         <section id="maksuturva_config" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Maksuturva Payment</label>
+            <label>Svea Payments</label>
             <tab>Svea</tab>
             <resource>Svea_Maksuturva::system_config</resource>
             <group id="maksuturva_payment" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Maksuturva Base Config</label>
+                <label>Base Config</label>
                 <field id="sellerid" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Seller ID</label>
                 </field>
@@ -53,7 +53,7 @@
                     <validate>required-entry</validate>
                 </field>
                 <field id="cron_active" translate="label" type="select" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Query Maksuturva API for orders missing payments</label>
+                    <label>Query Svea Payments API for orders missing payments</label>
                     <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
                     <comment><![CDATA[If payment method can't verify payment immediately or customer fails to return to webshop with payment data, this option enables cronjob to query status of orders pending payment.]]></comment>
                     <validate>required-entry</validate>
@@ -71,13 +71,13 @@
                 <field id="preselect_payment_method" translate="label" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Preselect payment method in webshop</label>
                     <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
-                    <comment><![CDATA[Select payment method in webshop instead of Maksuturva's service. If it is disabled, then only FI01 will be used]]></comment>
+                    <comment><![CDATA[Select payment method in webshop instead of Svea Payments' service. If it is disabled, then only FI01 will be used]]></comment>
                     <validate>required-entry</validate>
                 </field>
 
                 <field id="delayed_capture" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Delayed capture methods</label>
-                    <comment><![CDATA[When using Maksuturva payment methods supporting delayed capture (ie. shipment notices), those methods can be specified here. These methods must be verified from Maksuturva. Format is: code1,code2]]></comment>
+                    <comment><![CDATA[When using Svea Payments payment methods supporting delayed capture (ie. shipment notices), those methods can be specified here. These methods must be verified from Maksuturva. Format is: code1,code2]]></comment>
                 </field>
 
                 <field id="generate_invoice" translate="label" type="select" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">

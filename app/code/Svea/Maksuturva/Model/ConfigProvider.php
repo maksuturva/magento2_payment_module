@@ -40,6 +40,27 @@ class ConfigProvider implements \Svea\Maksuturva\Model\ConfigProviderInterface
         return $this->scopeConfig->getValue(\Svea\Maksuturva\Helper\Data::CONFIG_PRESELECT_PAYMENT_METHOD);
     }
 
+    protected function getSellerId()
+    {
+        if ($this->isSandboxMode())
+            return (String)$this->scopeConfig->getValue(\Svea\Maksuturva\Helper\Data::CONFIG_TEST_SELLERID);
+        else
+            return (String)$this->scopeConfig->getValue(\Svea\Maksuturva\Helper\Data::CONFIG_SELLERID);
+    }
+
+    protected function getMaksuturvaHost()
+    {
+        if ($this->isSandboxMode())
+            return (String)$this->scopeConfig->getValue(\Svea\Maksuturva\Helper\Data::CONFIG_MAKSUTURVA_TEST_HOST);
+        else
+            return (String)$this->scopeConfig->getValue(\Svea\Maksuturva\Helper\Data::CONFIG_MAKSUTURVA_HOST);
+    }
+
+    private function isSandboxMode()
+    {
+        return (bool)$this->scopeConfig->getValue(\Svea\Maksuturva\Helper\Data::CONFIG_SANDBOXMODE);
+    }
+
     protected function getTemplate()
     {
         switch ($this->getFormType()) {
@@ -62,7 +83,9 @@ class ConfigProvider implements \Svea\Maksuturva\Model\ConfigProviderInterface
         $data['defaultPaymentMethod'] = $this->getDefaultPaymentMethod();
         $data['template'] = $this->getTemplate();
         $data['preselectRequired'] = $this->preselectRequired;
-
+        $data['api_sellerid'] = $this->getSellerId();
+        $data['api_host'] = $this->getMaksuturvaHost();
+        
         return [
             'payment' => [
                 $this->getMethodCode() => $data

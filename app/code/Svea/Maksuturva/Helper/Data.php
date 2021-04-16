@@ -5,7 +5,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Svea
 {
     const CONFIG_PRESELECT_PAYMENT_METHOD = "maksuturva_config\maksuturva_payment\preselect_payment_method";
     const CONFIG_PATH_GENERATE_INVOICE_AUTOMATICALLY = "maksuturva_config/maksuturva_payment/generate_invoice";
-
+    const CONFIG_SELLERID = "maksuturva_config/maksuturva_payment/sellerid";
+    const CONFIG_MAKSUTURVA_HOST = "maksuturva_config/maksuturva_payment/commurl";
+    const CONFIG_MAKSUTURVA_TEST_HOST = "maksuturva_config/maksuturva_payment/test_commurl";
+    const CONFIG_TEST_SELLERID = "maksuturva_config/maksuturva_payment/test_sellerid";
+    const CONFIG_SANDBOXMODE = "maksuturva_config/maksuturva_payment/sandboxmode";
+    
     protected $_loggerHandler;
     protected $_checkoutSession;
     protected $serializer;

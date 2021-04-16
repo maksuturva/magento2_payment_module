@@ -41,7 +41,7 @@ class Cron
         }
         $this->_localeResolver->emulate(0);
 
-        $this->helper->maksuturvaLogger("Starting Maksuturva payment status check");
+        $this->helper->maksuturvaLogger("Starting Svea Payments payment status check");
 
         $from = $this->_localeDate->date();
         $from->modify($lookback);

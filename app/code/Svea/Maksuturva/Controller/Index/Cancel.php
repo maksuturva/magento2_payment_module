@@ -9,7 +9,7 @@ class Cancel extends \Svea\Maksuturva\Controller\Maksuturva
         $params = $this->getRequest()->getParams();
 
         if (empty($pmt_id)) {
-            $this->messageManager->addError(__('Unknown error on maksuturva payment module.'));
+            $this->messageManager->addError(__('Unknown error on Svea payment module.'));
             $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH));
             return;
         }
@@ -26,17 +26,17 @@ class Cancel extends \Svea\Maksuturva\Controller\Maksuturva
         if ($order->getState() == \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT || $order->getState() == \Magento\Sales\Model\Order::STATE_NEW) {
             $order->setActionFlag(\Magento\Sales\Model\Order::ACTION_FLAG_CANCEL, true);
             $order->cancel();
-            $order->addStatusHistoryComment(__('Payment canceled in Maksuturva'), 'pay_aborted');
+            $order->addStatusHistoryComment(__('Payment canceled in Svea Payments'), 'pay_aborted');
 
             if($this->getConfigData('canceled_order_status')){
                 $canceledStatus = $this->getConfigData('canceled_order_status');
             }else{
                 $canceledStatus = \Magento\Sales\Model\Order::STATE_CANCELED;
             }
-            $order->setStatus($canceledStatus, true, __('You have cancelled your payment in Maksuturva.'));
+            $order->setStatus($canceledStatus, true, __('You have cancelled your payment in Svea Payments.'));
             $order->save();
 
-            $this->messageManager->addError(__('You have cancelled your payment in Maksuturva.'));
+            $this->messageManager->addError(__('You have cancelled your payment in Svea Payments.'));
         } else {
             $this->messageManager->addError(__('Unable to cancel order that has already been paid.'));
             $this->_redirect('checkout/cart');
