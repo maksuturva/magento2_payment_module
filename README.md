@@ -56,7 +56,7 @@ php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_Maksut
   
 Alternatively, if you want all modules  
 ```
-php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaCard Svea_MaksuturvaCod Svea_MaksuturvaGeneric Svea_MaksuturvaInvoice Svea_MaksuturvaPartPayment
+php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaCollated Svea_OrderComment Svea_MaksuturvaCard Svea_MaksuturvaCod Svea_MaksuturvaGeneric Svea_MaksuturvaInvoice Svea_MaksuturvaPartPayment
 ```
 
 Run setup:upgrade
@@ -84,6 +84,18 @@ Flush cache
 php bin/magento cache:flush
 ```
 
+# Upgrade previous version
+
+Upgrading process is similar to the installation and database should be upgraded automatically in the process. Take a backup snapshot from your database before upgrading.
+
+First, move your old payment module version to the safe place and after that, follow the section Installation Instructions 
+
+```
+su www-data
+mv /var/www/html/app/code/Svea /var/www/html/app/code/Svea.old
+```
+
+ 
 # Configuration via Magento Admin
 
 Configurations for the module is found from following locations
@@ -160,6 +172,8 @@ Send email containing information for paying back the settled amount of payment 
 
 # Maksuturva Collated
 
+To use this feature, check that you have installed Svea_MaksuturvaCollated module.  
+
 ## Settings required to display payment methods at the checkout
 
 * make sure the currency is set to EURO (`Stores >> Configuration >> General >> Currency Setup >> Base Currency`),
@@ -201,6 +215,8 @@ FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15;FI16;
 ![image](https://user-images.githubusercontent.com/41151878/114894359-dbd78f00-9e0e-11eb-9cc2-12280b716fe9.png)
 
 ## Order Comment
+
+To use this feature, check that you have installed Svea_OrderComment module.   
 
 Functionality that allows you to add an optional comment when placing an order. 
 Settings: `Stores >> Configuration >> Sales >> Sales >> Order Comment`
