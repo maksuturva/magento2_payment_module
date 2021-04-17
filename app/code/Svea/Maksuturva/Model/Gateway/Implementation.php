@@ -473,13 +473,14 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             $this->curlClient->post($this->getStatusQueryUrl(), $statusQueryData);
             if ($this->curlClient->getStatus() != 200) {
+                $this->helper->maksuturvaLogger("Status query failed for payment " . $pmt_id . " result, http responsecode=" . $this->curlClient->getStatus());
                 throw new \Svea\Maksuturva\Model\Gateway\Exception(
-                    ["Failed to communicate with Maksuturva. Please check the network connection. URL: " . $this->getStatusQueryUrl()]
+                    ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl()]
                 );
             }
         } catch (\Exception $e) {
             throw new \Svea\Maksuturva\Model\Gateway\Exception(
-                ["Failed to communicate with Maksuturva. Please check the network connection. URL: " . $this->getStatusQueryUrl() . " ERROR MESSAGE: " . $e->getMessage()]
+                ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl() . " ERROR MESSAGE: " . $e->getMessage()]
             );
         }
 
@@ -516,7 +517,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     {
         $order = $this->getOrder();
         $result = array('success' => 'error', 'message' => '');
-        $this->helper->maksuturvaLogger("Check successful, order " . $order->getIncrementId() . " payment status is " . strval($response["pmtq_returncode"]));
+        $this->helper->maksuturvaLogger("Status query successful, order " . $order->getIncrementId() . " payment status is " . strval($response["pmtq_returncode"]));
 
         switch ($response["pmtq_returncode"]) {
             // set as paid if not already set
@@ -532,11 +533,11 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                     }else{
                         $processStatus = \Magento\Sales\Model\Order::STATE_PROCESSING;
                     }
-                    $order->setState($processState, true, __('Payment capture authorized by Maksuturva'));
-                    $order->setStatus($processStatus, true, __('Payment capture authorized by Maksuturva'));
+                    $order->setState($processState, true, __('Payment capture authorized by Svea Payments'));
+                    $order->setStatus($processStatus, true, __('Payment capture authorized by Svea Payments'));
                     $order->save();
 
-                    $result['message'] = __('Payment capture authorized by Maksuturva.');
+                    $result['message'] = __('Payment capture authorized by Svea Payments.');
                     $result['success'] = 'success';
                 } else {
                     if ($order->hasInvoices() == false) {
@@ -547,11 +548,11 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                             $invoice->register();
                             $order->addRelatedObject($invoice);
 
-                            $result['message'] = __('Payment confirmed by Maksuturva. Invoice saved.');
+                            $result['message'] = __('Payment confirmed by Svea Payments. Invoice saved.');
                             $this->setOrderAsPaid($order);
                         }
                     } else {
-                        $result['message'] = __('Payment confirmed by Maksuturva. Invoices already exist');
+                        $result['message'] = __('Payment confirmed by Svea Payments. Invoices already exist');
                         /* resolve case when invoice exists but status in database is still pending payment */
                         if ($order->getStatus()==$this->getConfigData('order_status'))
                         {
@@ -575,7 +576,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $order->save();
                 $result['message'] = __('Payment canceled in Maksuturva');
                 $result['success'] = "error";
-
                 break;
 
             // no news for buyer and seller\Svea\Maksuturva\Model\Gateway\Implementation
@@ -597,13 +597,13 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     private function setOrderAsPaid($order)
     {
         $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
-        if($this->getConfigData('paid_order_status')){
+        if($this->getConfigData('paid_order_status')) {
             $processStatus = $this->getConfigData('paid_order_status');
-        }else{
+        } else {
             $processStatus = \Magento\Sales\Model\Order::STATE_PROCESSING;
         }
-        $order->setState($processState, true, __('Payment confirmed by Maksuturva'));
-        $order->setStatus($processStatus, true, __('Payment confirmed by Maksuturva'));
+        $order->setState($processState, true, __('Payment confirmed by Svea Payments'));
+        $order->setStatus($processStatus, true, __('Payment confirmed by Svea Payments'));
         $order->save();
     }
     
