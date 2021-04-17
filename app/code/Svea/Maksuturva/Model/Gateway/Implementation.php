@@ -270,8 +270,9 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             array_push($products_rows, $row);
 
             $handlingFee = $order->getHandlingFee();
-
-            if ($handlingFee>0)
+            $this->helper->maksuturvaLogger("Handling fee: " + $handlingFee);
+#hene
+            if (is_float($handlingFee) && $handlingFee>0.00)
             {
                 //Row type 3
                 $row = [
