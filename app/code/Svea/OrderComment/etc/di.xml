@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Svea\OrderComment\Api\Data\OrderCommentInterface" type="Svea\OrderComment\Model\Data\OrderComment" />
+    <preference for="Svea\OrderComment\Api\OrderCommentManagementInterface" type="Svea\OrderComment\Model\OrderCommentManagement" />
+    <preference for="Svea\OrderComment\Api\GuestOrderCommentManagementInterface" type="Svea\OrderComment\Model\GuestOrderCommentManagement" />
+
+    <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid">
+        <arguments>
+            <argument name="columns" xsi:type="array">
+                <item name="svea_order_comment" xsi:type="string">sales_order.svea_order_comment</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="svea_load_ordercomment" type="Svea\OrderComment\Plugin\Model\Order\LoadOrderComment"/>
+    </type>
+</config>

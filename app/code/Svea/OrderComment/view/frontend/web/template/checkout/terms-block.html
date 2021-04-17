@@ -1,0 +1,7 @@
+<!-- ko if: $parents[1]['index'] == "maksuturva_collated_payment" -->
+    <!-- ko if: isEnabled() -->
+        <!-- ko if: getText() -->
+        <span data-bind="i18n: getText()[0]"></span><span data-bind="html: getText()[1]"></span>
+        <!-- /ko -->
+    <!-- /ko -->
+<!-- /ko -->

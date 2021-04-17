@@ -339,6 +339,20 @@ define(
             //it is EASY TO HACK in this coding way, but it doesn't matter in case
             isPreselectRequired: function (){
                 return window.checkoutConfig.payment[this.getCode()]['preselectRequired'];
+            },
+
+            updateTotals: function (parentPaymentMethod, subpaymentMethod) {
+                fullScreenLoader.startLoader();
+                jQuery.ajax('/maksuturva/checkout/applyPaymentMethod', {
+                    data: {
+                        payment_method: parentPaymentMethod,
+                        collated_method: subpaymentMethod
+                    },
+                    complete: function () {
+                        getTotalsAction([]);
+                        fullScreenLoader.stopLoader();
+                    }
+                });
             }
         });
     }

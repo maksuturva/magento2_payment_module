@@ -7,7 +7,7 @@ define(
         'use strict';
 
         const method_code = 'maksuturva_card_payment';
-        var selecedMethod = ko.observable(window.checkoutConfig.payment[method_code]['defaultPaymentMethod']);
+        var selectedMethod = ko.observable(window.checkoutConfig.payment[method_code]['defaultPaymentMethod']);
 
         return Component.extend({
 
@@ -17,7 +17,7 @@ define(
                 template: window.checkoutConfig.payment[method_code]['template'],
             },
 
-            selectedPayment: selecedMethod,
+            selectedPayment: selectedMethod,
 
             getCode: function() {
                 return method_code;

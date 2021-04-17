@@ -1,0 +1,37 @@
+<!-- ko if: isEnabled() -->
+    <!-- ko if: getInitialCollapseState() == 2 -->
+    <div class="payment-option opc-payment-additional order-comment__container comment last">
+        <div class="payment-option-title order-comment__title field choice">
+            <!-- ko if: getCommentHelp() -->
+            <span data-bind="i18n: getCommentHelp()"></span>
+            <!-- /ko -->
+            <!-- ko ifnot: getCommentHelp() -->
+            <span data-bind="i18n: 'Do you have any comments regarding the order?'"></span>
+            <!-- /ko -->
+        </div>
+        <div class="payment-option-content order-comment__content">
+            <!-- ko template: 'Svea_OrderComment/checkout/form-content' --><!-- /ko -->
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: getInitialCollapseState() != 2 -->
+    <div class="payment-option opc-payment-additional order-comment__container comment last _collapsible"
+         data-bind="mageInit: {'collapsible':{'openedState': '_active', 'active': isInitialStateOpened()}}">
+
+        <div class="payment-option-title order-comment__title field choice" data-role="title">
+            <span class="action action-toggle" role="heading" aria-level="2">
+                <!-- ko if: getCommentHelp() -->
+                <span data-bind="i18n: getCommentHelp()"></span>
+                <!-- /ko -->
+                <!-- ko ifnot: getCommentHelp() -->
+                <span data-bind="i18n: 'Do you have any comments regarding the order?'"></span>
+                <!-- /ko -->
+            </span>
+        </div>
+        <div class="payment-option-content order-comment__content" data-role="content">
+            <!-- ko template: 'Svea_OrderComment/checkout/form-content' --><!-- /ko -->
+        </div>
+    </div>
+    <!-- /ko -->
+<!-- /ko -->

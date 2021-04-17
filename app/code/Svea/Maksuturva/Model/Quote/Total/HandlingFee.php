@@ -68,6 +68,9 @@ class HandlingFee extends AbstractTotal
     private function calculateHandlingFee(CartInterface $quote, Total $total)
     {
         $paymentCode = $quote->getPayment()->getMethod();
+        if ($collatedMethod = $quote->getPayment()->getAdditionalInformation('collated_method')) {
+            $paymentCode = $collatedMethod;
+        }
         $handlingFeeConfig = $this->configProvider->getHandlingFee();
         foreach ($handlingFeeConfig as $key => $fee) {
             if ($key == $paymentCode) {

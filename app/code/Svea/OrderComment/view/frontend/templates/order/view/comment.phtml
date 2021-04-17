@@ -1,0 +1,17 @@
+<?php
+
+
+/** @var \Svea\OrderComment\Block\Order\Comment $block */
+?>
+<?php if ($comment = $block->getOrderComment()) :?>
+<div class="block block-order-details-view">
+    <div class="block-content">
+        <div class="box box-order-comment">
+            <strong class="box-title"><span><?= /* @escapeNotVerified */ \__('Order Comment') ?></span></strong>
+            <div class="box-content">
+               <?= $block->getOrderCommentHtml() ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
