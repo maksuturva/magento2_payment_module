@@ -139,12 +139,12 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                     $children = $item->getChildrenItems();
 
                     if (sizeof($children) != 1) {
-                        \error_log("Maksuturva module FAIL: more than one children for configurable product!");
+                        \error_log("Svea Payments module FAIL: more than one children for configurable product!");
                         continue;
                     }
 
                     if (in_array($items[$itemId + 1], $children) == false) {
-                        \error_log("Maksuturva module FAIL: No children in order!");
+                        \error_log("Svea Payments module FAIL: No children in order!");
                         continue;
                     }
 
@@ -517,7 +517,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     {
         $order = $this->getOrder();
         $result = array('success' => 'error', 'message' => '');
-        $this->helper->maksuturvaLogger("Status query successful, order " . $order->getIncrementId() . " payment status is " . strval($response["pmtq_returncode"]));
+        $this->helper->maksuturvaLogger("Status query successful for order " . $order->getIncrementId() . " payment status is " . strval($response["pmtq_returncode"]));
 
         switch ($response["pmtq_returncode"]) {
             // set as paid if not already set
@@ -571,10 +571,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_RECLAMATION:
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_CANCELLED:
                 //Mark the order cancelled
-                $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Maksuturva'));
-                $order->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Maksuturva'));
+                $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Svea Payments'));
+                $order->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Svea Payments'));
                 $order->save();
-                $result['message'] = __('Payment canceled in Maksuturva');
+                $result['message'] = __('Payment canceled in Svea Payments');
                 $result['success'] = "error";
                 break;
 
@@ -605,6 +605,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $order->setState($processState, true, __('Payment confirmed by Svea Payments'));
         $order->setStatus($processStatus, true, __('Payment confirmed by Svea Payments'));
         $order->save();
+        $this->helper->maksuturvaLogger("Order " . $order->getIncrementId() . " set as paid.");
     }
     
     public function addDeliveryInfo($payment)
@@ -656,7 +657,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 return array('pkg_resultcode' => $resultCode, 'pkg_id' => (string)$xml->pkg_id, 'pkg_resulttext' => (string)$xml->pkg_resulttext);
             default:
                 throw new \Magento\Framework\Exception\LocalizedException(
-                    __("Error on Maksuturva pkg creation: %1", (string)$xml->pkg_resulttext)
+                    __("Error onSvea Payments pkg creation: %1", (string)$xml->pkg_resulttext)
                 );
         }
     }
@@ -760,7 +761,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $msg .= \__("Amount: %s", $pay['payAmount']) . PHP_EOL;
             $msg .= \__("Maksuturva will refund the payer after receiving money.") . PHP_EOL;
 
-            /** Add information to order & creditmemo for paying refund money to Maksuturva */
+            /** Add information to order & creditmemo for paying refund money toSvea Payments */
             $order->addStatusHistoryComment($msg);
             $payment->getCreditmemo()->addComment($msg);
 
