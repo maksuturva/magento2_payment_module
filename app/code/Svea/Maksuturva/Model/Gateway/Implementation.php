@@ -271,23 +271,24 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             $handlingFee = $order->getHandlingFee();
 
-            //Row type 3
-            $row = [
-                'pmt_row_name' => \__('Handling Fee'),
-                'pmt_row_desc' => \__('Added handling fee to total'),
-                'pmt_row_quantity' => 1,
-                'pmt_row_deliverydate' => date("d.m.Y"),
-                'pmt_row_price_net' => str_replace('.', ',', sprintf("%.2f", $handlingFee)),
-                'pmt_row_vat' => "0,00",
-                'pmt_row_discountpercentage' => "0,00",
-                'pmt_row_type' => 3
-            ];
-            $totalSellerCosts += $handlingFee;
-            $products_rows[] = $row;
-
+            if ($handlingFee>0)
+            {
+                //Row type 3
+                $row = [
+                    'pmt_row_name' => \__('Handling Fee'),
+                    'pmt_row_desc' => \__('Added handling fee to total'),
+                    'pmt_row_quantity' => 1,
+                    'pmt_row_deliverydate' => date("d.m.Y"),
+                    'pmt_row_price_net' => str_replace('.', ',', sprintf("%.2f", $handlingFee)),
+                    'pmt_row_vat' => "0,00",
+                    'pmt_row_discountpercentage' => "0,00",
+                    'pmt_row_type' => 3
+                ];
+                $totalSellerCosts += $handlingFee;
+                $products_rows[] = $row;
+            }
             $options = array();
             $options["pmt_keygeneration"] = $this->keyVersion;
-
 
             // store unique transaction id on payment object for later retrieval
             //$this->getPayment() as same as $order->getPayment() in this case
