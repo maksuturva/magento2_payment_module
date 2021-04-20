@@ -4,6 +4,11 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.5.1] - 2021-04-20
+### Changed
+ - Handling costs row is not added to the payment data if the amount is 0,00
+ - Added identifiers and more information to the status query log items
+ 
 ## [1.5.0] - 2021-04-17
 ### Added 
  - Collated payment method view, see README.md / Collated Payment
