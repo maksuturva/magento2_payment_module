@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.5.2] - 2021-05-05
+### Fixed  
+ - Fixed handling fees missing -bug (affected version 1.5.1)  
+ 
 ## [1.5.1] - 2021-04-20
 ### Changed
  - Handling costs row is not added to the payment data if the amount is 0,00
