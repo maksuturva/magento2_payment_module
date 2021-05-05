@@ -270,8 +270,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             array_push($products_rows, $row);
 
             $handlingFee = $order->getHandlingFee();
-            if (is_float($handlingFee) && $handlingFee>0.00)
-            {
+            //if (is_float($handlingFee) && $handlingFee>0.00)
+            //{
                 //Row type 3
                 $row = [
                     'pmt_row_name' => \__('Handling Fee'),
@@ -285,7 +285,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 ];
                 $totalSellerCosts += $handlingFee;
                 $products_rows[] = $row;
-            }
+            //}
             $options = array();
             $options["pmt_keygeneration"] = $this->keyVersion;
 
