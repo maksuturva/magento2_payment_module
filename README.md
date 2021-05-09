@@ -139,9 +139,9 @@ Please note that this service needs to be enabled by  Svea Payments first.
 ## Preselect form type
 
 Specifies which styling is used on preselection form on checkout. Option to use either basic dropdown or stylished payment icons.
-```
-Payment fees
-```
+
+## Payment fees
+
 Only supported when preselect payment method in webshop is enabled. Currently requires module `Vaimo_PaymentFee`, this might change to more generic way in future versions.
 
 ## Delayed capture methods
