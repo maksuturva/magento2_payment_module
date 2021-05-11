@@ -11,7 +11,7 @@ class Config
     const CARD_HANDLING_FEE = "payment/maksuturva_card_payment/handling_fee";
     const COD_HANDLING_FEE = "payment/maksuturva_cod_payment/handling_fee";
     const GENERIC_HANDLING_FEE = "payment/maksuturva_generic_payment/handling_fee";
-    const INVOICE_HANDLING_FEE = "payment\maksuturva_invoice_payment/handling_fee";
+    const INVOICE_HANDLING_FEE = "payment/maksuturva_invoice_payment/handling_fee";
     const PART_HANDLING_FEE = "payment/maksuturva_part_payment_payment/handling_fee";
     const COLLATED_LATER_HANDLING_FEE = "payment/maksuturva_collated_payment/maksuturva_collated_subpayments/pay_later_handling_fee";
     const COLLATED_NOW_HANDLING_FEE = "payment/maksuturva_collated_payment/maksuturva_collated_subpayments/pay_now_other_handling_fee";
