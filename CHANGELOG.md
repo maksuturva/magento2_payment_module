@@ -4,9 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
-## [1.5.2] - 2021-05-05
+## [1.5.3] - 2021-05-11
 ### Fixed  
- - Fixed handling fees missing -bug (affected version 1.5.1)  
+ - Fixed handling fees missing -bug (affected version 1.5.1)
+ - Fixed Invoice payment method handling fee  
  
 ## [1.5.1] - 2021-04-20
 ### Changed
