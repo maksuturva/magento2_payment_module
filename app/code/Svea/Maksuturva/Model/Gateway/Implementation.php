@@ -506,7 +506,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             }
         }
 
-        $this->helper->sveaLoggerInfo("Payment status query result: " . array_values($parsedResponse) );
+        $this->helper->sveaLoggerInfo("Payment status query result: " . print_r(array_values($parsedResponse), true) );
 
         if (!$this->_verifyStatusQueryResponse($parsedResponse)) {
             throw new \Svea\Maksuturva\Model\Gateway\Exception(
