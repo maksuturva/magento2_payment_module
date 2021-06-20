@@ -397,7 +397,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 
         if (property_exists($obj, 'paymentmethod') && $obj->paymentmethod) {
             if (is_array($obj->paymentmethod))
-            $this->helper->sveaLoggerInfo("Payment methods query result, found " . count($obj->paymentmethod) . " payment methods." );
+            $this->helper->sveaLoggerInfo("Payment methods query found " . count($obj->paymentmethod) . " payment methods." );
             return $obj->paymentmethod;
         } else {
             return false;

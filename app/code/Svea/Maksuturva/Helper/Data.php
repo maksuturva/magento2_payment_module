@@ -37,7 +37,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Svea
 
     public function sveaLoggerError($error)
     {
-        $this->getSveaLoggerHandler()->error(json_encode($error));
+        $this->getSveaLoggerHandler()->err(json_encode($error));
     }
 
     protected function getSveaLoggerHandler()
