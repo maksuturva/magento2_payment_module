@@ -215,7 +215,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
             }
         }
 
-        $this->helper->sveaLoggerInfo("Cancel result for pmtc_id" $parsedResponse['pmtc_id']  . " is '" . $parsedResponse['pmtc_returntext'] . "'" );
+        $this->helper->sveaLoggerInfo("Cancel result for pmtc_id" . $parsedResponse['pmtc_id'] . " is '" . $parsedResponse['pmtc_returntext'] . "'" );
 
         switch($parsedResponse['pmtc_returncode']){
 

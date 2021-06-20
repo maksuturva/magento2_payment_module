@@ -90,7 +90,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $this->commEncoding = $config['commencoding'];
         $this->paymentDue = $config['paymentdue'];
         $this->keyVersion = $config['keyversion'];
-        //some branch of Maksuturva doesn't have preselect_payment_method, such as masterpass
         if (isset($config['preselect_payment_method'])){
             $this->preSelectPaymentMethod = $config['preselect_payment_method'];
         }
@@ -103,7 +102,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             $order = $this->getOrder();
             if(!($order instanceof \Magento\Sales\Model\Order)){
-                throw new \Exception("order not found");
+                throw new \Exception("Order not found");
             }
 
             $dueDate = date("d.m.Y", strtotime("+" . $this->paymentDue . " day"));
