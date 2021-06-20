@@ -90,7 +90,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $this->commEncoding = $config['commencoding'];
         $this->paymentDue = $config['paymentdue'];
         $this->keyVersion = $config['keyversion'];
-        //some branch of Maksuturva doesn't have preselect_payment_method, such as masterpass
         if (isset($config['preselect_payment_method'])){
             $this->preSelectPaymentMethod = $config['preselect_payment_method'];
         }
@@ -103,7 +102,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             $order = $this->getOrder();
             if(!($order instanceof \Magento\Sales\Model\Order)){
-                throw new \Exception("order not found");
+                throw new \Exception("Order not found");
             }
 
             $dueDate = date("d.m.Y", strtotime("+" . $this->paymentDue . " day"));
@@ -387,14 +386,17 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         try {
             $response = $this->getPostResponse($this->getPaymentMethodsUrl(), $fields, 5);
         } catch (\Svea\Maksuturva\Model\Gateway\Exception $e) {
-
             return false;
         }
 
         $xml = simplexml_load_string($response);
         $obj = json_decode(json_encode($xml));
 
+        
+                
         if (property_exists($obj, 'paymentmethod') && $obj->paymentmethod) {
+            if (is_array($obj->paymentmethod))
+            $this->helper->sveaLoggerInfo("Payment methods query found " . count($obj->paymentmethod) . " payment methods." );
             return $obj->paymentmethod;
         } else {
             return false;
@@ -472,14 +474,14 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             $this->curlClient->post($this->getStatusQueryUrl(), $statusQueryData);
             if ($this->curlClient->getStatus() != 200) {
-                $this->helper->maksuturvaLogger("Status query failed for payment " . $pmt_id . " result, http responsecode=" . $this->curlClient->getStatus());
+                $this->helper->sveaLoggerError("Status query failed for payment " . $pmt_id . " result, http responsecode=" . $this->curlClient->getStatus());
                 throw new \Svea\Maksuturva\Model\Gateway\Exception(
                     ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl()]
                 );
             }
         } catch (\Exception $e) {
             throw new \Svea\Maksuturva\Model\Gateway\Exception(
-                ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl() . " ERROR MESSAGE: " . $e->getMessage()]
+                ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl() . " Exception: " . $e->getMessage()]
             );
         }
 
@@ -495,6 +497,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             "pmtq_buyerpostalcode", "pmtq_buyercity", "pmtq_hash"
         );
 
+   
         foreach ($responseFields as $responseField) {
             preg_match("/<$responseField>(.*)?<\/$responseField>/i", $body, $match);
             if (count($match) == 2) {
@@ -502,12 +505,16 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             }
         }
 
+
         if (!$this->_verifyStatusQueryResponse($parsedResponse)) {
+            $this->helper->sveaLoggerInfo("Payment status query response hash doesn't match.");
             throw new \Svea\Maksuturva\Model\Gateway\Exception(
                 ["The authenticity of the answer could't be verified."],
                 self::EXCEPTION_CODE_HASHES_DONT_MATCH
             );
         }
+
+        $this->helper->sveaLoggerInfo("Payment status query successful.");
 
         return $parsedResponse;
     }
@@ -516,7 +523,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     {
         $order = $this->getOrder();
         $result = array('success' => 'error', 'message' => '');
-        $this->helper->maksuturvaLogger("Status query successful for order " . $order->getIncrementId() . " payment status is " . strval($response["pmtq_returncode"]));
 
         switch ($response["pmtq_returncode"]) {
             // set as paid if not already set
@@ -536,6 +542,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                     $order->setStatus($processStatus, true, __('Payment capture authorized by Svea Payments'));
                     $order->save();
 
+                    $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment capture authorized by Svea Payments'");
+
                     $result['message'] = __('Payment capture authorized by Svea Payments.');
                     $result['success'] = 'success';
                 } else {
@@ -549,14 +557,19 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
                             $result['message'] = __('Payment confirmed by Svea Payments. Invoice saved.');
                             $this->setOrderAsPaid($order);
+                            $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment confirmed by Svea Payments.'");
                         }
                     } else {
-                        $result['message'] = __('Payment confirmed by Svea Payments. Invoices already exist');
+                        $result['message'] = __('Payment confirmed by Svea Payments. Invoices already exist.');
                         /* resolve case when invoice exists but status in database is still pending payment */
-                        if ($order->getStatus()==$this->getConfigData('order_status'))
-                        {
-                            $this->setOrderAsPaid($order);
-                        }
+                        //if ($order->getStatus()==$this->getConfigData('order_status'))
+                        //{
+                        //    $this->setOrderAsPaid($order);
+                        //}
+
+                        // always set as paid when the payment is confirmed
+                        $this->setOrderAsPaid($order);
+                        $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment confirmed by Svea Payments.'");
                     }
                     $result['success'] = 'success';
                 }
@@ -570,11 +583,13 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_RECLAMATION:
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_CANCELLED:
                 //Mark the order cancelled
+                
                 $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Svea Payments'));
                 $order->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Svea Payments'));
                 $order->save();
                 $result['message'] = __('Payment canceled in Svea Payments');
                 $result['success'] = "error";
+                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment canceled in Svea Payments.'");
                 break;
 
             // no news for buyer and seller\Svea\Maksuturva\Model\Gateway\Implementation
@@ -587,6 +602,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 // no action here
                 $result['message'] = __('No change, still awaiting payment');
                 $result['success'] = "notice";
+                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status still waiting or unpaid.");
                 break;
         }
 
@@ -604,7 +620,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $order->setState($processState, true, __('Payment confirmed by Svea Payments'));
         $order->setStatus($processStatus, true, __('Payment confirmed by Svea Payments'));
         $order->save();
-        $this->helper->maksuturvaLogger("Order " . $order->getIncrementId() . " set as paid.");
+        $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " set as paid and status to '" . strval($processStatus) . "'");
     }
     
     public function addDeliveryInfo($payment)
@@ -614,10 +630,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $additional_data = $payment->getAdditionalData();
             $json_data = json_decode($additional_data, true);
             $pkg_id = $json_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
-            $this->helper->maksuturvaLogger("Adding delivery info for pkg_id {$pkg_id}", null, 'maksuturva.log', true);                                                                        
+            $this->helper->sveaLoggerInfo("Adding delivery info for pkg_id " . strval($pkg_id));                                                                        
         } catch (Exception $e)
         {                                                                                                                                                                                                                                                                                                                                                                                   
-            $this->helper->maksuturvaLogger("Add delivery info, additional data parse exception " . $e->getMessage());
+            $this->helper->sveaLoggerError("Add delivery function failed, parse exception " . $e->getMessage());
             return;
         }
         
@@ -653,10 +669,11 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
         switch ($resultCode) {
             case self::MAKSUTURVA_PKG_RESULT_SUCCESS:
+                $this->helper->sveaLoggerInfo("Delivery info for package id  " . strval($xml->pkg_id) . " result " . strval($xml->pkg_resulttext));
                 return array('pkg_resultcode' => $resultCode, 'pkg_id' => (string)$xml->pkg_id, 'pkg_resulttext' => (string)$xml->pkg_resulttext);
             default:
                 throw new \Magento\Framework\Exception\LocalizedException(
-                    __("Error onSvea Payments pkg creation: %1", (string)$xml->pkg_resulttext)
+                    __("Error on Svea Payments pkg creation: %1", (string)$xml->pkg_resulttext)
                 );
         }
     }
@@ -822,7 +839,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
         $fields['pmtc_hash'] = $this->calculateHash($fields, $hashFields);
         $response = $this->getPostResponse($this->getPaymentCancelUrl(), $fields);
-
+  
         return $this->processCancelPaymentResponse($response);
     }
 

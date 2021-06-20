@@ -44,7 +44,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         try {
             $order = $this->getOrderByPaymentId($values['pmt_id']);
         } catch (\Exception $e) {
-            $this->_maksuturvaHelper->maksuturvaLogger($e);
+            $this->_maksuturvaHelper->sveaLoggerError($e);
             $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Order matching the payment id could not be found.')));
             return;
         }
@@ -120,7 +120,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
                     $this->orderSender->send($order);
                     $this->_maksuturvaHelper->statusQuery($order);
                 } catch (\Exception $e) {
-                    $this->_maksuturvaHelper->maksuturvaLogger($e);
+                    $this->_maksuturvaHelper->sveaLoggerError($e);
                 }
             }
             if($this->getConfigData('paid_order_status')){

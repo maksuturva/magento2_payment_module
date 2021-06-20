@@ -30,15 +30,20 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Svea
         return sprintf('%04x%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
     }
 
-    public function maksuturvaLogger($info)
+    public function sveaLoggerInfo($info)
     {
-        $this->getMaksuturvaLoggerHandler()->info(json_encode($info));
+        $this->getSveaLoggerHandler()->info(json_encode($info));
     }
 
-    protected function getMaksuturvaLoggerHandler()
+    public function sveaLoggerError($error)
     {
-        if(!$this->_loggerHandler){
-            $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/svea-maksuturva.log');
+        $this->getSveaLoggerHandler()->err(json_encode($error));
+    }
+
+    protected function getSveaLoggerHandler()
+    {
+        if(!$this->_loggerHandler) {
+            $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/svea-payment-module.log');
             $logger = new \Zend_Log();
             $logger->addWriter($writer);
             $this->_loggerHandler = $logger;
@@ -81,9 +86,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Svea
         try {
             $response = $implementation->statusQuery($data);
             $result = $implementation->ProcessStatusQueryResult($response);
-            $this->maksuturvaLogger("Status query for order " . $order->getIncrementId() . " result: " . $result['message']);
         } catch (\Exception $e) {
-            //do nothing
+            $this->sveaLoggerError("Status query for order " . $order->getIncrementId() . " failed, message " . $e->getMessage());
         }
     }
 
