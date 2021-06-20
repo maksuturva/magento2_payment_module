@@ -54,6 +54,8 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
 
     private $_errors = array();
 
+    protected $helper;
+    
     /**
      * @var Xml
      */
@@ -76,9 +78,9 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         Xml $xmlConvert,
         Config $config
     ) {
+        $this->helper = $maksuturvaHelper;
         $this->xmlConvert = $xmlConvert;
         $this->config = $config;
-        $this->helper = $maksuturvaHelper;
         if (!function_exists("curl_init")) {
             throw new \Svea\Maksuturva\Model\Gateway\Exception(array("cURL is needed in order to communicate with the maksuturva's server. Check your PHP installation."), self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED);
         }
