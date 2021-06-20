@@ -230,7 +230,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
             }
         }
 
-        $this->sveaLoggerInfo("Cancel result for pmtc_id" . $parsedResponse['pmtc_id'] . " is '" . $parsedResponse['pmtc_returntext'] . "'" );
+        $this->sveaLoggerInfo("Cancel/refund result for pmtc_id" . $parsedResponse['pmtc_id'] . " is '" . $parsedResponse['pmtc_returntext'] . "'" );
 
         switch($parsedResponse['pmtc_returncode']){
 
