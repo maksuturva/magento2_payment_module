@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - Logging file is renamed to svea-payment-module.log
  - More info logging for status changes
+### Fixed
+ - Removed conditional order update status to paid state as there was some problems with updating the status
 
 ## [1.5.3] - 2021-05-11
 ### Fixed  
