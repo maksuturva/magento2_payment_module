@@ -54,8 +54,6 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
 
     private $_errors = array();
 
-    protected $helper;
-    
     /**
      * @var Xml
      */
@@ -66,6 +64,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
      */
     protected $config;
 
+    protected $_loggerHandler;
 
     /**
      * Base constructor.
@@ -74,11 +73,9 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
      * @throws Exception
      */
     public function __construct(
-        \Svea\Maksuturva\Helper\Data $maksuturvaHelper,
         Xml $xmlConvert,
         Config $config
     ) {
-        $this->helper = $maksuturvaHelper;
         $this->xmlConvert = $xmlConvert;
         $this->config = $config;
         if (!function_exists("curl_init")) {
@@ -102,6 +99,22 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         } else {
             throw new \Svea\Maksuturva\Model\Gateway\Exception(array('the hash algorithms SHA-512, SHA-256, SHA-1 and MD5 are not supported!'), self::EXCEPTION_CODE_ALGORITHMS_NOT_SUPORTED);
         }
+    }
+
+    public function sveaLoggerInfo($info)
+    {
+        $this->getSveaLoggerHandler()->info(json_encode($info));
+    }
+
+    protected function getSveaLoggerHandler()
+    {
+        if(!$this->_loggerHandler) {
+            $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/svea-payment-module.log');
+            $logger = new \Zend_Log();
+            $logger->addWriter($writer);
+            $this->_loggerHandler = $logger;
+        }
+        return $this->_loggerHandler;
     }
 
     public function generateReturnHash($hashData)
@@ -217,7 +230,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
             }
         }
 
-        $this->helper->sveaLoggerInfo("Cancel result for pmtc_id" . $parsedResponse['pmtc_id'] . " is '" . $parsedResponse['pmtc_returntext'] . "'" );
+        $this->sveaLoggerInfo("Cancel result for pmtc_id" . $parsedResponse['pmtc_id'] . " is '" . $parsedResponse['pmtc_returntext'] . "'" );
 
         switch($parsedResponse['pmtc_returncode']){
 
