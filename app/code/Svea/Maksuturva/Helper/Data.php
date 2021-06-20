@@ -86,9 +86,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Svea
         try {
             $response = $implementation->statusQuery($data);
             $result = $implementation->ProcessStatusQueryResult($response);
-            $this->sveaLoggerInfo("Status for order " . $order->getIncrementId() . " is " . $result['message']);
         } catch (\Exception $e) {
-            $this->sveaLoggerError("Status for order " . $order->getIncrementId() . " failed, message " . $e->getMessage());
+            $this->sveaLoggerError("Status query for order " . $order->getIncrementId() . " failed, message " . $e->getMessage());
         }
     }
 

@@ -4,6 +4,11 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.5.4] - 2021-06-20
+### Changed
+ - Logging file is renamed to svea-payment-module.log
+ - More info logging for status changes
+
 ## [1.5.3] - 2021-05-11
 ### Fixed  
  - Fixed handling fees missing -bug (affected version 1.5.1)

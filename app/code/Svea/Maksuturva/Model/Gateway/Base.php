@@ -72,11 +72,13 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
      * @throws Exception
      */
     public function __construct(
+        \Svea\Maksuturva\Helper\Data $maksuturvaHelper,
         Xml $xmlConvert,
         Config $config
     ) {
         $this->xmlConvert = $xmlConvert;
         $this->config = $config;
+        $this->helper = $maksuturvaHelper;
         if (!function_exists("curl_init")) {
             throw new \Svea\Maksuturva\Model\Gateway\Exception(array("cURL is needed in order to communicate with the maksuturva's server. Check your PHP installation."), self::EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED);
         }
@@ -212,6 +214,8 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
                 );
             }
         }
+
+        $this->helper->sveaLoggerInfo("Cancel result for pmtc_id" $parsedResponse['pmtc_id']  . " is '" . $parsedResponse['pmtc_returntext'] . "'" );
 
         switch($parsedResponse['pmtc_returncode']){
 

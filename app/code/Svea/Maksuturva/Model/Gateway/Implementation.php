@@ -506,14 +506,16 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             }
         }
 
-        $this->helper->sveaLoggerInfo("Payment status query result: " . print_r(array_values($parsedResponse), true) );
 
         if (!$this->_verifyStatusQueryResponse($parsedResponse)) {
+            $this->helper->sveaLoggerInfo("Payment status query response hash doesn't match.");
             throw new \Svea\Maksuturva\Model\Gateway\Exception(
                 ["The authenticity of the answer could't be verified."],
                 self::EXCEPTION_CODE_HASHES_DONT_MATCH
             );
         }
+
+        $this->helper->sveaLoggerInfo("Payment status query successful.");
 
         return $parsedResponse;
     }
@@ -619,7 +621,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $order->setState($processState, true, __('Payment confirmed by Svea Payments'));
         $order->setStatus($processStatus, true, __('Payment confirmed by Svea Payments'));
         $order->save();
-        $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " set as paid and status " . strval($processStatus));
+        $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " set as paid and status to '" . strval($processStatus) . "'");
     }
     
     public function addDeliveryInfo($payment)
@@ -838,8 +840,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
         $fields['pmtc_hash'] = $this->calculateHash($fields, $hashFields);
         $response = $this->getPostResponse($this->getPaymentCancelUrl(), $fields);
-
-        $this->helper->sveaLoggerInfo("Refund for payment id " . $transactionId . " result " . print_r($response, true) );
   
         return $this->processCancelPaymentResponse($response);
     }
