@@ -393,7 +393,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $xml = simplexml_load_string($response);
         $obj = json_decode(json_encode($xml));
 
-        $this->helper->maksuturvaLogger("[INFO] Payment methods query result: " . print_r($obj, true) );
+        $this->helper->sveaLoggerInfo("Payment methods query result: " . print_r($obj, true) );
                 
         if (property_exists($obj, 'paymentmethod') && $obj->paymentmethod) {
             return $obj->paymentmethod;
@@ -473,14 +473,14 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             $this->curlClient->post($this->getStatusQueryUrl(), $statusQueryData);
             if ($this->curlClient->getStatus() != 200) {
-                $this->helper->maksuturvaLogger("[ERROR] Status query failed for payment " . $pmt_id . " result, http responsecode=" . $this->curlClient->getStatus());
+                $this->helper->sveaLoggerError("Status query failed for payment " . $pmt_id . " result, http responsecode=" . $this->curlClient->getStatus());
                 throw new \Svea\Maksuturva\Model\Gateway\Exception(
                     ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl()]
                 );
             }
         } catch (\Exception $e) {
             throw new \Svea\Maksuturva\Model\Gateway\Exception(
-                ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl() . " ERROR MESSAGE: " . $e->getMessage()]
+                ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl() . " Exception: " . $e->getMessage()]
             );
         }
 
@@ -496,7 +496,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             "pmtq_buyerpostalcode", "pmtq_buyercity", "pmtq_hash"
         );
 
-        $this->helper->maksuturvaLogger("[INFO] Status query result: " . print_r($responseFields, true) );
+        $this->helper->sveaLoggerInfo("Payment status query result: " . print_r($responseFields, true) );
 
         foreach ($responseFields as $responseField) {
             preg_match("/<$responseField>(.*)?<\/$responseField>/i", $body, $match);
@@ -519,7 +519,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     {
         $order = $this->getOrder();
         $result = array('success' => 'error', 'message' => '');
-        $this->helper->maksuturvaLogger("[INFO] Status query successful for order " . $order->getIncrementId() . ". Payment status is " . strval($response["pmtq_returncode"]));
+        $this->helper->sveaLoggerInfo("Payment status query for order " . $order->getIncrementId() . " status is " . strval($response["pmtq_returncode"]));
 
         switch ($response["pmtq_returncode"]) {
             // set as paid if not already set
@@ -608,7 +608,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $order->setState($processState, true, __('Payment confirmed by Svea Payments'));
         $order->setStatus($processStatus, true, __('Payment confirmed by Svea Payments'));
         $order->save();
-        $this->helper->maksuturvaLogger("[INFO] Order " . $order->getIncrementId() . " set as paid and status " . strval($processStatus));
+        $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " set as paid and status " . strval($processStatus));
     }
     
     public function addDeliveryInfo($payment)
@@ -618,10 +618,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $additional_data = $payment->getAdditionalData();
             $json_data = json_decode($additional_data, true);
             $pkg_id = $json_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
-            $this->helper->maksuturvaLogger("Adding delivery info for pkg_id {$pkg_id}", null, 'maksuturva.log', true);                                                                        
+            $this->helper->sveaLoggerInfo("Adding delivery info for pkg_id " . strval($pkg_id));                                                                        
         } catch (Exception $e)
         {                                                                                                                                                                                                                                                                                                                                                                                   
-            $this->helper->maksuturvaLogger("Add delivery info, additional data parse exception " . $e->getMessage());
+            $this->helper->sveaLoggerError("Add delivery function failed, parse exception " . $e->getMessage());
             return;
         }
         
@@ -657,7 +657,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
         switch ($resultCode) {
             case self::MAKSUTURVA_PKG_RESULT_SUCCESS:
-                $this->helper->maksuturvaLogger("[INFO] Delivery info for package id  " . strval($xml->pkg_id) . " result " . strval($xml->pkg_resulttext));
+                $this->helper->sveaLoggerInfo("Delivery info for package id  " . strval($xml->pkg_id) . " result " . strval($xml->pkg_resulttext));
                 return array('pkg_resultcode' => $resultCode, 'pkg_id' => (string)$xml->pkg_id, 'pkg_resulttext' => (string)$xml->pkg_resulttext);
             default:
                 throw new \Magento\Framework\Exception\LocalizedException(
@@ -828,7 +828,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $fields['pmtc_hash'] = $this->calculateHash($fields, $hashFields);
         $response = $this->getPostResponse($this->getPaymentCancelUrl(), $fields);
 
-        $this->helper->maksuturvaLogger("[INFO] Refund for payment id " . $transactionId . " result " . print_r($response, true) );
+        $this->helper->sveaLoggerInfo("Refund for payment id " . $transactionId . " result " . print_r($response, true) );
   
         return $this->processCancelPaymentResponse($response);
     }

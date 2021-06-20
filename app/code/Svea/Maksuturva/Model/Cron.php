@@ -41,8 +41,6 @@ class Cron
         }
         $this->_localeResolver->emulate(0);
 
-        $this->helper->maksuturvaLogger("Starting Svea Payments payment status check");
-
         $from = $this->_localeDate->date();
         $from->modify($lookback);
 
@@ -57,11 +55,11 @@ class Cron
            ->addAttributeToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s')));
            // ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
 
-        $this->helper->maksuturvaLogger("found " . $orderCollection->count() . " orders to check");
+        $this->helper->sveaLoggerInfo("Payment status cron job found " . $orderCollection->count() . " orders to be checked from Svea Payments.");
 
         foreach ($orderCollection as $order) {
             $model = $order->getPayment()->getMethodInstance();
-            $this->helper->maksuturvaLogger("Checking order " . $order->getIncrementId() . " created at " . $order->getCreatedAt());
+            $this->helper->sveaLoggerInfo("Checking order " . $order->getIncrementId() . " created at " . $order->getCreatedAt());
             $implementation = $model->getGatewayImplementation();
             if ($implementation != NULL) 
             {
@@ -72,15 +70,15 @@ class Cron
                 try {
                     $response = $implementation->statusQuery($data);
                     $result = $implementation->ProcessStatusQueryResult($response);
-                    $this->helper->maksuturvaLogger($result['message']);
+                    $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " query status " . $result['message']);
                 } catch (\Exception $e) 
                 {
-                    $this->helper->maksuturvaLogger("Order status query exception: " . $e->getMessage());
+                    $this->helper->sveaLoggerError("Order " . $order->getIncrementId() . " status query exception: " . $e->getMessage());
                 }
             }
         }
 
-        $this->helper->maksuturvaLogger("finished order status check");
+        $this->helper->sveaLoggerInfo("Payment status cron job finished.");
         $this->_localeResolver->revert();
     }
 }
