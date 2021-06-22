@@ -562,14 +562,11 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                     } else {
                         $result['message'] = __('Payment confirmed by Svea Payments. Invoices already exist.');
                         /* resolve case when invoice exists but status in database is still pending payment */
-                        //if ($order->getStatus()==$this->getConfigData('order_status'))
-                        //{
-                        //    $this->setOrderAsPaid($order);
-                        //}
-
-                        // always set as paid when the payment is confirmed
-                        $this->setOrderAsPaid($order);
-                        $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment confirmed by Svea Payments.'");
+                        if ($order->getStatus()==$this->getConfigData('order_status'))
+                        {
+                            $this->setOrderAsPaid($order);
+                            $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment confirmed by Svea Payments.'");
+                        }
                     }
                     $result['success'] = 'success';
                 }
