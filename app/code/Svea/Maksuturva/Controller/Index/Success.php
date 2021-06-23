@@ -29,8 +29,13 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
 
     public function execute()
     {
-
         $params = $this->getRequest()->getParams();
+
+        if (isset($this->getOrderByPaymentId($values['pmt_id'])) {
+            $this->getHelper()->sveaLoggerDebug("Success action for " . $this->getOrderByPaymentId($values['pmt_id']);
+        } else {
+            $this->getHelper()->sveaLoggerDebug("Success action");
+        }
 
         foreach ($this->mandatoryFields as $field) {
             if (array_key_exists($field, $params)) {
@@ -44,7 +49,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         try {
             $order = $this->getOrderByPaymentId($values['pmt_id']);
         } catch (\Exception $e) {
-            $this->_maksuturvaHelper->sveaLoggerError($e);
+            $this->getHelper()->sveaLoggerError($e);
             $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Order matching the payment id could not be found.')));
             return;
         }

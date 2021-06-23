@@ -8,6 +8,8 @@ class Delayed extends \Svea\Maksuturva\Controller\Maksuturva
         $params = $this->getRequest()->getParams();
         $order = $this->getLastedOrder();
 
+        $this->_maksuturvaHelper->sveaLoggerDebug("Delayed action");
+
         if(!$this->validateReturnedOrder($order, $params)){
             $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on Svea Payments payment module.')));
             return;
