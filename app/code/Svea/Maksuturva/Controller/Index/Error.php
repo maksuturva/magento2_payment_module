@@ -59,7 +59,7 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
             }
 
             $order->save();
-            $this->_maksuturvaHelper->sveaLoggerInfo("Error action controller, order " . $order->getId() . " error. See order page for detailed message.");
+            $this->getHelper()->sveaLoggerInfo("Error action controller, order " . $order->getIncrementId() . " error. See order page for detailed message.");
 
             $this->_redirect('checkout/cart');
             return;

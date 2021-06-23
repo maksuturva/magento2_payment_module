@@ -31,16 +31,11 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
     {
         $params = $this->getRequest()->getParams();
 
-        if ($this->getOrderByPaymentId($values['pmt_id'])!==null) {
-            $this->getHelper()->sveaLoggerDebug("Success action controller request for payment " . $this->getOrderByPaymentId($values['pmt_id']) );
-        } else {
-            $this->getHelper()->sveaLoggerDebug("Success action controller request");
-        }
-
         foreach ($this->mandatoryFields as $field) {
             if (array_key_exists($field, $params)) {
                 $values[$field] = $params[$field];
             } else {
+                $this->getHelper()->sveaLoggerError("Success action controller, error " . $e);
                 $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD, 'field' => $field));
                 return;
             }
@@ -49,9 +44,15 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         try {
             $order = $this->getOrderByPaymentId($values['pmt_id']);
         } catch (\Exception $e) {
-            $this->getHelper()->sveaLoggerError($e);
+            $this->getHelper()->sveaLoggerError("Success action controller, error " . $e);
             $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Order matching the payment id could not be found.')));
             return;
+        }
+
+        if ($this->getOrderByPaymentId($values['pmt_id'])!==null) {
+            $this->getHelper()->sveaLoggerDebug("Success action controller request for order " . $order->getIncrementId() . " and payment " . $this->getOrderByPaymentId($values['pmt_id']) );
+        } else {
+            $this->getHelper()->sveaLoggerDebug("Success action controller request");
         }
 
         $this->_checkoutSession
@@ -62,7 +63,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             ->setLastOrderStatus($order->getStatus());
 
         if(!$this->validateReturnedOrder($order, $params)){
-            $this->getHelper()->sveaLoggerError("Success action controller, returned order validation error for order " . $order->getId());
+            $this->getHelper()->sveaLoggerError("Success action controller, returned order validation error for order " . $order->getIncrementId());
             $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on Svea payment module.')));
             return;
         }
@@ -72,7 +73,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         $calculatedHash = $implementation->generateReturnHash($values);
 
         if ($values['pmt_hash'] != $calculatedHash) {
-            $this->getHelper()->sveaLoggerError("Success action controller, hash invalid error for order " . $order->getId());
+            $this->getHelper()->sveaLoggerError("Success action controller, hash invalid error for order " . $order->getIncrementId());
             $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_INVALID_HASH));
             return;
         }
@@ -81,7 +82,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         $implementation->setPayment($order->getPayment());
 
         if (!$order->canInvoice()) {
-            $this->getHelper()->sveaLoggerError("Success action controller, canInvoice returned false for order " . $order->getId());
+            $this->getHelper()->sveaLoggerError("Success action controller, canInvoice returned false for order " . $order->getIncrementId());
             $this->messageManager->addError(__('Your order is not valid or is already paid.'));
             $this->_redirect('checkout/cart');
             return;
@@ -100,7 +101,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         }
 
         if ($form->{'pmt_sellercosts'} > $values['pmt_sellercosts']) {
-            $this->getHelper()->sveaLoggerError("Success action controller, seller costs values mismatch for order " . $order->getId());
+            $this->getHelper()->sveaLoggerError("Success action controller, seller costs values mismatch for order " . $order->getIncrementId());
             $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH, 'message' => urlencode("Payment method returned shipping and payment costs of " . $values['pmt_sellercosts'] . " EUR. YOUR PURCHASE HAS NOT BEEN SAVED. Please contact the web store."), 'new_sellercosts' => $values['pmt_sellercosts'], 'old_sellercosts' => $form->{'pmt_sellercosts'}));
             return;
         }
@@ -141,7 +142,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             $order->setState($processState, true, $msg, false);
             $order->setStatus($processStatus, true, $msg, false);
             $order->save();
-            $this->getHelper()->sveaLoggerError("Success action controller, order " . $order->getId() . " saved with status " . $msg);
+            $this->getHelper()->sveaLoggerError("Success action controller, order " . $order->getIncrementId() . " saved with status " . $msg);
             
             $this->disableQuote($order);
 

@@ -14,7 +14,7 @@ class Cancel extends \Svea\Maksuturva\Controller\Maksuturva
             return;
         }
 
-        $this->_maksuturvaHelper->sveaLoggerDebug("Cancel action controller request for payment " . $pmt_id);
+        $this->getHelper()->sveaLoggerDebug("Cancel action controller request for payment " . $pmt_id);
 
         $order = $this->getLastedOrder();
         $payment = $this->getPayment();
@@ -37,7 +37,7 @@ class Cancel extends \Svea\Maksuturva\Controller\Maksuturva
             }
             $order->setStatus($canceledStatus, true, __('You have cancelled your payment in Svea Payments.'));
             $order->save();
-            $this->_maksuturvaHelper->sveaLoggerInfo("Cancel action controller, order " . $order->getId() . " cancelled for payment " . $pmt_id);
+            $this->getHelper()->sveaLoggerInfo("Cancel action controller, order " . $order->getIncrementId() . " cancelled for payment " . $pmt_id);
 
             $this->messageManager->addError(__('You have cancelled your payment in Svea Payments.'));
         } else {
