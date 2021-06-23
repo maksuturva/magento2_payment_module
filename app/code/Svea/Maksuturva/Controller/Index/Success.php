@@ -50,7 +50,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         }
 
         if ($this->getOrderByPaymentId($values['pmt_id'])!==null) {
-            $this->getHelper()->sveaLoggerDebug("Success action controller request for order " . $order->getIncrementId() . " and payment " . $this->getOrderByPaymentId($values['pmt_id']) );
+            $this->getHelper()->sveaLoggerDebug("Success action controller request for order " . $order->getIncrementId());
         } else {
             $this->getHelper()->sveaLoggerDebug("Success action controller request");
         }
