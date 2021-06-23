@@ -10,9 +10,9 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
         $order = $this->getLastedOrder();
 
         if (isset($pmt_id)) {
-            $this->getHelper()->sveaLoggerDebug("Error action request for payment " . $pmt_id);
+            $this->getHelper()->sveaLoggerDebug("Error action controller request for payment " . $pmt_id);
         } else {
-            $this->getHelper()->sveaLoggerDebug("Error action request");
+            $this->getHelper()->sveaLoggerDebug("Error action controller request");
         }
 
         $payment = $this->getPayment();
@@ -59,6 +59,8 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
             }
 
             $order->save();
+            $this->_maksuturvaHelper->sveaLoggerInfo("Error action controller, order " . $order->getId() . " error. See order page for detailed message.");
+
             $this->_redirect('checkout/cart');
             return;
         }
