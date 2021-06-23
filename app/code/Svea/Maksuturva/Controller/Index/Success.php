@@ -31,10 +31,10 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
     {
         $params = $this->getRequest()->getParams();
 
-        if (isset($this->getOrderByPaymentId($values['pmt_id'])) {
-            $this->getHelper()->sveaLoggerDebug("Success action for " . $this->getOrderByPaymentId($values['pmt_id']);
+        if (isset($this->getOrderByPaymentId($values['pmt_id']) )) {
+            $this->getHelper()->sveaLoggerDebug("Success action request for payment " . $this->getOrderByPaymentId($values['pmt_id']);
         } else {
-            $this->getHelper()->sveaLoggerDebug("Success action");
+            $this->getHelper()->sveaLoggerDebug("Success action request ");
         }
 
         foreach ($this->mandatoryFields as $field) {

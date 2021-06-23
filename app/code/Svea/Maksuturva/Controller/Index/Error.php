@@ -10,9 +10,9 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
         $order = $this->getLastedOrder();
 
         if (isset($pmt_id)) {
-            $this->getHelper()->sveaLoggerDebug("Error action for " . $pmt_id);
+            $this->getHelper()->sveaLoggerDebug("Error action request for payment " . $pmt_id);
         } else {
-            $this->getHelper()->sveaLoggerDebug("Error action");
+            $this->getHelper()->sveaLoggerDebug("Error action request");
         }
 
         $payment = $this->getPayment();

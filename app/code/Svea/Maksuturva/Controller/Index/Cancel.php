@@ -14,7 +14,7 @@ class Cancel extends \Svea\Maksuturva\Controller\Maksuturva
             return;
         }
 
-        $this->_maksuturvaHelper->sveaLoggerDebug("Cancel action for " . $pmt_id);
+        $this->_maksuturvaHelper->sveaLoggerDebug("Cancel action request for payment " . $pmt_id);
 
         $order = $this->getLastedOrder();
         $payment = $this->getPayment();
