@@ -31,7 +31,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
     {
         $params = $this->getRequest()->getParams();
 
-        if (isset($this->getOrderByPaymentId($values['pmt_id']) )) {
+        if ($this->getOrderByPaymentId($values['pmt_id'])!==null) {
             $this->getHelper()->sveaLoggerDebug("Success action controller request for payment " . $this->getOrderByPaymentId($values['pmt_id']) );
         } else {
             $this->getHelper()->sveaLoggerDebug("Success action controller request");
