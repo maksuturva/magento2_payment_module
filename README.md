@@ -2,7 +2,7 @@
 
 Contributors: Svea Payments Oy  
 Tags: svea, payment gateway  
-Requires magento version at least: 2.3.4  
+Requires Magento version at least: 2.3.4  
 Tested up to: 2.4.2  
 
 # System requirements
@@ -86,7 +86,7 @@ php bin/magento cache:flush
 
 # Upgrade previous version
 
-Upgrading process is similar to the installation and database should be upgraded automatically in the process. Take a backup snapshot from your database before upgrading.
+Upgrading process is similar to the installation and database should be upgraded automatically in the process. Take a backup from your database before upgrading.
 
 First, move your old payment module version to the safe place and after that, follow the section Installation Instructions 
 
@@ -94,6 +94,12 @@ First, move your old payment module version to the safe place and after that, fo
 su www-data
 mv /var/www/html/app/code/Svea /var/www/html/app/code/Svea.old
 ```
+
+# Logging
+
+If you suspect that the payment module is not working properly, please see log files for possible errors and information. The log file is named `svea-payment-module.log` and it's located at Magento log directory. For example, in the directory `/var/www/html/var/log`.
+
+Debug (DEBUG), info and (INFO) error (ERR) log levels are used for the logging.
 
  
 # Configuration via Magento Admin
@@ -110,15 +116,15 @@ For minimum setup, you could enable only the `Maksuturva Service` payment method
 
 ## Sandbox mode
 
-If enabled, communication url, seller id and secret key in sandbox fields are used, otherwise personal credentials and communication url are used.
+If enabled, endpoint API url, seller id and secret key in sandbox fields are used, otherwise personal credentials and endpoint API url are used.
 
 ## Seller id and secret key
 
 This parameter provided by Svea Payments. Please note that this key must not be shared with any person, since it allows many operations to be done in your Svea Payments account.
 
-## Communication url
+## Endpoint API url
 
-API url to communicate with Svea Payments service. Should be usually kept as is.
+The endpoint url to communicate with Svea Payments service API. Should be usually kept as is.
 
 In case you want to test using personal test credentials, you must change this to https://test1.maksuturva.fi/. Please note that the url must end with slash `/`.
 
@@ -263,13 +269,7 @@ In the test environment no actual money is handled and no orders tracked. For te
 
 For testing our payment service without using actual money, you need to set communication URL in the module configurations as https://test1.maksuturva.fi. All our test environment services are found under that domain unlike our production environment services which are found under SSL-secured domain https://www.maksuturva.fi. Test environment for KauppiasExtranet can be found similarly at https://test1.maksuturva.fi/extranet/.
 
-If sandbox testing passes but testing with test server fails, the reason most likely is in communication URL, seller id or secret key. In that case you should first check that they are correct and no extra spaces are added in the beginning or end of the inputs.
-
-# Logging
-
-Logging file is named `svea-payment-module.log` and for example, it's located in directory /var/www/html/var/log
-
-Info and Error log levels are used for logging.
+If sandbox testing passes but testing with test server fails, the reason most likely is in endpoint API URL, seller id or secret key. In that case you should first check that they are correct and no extra spaces are added in the beginning or end of the inputs.
 
 # Known issues
 
@@ -285,11 +285,14 @@ API description and documentation can be found at:
 
 Partial and full refund is supported through credit memo. Creating one can be done from the order's invoice.
 
+Open Invoice / View / Credit Memo and Add a new credit memo with refund. If the total amount matches with the invoice total, full refund is created. Otherwise partial refund. You can create multiple partial refund credit memos.  
+
 # Troubleshooting
 
-* If you get `No payment methods available` on payment page, you might check the sellerid, secret key and communication url once more. Try to use sandbox mode.
+* See Logging for log files. The version 1.5.4 and above has more informational logging available.
+* If you get `No payment methods available` on payment page, you might check the sellerid, secret key and endpoint API url once more. Try to use sandbox mode.
 
 # Support
 
-For general support, please contant support.payments@svea.fi    
-For technical support, please contact info.payments@svea.fi  
+For General support, please contant support.payments@svea.fi    
+For Technical support, please contact info.payments@svea.fi  

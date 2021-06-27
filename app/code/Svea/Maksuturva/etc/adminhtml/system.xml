@@ -13,9 +13,11 @@
                 <label>Base Config</label>
                 <field id="sellerid" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Seller ID</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="test_sellerid" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Sandbox seller ID</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="secretkey" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Secret Key</label>
@@ -34,10 +36,11 @@
                     <validate>validate-not-negative-number</validate>
                 </field>
                 <field id="commurl" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Communication Url</label>
+                    <label>Endpoint API Url</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="test_commurl" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox communication Url</label>
+                    <label>Sandbox Endpoint API Url</label>
                 </field>
                 <field id="commencoding" translate="label" type="radios" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Communication Encoding</label>
@@ -60,11 +63,11 @@
                 </field>
 
                 <field id="manually_query_in_hour" translate="label" type="button" sortOrder="145" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Manually Query Maksuturva API for orders missing payments in hour</label>
+                    <label>Manually Query Svea Payments API for orders missing payments in hour</label>
                     <frontend_model>Svea\Maksuturva\Block\Form\Button</frontend_model>
                 </field>
                 <field id="manually_query_in_day" translate="label" type="button" sortOrder="146" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Manually Query Maksuturva API for orders missing payments in day</label>
+                    <label>Manually Query Svea Payments API for orders missing payments in day</label>
                     <frontend_model>Svea\Maksuturva\Block\Form\Button</frontend_model>
                 </field>
 
