@@ -13,28 +13,28 @@
                 <label>Base Config</label>
 
                 <field id="sandboxmode" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox Mode</label>
+                    <label>Sandbox Mode (if no, then production is used)</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
                 <field id="sellerid" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Seller ID</label>
+                    <label>Production Seller ID</label>
                 </field>
                 <field id="secretkey" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Secret Key</label>
+                    <label>Production Secret Key</label>
                 </field>
                 <field id="commurl" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Endpoint API Url</label>
+                    <label>Production Endpoint API URL</label>
                 </field>
 
                 <field id="test_sellerid" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox seller ID</label>
+                    <label>Sandbox Seller ID</label>
                 </field>
                 <field id="test_secretkey" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox secret Key</label>
+                    <label>Sandbox Secret Key</label>
                 </field>
                 <field id="test_commurl" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox Endpoint API Url</label>
+                    <label>Sandbox Endpoint API URL</label>
                 </field>
 
                 <field id="keyversion" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
