@@ -164,16 +164,16 @@ code1,code2,code3
 ```
 ## Query Svea Payments API payment status for orders automatically (version 1.6.0 above)
 
-If enabled, this will activate a cronjob that queries pending order payments from Svea Payments API. This kind of order might occasionally happen, if after successful payment customer does not return to the webshop, but the payment transaction was successful.
+If enabled, this will activate a cronjob that queries `Pending` payments from Svea Payments API. This kind of order might occasionally happen, if after successful payment customer does not return to the webshop, but the payment transaction was successful.
 
-Job is run hourly, and the status is queried pending orders not older than one day. If you need to check older order statuses, use the manual query on the admin page.
+Job is `run hourly`, and the status is queried pending orders not older than one day. If you need to check older order statuses, use the manual query on the admin page.
 
 To check that automatic status query is working, see log file for following items. The job is run hourly, so you need wait a while after activation.
 ```
 2021-06-27T17:01:03+00:00 INFO (6): "Finding Pending orders to query between ...."
 ```
 
-If you are not getting the log items above, check section Cron Jobs
+If you are not getting the log items above, check section `Cron Jobs`.
 
 
 ## Enable cancellation of settled payments
