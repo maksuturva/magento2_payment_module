@@ -2,10 +2,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
     <group id="default">
         <job name="maksuturva_payment_check_short" instance="Svea\Maksuturva\Model\Cron" method="checkPaymentStatusInShortTime">
-            <schedule>10 * * * *</schedule>
+            <schedule>* * * * *</schedule>
         </job>
         <job name="maksuturva_payment_check_long" instance="Svea\Maksuturva\Model\Cron" method="checkPaymentStatusInLongTime">
-            <schedule>40 7 * * *</schedule>
+            <schedule>* * * * *</schedule>
         </job>
     </group>
 </config>

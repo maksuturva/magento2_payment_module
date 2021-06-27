@@ -27,10 +27,12 @@ class Cron
     }
 
     public function checkPaymentStatusInShortTime(){
+        $this->helper->sveaLoggerInfo("Payment status cron job short triggered.");
         $this->checkPaymentStatus("-4 hours");
     }
 
     public function checkPaymentStatusInLongTime(){
+        $this->helper->sveaLoggerInfo("Payment status cron job long triggered.");
         $this->checkPaymentStatus("-2 weeks");
     }
 
@@ -39,6 +41,7 @@ class Cron
         if (!$this->_scopeConfig->isSetFlag('maksuturva_config/maksuturva_payment/cron_active') && !$this->registry->registry('run_cron_manually')) {
             return;
         }
+        $this->helper->sveaLoggerInfo("Payment status cron job check status triggered.");
         $this->_localeResolver->emulate(0);
 
         $from = $this->_localeDate->date();
