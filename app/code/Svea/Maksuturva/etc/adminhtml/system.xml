@@ -10,7 +10,7 @@
             <tab>Svea</tab>
             <resource>Svea_Maksuturva::system_config</resource>
             <group id="maksuturva_payment" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Svea Payments Base Configuration</label>
+                <label>Svea Payments Configuration</label>
 
                 <field id="sandboxmode" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Sandbox Mode (if no, then production is used)</label>

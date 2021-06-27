@@ -106,13 +106,13 @@ Debug (DEBUG), info and (INFO) error (ERR) log levels are used for the logging.
 
 Configurations for the module is found from following locations
 
-General module configuration: `Stores >> Configuration >> Svea >> Svea Payment`
+General module configuration: `Stores >> Configuration >> Svea Payments >> Svea Payments Configuration`
 
 Payment methods' configuration: `Stores >> Configuration >> Sales >> Payment Methods`
 
 Order comment configuration: `Stores >> Configuration >> Sales >> Sales >> Order Comment`
 
-For minimum setup, you could enable only the `Maksuturva Service` payment method and configure the title to `Svea Payments`. This payment method will automatically display payment method icons on payment page that are enabled to your account in the backend configuration.
+For minimum setup, you could enable only the `Maksuturva Collated` payment method. See Basic Settings section.
 
 ## Sandbox mode
 
