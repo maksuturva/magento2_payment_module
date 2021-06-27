@@ -3,68 +3,73 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="Svea" translate="label" sortOrder="500">
-            <label>Svea</label>
+            <label>Svea Payments</label>
         </tab>
         <section id="maksuturva_config" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Svea Payments</label>
+            <label>Svea Payments Configuration</label>
             <tab>Svea</tab>
             <resource>Svea_Maksuturva::system_config</resource>
             <group id="maksuturva_payment" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Base Config</label>
-                <field id="sellerid" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Seller ID</label>
-                </field>
-                <field id="test_sellerid" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox seller ID</label>
-                </field>
-                <field id="secretkey" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Secret Key</label>
-                </field>
-                <field id="test_secretkey" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox secret Key</label>
+                <label>Svea Payments Configuration</label>
+
+                <field id="sandboxmode" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sandbox Mode (if no, then production is used)</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="locale" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="sellerid" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Production Seller ID</label>
+                </field>
+                <field id="secretkey" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Production Secret Key</label>
+                </field>
+                <field id="commurl" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Production Endpoint API URL</label>
+                </field>
+
+                <field id="test_sellerid" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sandbox Seller ID</label>
+                </field>
+                <field id="test_secretkey" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sandbox Secret Key</label>
+                </field>
+                <field id="test_commurl" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sandbox Endpoint API URL</label>
+                </field>
+
+                <field id="keyversion" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Key Version</label>
+                    <validate>required-entry</validate>
+                </field>
+
+                <field id="locale" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Locale</label>
                     <source_model>Svea\Maksuturva\Model\Source\AllowedLocale</source_model>
                 </field>
 
-                <field id="paymentdue" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="paymentdue" translate="label" type="text" sortOrder="105" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Payment due date</label>
                     <validate>validate-not-negative-number</validate>
                 </field>
-                <field id="commurl" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Communication Url</label>
-                </field>
-                <field id="test_commurl" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox communication Url</label>
-                </field>
+
                 <field id="commencoding" translate="label" type="radios" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Communication Encoding</label>
                     <source_model>Svea\Maksuturva\Model\Source\Encoding</source_model>
                 </field>
 
-                <field id="sandboxmode" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox Mode</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="keyversion" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Key Version</label>
-                    <validate>required-entry</validate>
-                </field>
                 <field id="cron_active" translate="label" type="select" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Query Svea Payments API for orders missing payments</label>
+                    <label>Query Svea Payments API for order status automatically</label>
                     <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
                     <comment><![CDATA[If payment method can't verify payment immediately or customer fails to return to webshop with payment data, this option enables cronjob to query status of orders pending payment.]]></comment>
                     <validate>required-entry</validate>
                 </field>
 
                 <field id="manually_query_in_hour" translate="label" type="button" sortOrder="145" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Manually Query Maksuturva API for orders missing payments in hour</label>
+                    <label>Manually Query Svea Payments API for orders (short)</label>
                     <frontend_model>Svea\Maksuturva\Block\Form\Button</frontend_model>
                 </field>
                 <field id="manually_query_in_day" translate="label" type="button" sortOrder="146" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Manually Query Maksuturva API for orders missing payments in day</label>
+                    <label>Manually Query Svea Payments API for orders (long)</label>
                     <frontend_model>Svea\Maksuturva\Block\Form\Button</frontend_model>
                 </field>
 

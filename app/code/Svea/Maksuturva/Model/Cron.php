@@ -26,15 +26,23 @@ class Cron
         $this->registry = $registry;
     }
 
+    public function checkPaymentStatusPoller() {
+        try {
+            $this->checkPaymentStatus("-30 minutes", "-24 hours");    
+        } catch (Exception $e) {
+            $this->helper->sveaLoggerError("Payment status automatic query failed, reason " . $e->getMessage());
+        }
+    }
+
     public function checkPaymentStatusInShortTime(){
-        $this->checkPaymentStatus("-4 hours");
+        $this->checkPaymentStatus("-1 minutes", "-24 hours");
     }
 
     public function checkPaymentStatusInLongTime(){
-        $this->checkPaymentStatus("-2 weeks");
+        $this->checkPaymentStatus("-1 minutes", "-1 weeks");
     }
 
-    public function checkPaymentStatus($lookback = "-4 hours")
+    public function checkPaymentStatus($starttime = "-1 minutes", $lookback = "-4 hours")
     {
         if (!$this->_scopeConfig->isSetFlag('maksuturva_config/maksuturva_payment/cron_active') && !$this->registry->registry('run_cron_manually')) {
             return;
@@ -44,19 +52,23 @@ class Cron
         $from = $this->_localeDate->date();
         $from->modify($lookback);
 
-        /*
         $to = $this->_localeDate->date();
-        $to->modify("-5 minutes");
-        */
+        $to->modify($starttime);
+        
+        $this->helper->sveaLoggerInfo("Payment status job finding 'Pending' orders between " . $to->format('Y-m-d H:i:s') . " to " . $from->format('Y-m-d H:i:s') );
+        
         $orderCollection = $this->_orderCollectionFactory->create()
            ->join(array('payment' => 'sales_order_payment'), 'main_table.entity_id=parent_id', 'method')
            ->addFieldToFilter('status', "pending")
            ->addFieldToFilter('payment.method', array('like' => 'maksuturva_%'))
-           ->addAttributeToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s')));
-           // ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
+           ->addAttributeToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s')))
+           ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
 
-        $this->helper->sveaLoggerInfo("Payment status cron job found " . $orderCollection->count() . " orders to be checked from Svea Payments.");
-
+        if ($orderCollection->count()>0) {
+            $this->helper->sveaLoggerInfo("Payment status job found " . $orderCollection->count() . " orders to be checked from Svea Payments.");
+        } else {
+            $this->helper->sveaLoggerInfo("Payment status job found no 'Pending' orders to be checked.");
+        }
         foreach ($orderCollection as $order) {
             $model = $order->getPayment()->getMethodInstance();
             $this->helper->sveaLoggerInfo("Checking order " . $order->getIncrementId() . " created at " . $order->getCreatedAt());
@@ -78,7 +90,7 @@ class Cron
             }
         }
 
-        $this->helper->sveaLoggerInfo("Payment status cron job finished.");
+        $this->helper->sveaLoggerInfo("Payment status job finished.");
         $this->_localeResolver->revert();
     }
 }

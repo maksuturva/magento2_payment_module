@@ -2,7 +2,7 @@
 
 Contributors: Svea Payments Oy  
 Tags: svea, payment gateway  
-Requires magento version at least: 2.3.4  
+Requires Magento version at least: 2.3.4  
 Tested up to: 2.4.2  
 
 # System requirements
@@ -86,7 +86,7 @@ php bin/magento cache:flush
 
 # Upgrade previous version
 
-Upgrading process is similar to the installation and database should be upgraded automatically in the process. Take a backup snapshot from your database before upgrading.
+Upgrading process is similar to the installation and database should be upgraded automatically in the process. Take a backup from your database before upgrading.
 
 First, move your old payment module version to the safe place and after that, follow the section Installation Instructions 
 
@@ -95,30 +95,36 @@ su www-data
 mv /var/www/html/app/code/Svea /var/www/html/app/code/Svea.old
 ```
 
+# Logging
+
+If you suspect that the payment module is not working properly, please see log files for possible errors and information. The log file is named `svea-payment-module.log` and it's located at Magento log directory. For example, in the directory `/var/www/html/var/log`.
+
+Debug (DEBUG), info and (INFO) error (ERR) log levels are used for the logging.
+
  
 # Configuration via Magento Admin
 
 Configurations for the module is found from following locations
 
-General module configuration: `Stores >> Configuration >> Svea >> Svea Payment`
+General module configuration: `Stores >> Configuration >> Svea Payments >> Svea Payments Configuration`
 
 Payment methods' configuration: `Stores >> Configuration >> Sales >> Payment Methods`
 
 Order comment configuration: `Stores >> Configuration >> Sales >> Sales >> Order Comment`
 
-For minimum setup, you could enable only the `Maksuturva Service` payment method and configure the title to `Svea Payments`. This payment method will automatically display payment method icons on payment page that are enabled to your account in the backend configuration.
+For minimum setup, you could enable only the `Maksuturva Collated` payment method. See Basic Settings section.
 
 ## Sandbox mode
 
-If enabled, communication url, seller id and secret key in sandbox fields are used, otherwise personal credentials and communication url are used.
+If enabled, endpoint API url, seller id and secret key in sandbox fields are used, otherwise personal credentials and endpoint API url are used.
 
 ## Seller id and secret key
 
 This parameter provided by Svea Payments. Please note that this key must not be shared with any person, since it allows many operations to be done in your Svea Payments account.
 
-## Communication url
+## Endpoint API url
 
-API url to communicate with Svea Payments service. Should be usually kept as is.
+The endpoint url to communicate with Svea Payments service API. Should be usually kept as is.
 
 In case you want to test using personal test credentials, you must change this to https://test1.maksuturva.fi/. Please note that the url must end with slash `/`.
 
@@ -156,11 +162,19 @@ The methods are given as comma separated list, example:
 ```
 code1,code2,code3
 ```
-## Query Svea Payments API for orders missing payments (deprecated)
+## Query Svea Payments API payment status for orders automatically (version 1.6.0 above)
 
-If enabled, will enable cronjob that queries Svea Payments API for order missing payment. This kind of orders might occasionally happen, if after successful payment customer does not return to webshop.
+If enabled, this will activate a cronjob that queries `Pending` payments from Svea Payments API. This kind of order might occasionally happen, if after successful payment customer does not return to the webshop, but the payment transaction was successful.
 
-Deprecated since 2.2.0 and should be disabled. Alternative and **better way is to ask Svea Payments to enabled "status OK" callback** to Magento.
+Job is `run hourly`, and the status is queried pending orders not older than one day. If you need to check older order statuses, use the manual query on the admin page.
+
+To check that automatic status query is working, see log file for following items. The job is run hourly, so you need wait a while after activation.
+```
+2021-06-27T17:01:03+00:00 INFO (6): "Finding Pending orders to query between ...."
+```
+
+If you are not getting the log items above, check section `Cron Jobs`.
+
 
 ## Enable cancellation of settled payments
 
@@ -263,13 +277,35 @@ In the test environment no actual money is handled and no orders tracked. For te
 
 For testing our payment service without using actual money, you need to set communication URL in the module configurations as https://test1.maksuturva.fi. All our test environment services are found under that domain unlike our production environment services which are found under SSL-secured domain https://www.maksuturva.fi. Test environment for KauppiasExtranet can be found similarly at https://test1.maksuturva.fi/extranet/.
 
-If sandbox testing passes but testing with test server fails, the reason most likely is in communication URL, seller id or secret key. In that case you should first check that they are correct and no extra spaces are added in the beginning or end of the inputs.
+If sandbox testing passes but testing with test server fails, the reason most likely is in endpoint API URL, seller id or secret key. In that case you should first check that they are correct and no extra spaces are added in the beginning or end of the inputs.
 
-# Logging
+# Cron jobs
 
-Logging file is named `svea-payment-module.log` and for example, it's located in directory /var/www/html/var/log
+Magento cron scheduler run commands on system cron scheduler. If your cron jobs are not executed, check that system cronjob is running.
 
-Info and Error log levels are used for logging.
+```
+ps -ef | grep cron | grep -v grep
+```
+You should get something like
+```
+root        513      0  0 13:51 ?        00:00:00 /usr/sbin/cron
+```
+
+Next use your www user and check the crontab
+
+```
+su www-data
+crontab -l
+```
+
+You should get Magento cron jobs in the listing. Magento setup:cron:run is the most important for the payment module.  
+```
+* * * * * www-data /usr/local/bin/php /var/www/html/bin/magento cron:run | grep -v "Ran jobs by schedule" >> /var/www/html/var/log/magento-cron.log  
+* * * * * www-data /usr/local/bin/php /var/www/html/bin/magento indexer:reindex
+* * * * * www-data /usr/local/bin/php /var/www/html/update/cron.php >> /var/www/html/var/log/update-cron.log
+* * * * * www-data /usr/local/bin/php /var/www/html/bin/magento setup:cron:run >> /var/www/html/var/log/setup-cron.log
+```
+If you need to edit cron jobs, command is `crontab -e`
 
 # Known issues
 
@@ -285,11 +321,14 @@ API description and documentation can be found at:
 
 Partial and full refund is supported through credit memo. Creating one can be done from the order's invoice.
 
+Open Invoice / View / Credit Memo and Add a new credit memo with refund. If the total amount matches with the invoice total, full refund is created. Otherwise partial refund. You can create multiple partial refund credit memos.  
+
 # Troubleshooting
 
-* If you get `No payment methods available` on payment page, you might check the sellerid, secret key and communication url once more. Try to use sandbox mode.
+* See Logging for log files. The version 1.5.4 and above has more informational logging available.
+* If you get `No payment methods available` on payment page, you might check the sellerid, secret key and endpoint API url once more. Try to use sandbox mode.
 
 # Support
 
-For general support, please contant support.payments@svea.fi    
-For technical support, please contact info.payments@svea.fi  
+For General support, please contant support.payments@svea.fi    
+For Technical support, please contact info.payments@svea.fi  

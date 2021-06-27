@@ -12,7 +12,7 @@ class Button extends \Magento\Config\Block\System\Config\Form\Field
             $html = $this->getLayout()->createBlock('Magento\Backend\Block\Widget\Button')
                 ->setData(
                     [
-                        'label' => __('Manually Query Svea Payments API For Orders Created In Past 3 Hours'),
+                        'label' => __('Manually Query Svea Payments API For Orders Created In Past 24 Hours'),
                         'onclick' => "setLocation('$url')",
                         'class' => 'action-add',
                     ]

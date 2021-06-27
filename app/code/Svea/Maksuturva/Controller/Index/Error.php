@@ -9,6 +9,12 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
         $pmt_id = $this->getRequest()->getParam('pmt_id');
         $order = $this->getLastedOrder();
 
+        if (isset($pmt_id)) {
+            $this->getHelper()->sveaLoggerDebug("Error action controller request for payment " . $pmt_id);
+        } else {
+            $this->getHelper()->sveaLoggerDebug("Error action controller request");
+        }
+
         $payment = $this->getPayment();
         $additional_data = $this->getHelper()->getPaymentAdditionData($payment);
 
@@ -27,11 +33,11 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
                     break;
 
                 case \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH:
-                    $this->messageManager->addError(__('Value returned from Maksuturva does not match:') . ' ' . @$paramsArray['message']);
+                    $this->messageManager->addError(__('Value returned from Svea Payments does not match:') . ' ' . @$paramsArray['message']);
                     break;
 
                 case \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH:
-                    $this->messageManager->addError(__('Shipping and payment costs returned from Maksuturva do not match.') . ' ' . $paramsArray['message']);
+                    $this->messageManager->addError(__('Shipping and payment costs returned from Svea Payments do not match.') . ' ' . $paramsArray['message']);
                     break;
 
                 default:
@@ -53,6 +59,8 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
             }
 
             $order->save();
+            $this->getHelper()->sveaLoggerInfo("Error action controller, order " . $order->getIncrementId() . " error. See order page for detailed message.");
+
             $this->_redirect('checkout/cart');
             return;
         }

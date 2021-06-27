@@ -514,7 +514,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             );
         }
 
-        $this->helper->sveaLoggerInfo("Payment status query successful.");
+        $this->helper->sveaLoggerInfo("Payment status query for payment " . $pmt_id . " successful.");
 
         return $parsedResponse;
     }

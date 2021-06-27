@@ -1,11 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
     <group id="default">
-        <job name="maksuturva_payment_check_short" instance="Svea\Maksuturva\Model\Cron" method="checkPaymentStatusInShortTime">
-            <schedule>10 * * * *</schedule>
-        </job>
-        <job name="maksuturva_payment_check_long" instance="Svea\Maksuturva\Model\Cron" method="checkPaymentStatusInLongTime">
-            <schedule>40 7 * * *</schedule>
+        <job name="svea_payment_check_cron" instance="Svea\Maksuturva\Model\Cron" method="checkPaymentStatusPoller">
+            <schedule>30 * * * *</schedule>
         </job>
     </group>
 </config>

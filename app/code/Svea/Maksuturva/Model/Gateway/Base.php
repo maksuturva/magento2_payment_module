@@ -106,6 +106,11 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         $this->getSveaLoggerHandler()->info(json_encode($info));
     }
 
+    public function sveaLoggerError($error)
+    {
+        $this->getSveaLoggerHandler()->err(json_encode($error));
+    }
+
     protected function getSveaLoggerHandler()
     {
         if(!$this->_loggerHandler) {
@@ -149,10 +154,11 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
 
         $res = curl_exec($request);
         if ($res === false) {
-            throw new \Svea\Maksuturva\Model\Gateway\Exception(array("Failed to communicate with Maksuturva. Please check the network connection. URL: " . $url . " ERROR MESSAGE: " . curl_error($request)));
+            $errmsg = "Failed to communicate with Svea Payments API. Please check the network connection and settings. URL: " . $url . " ERROR MESSAGE: " . curl_error($request);
+            $this->sveaLoggerError($errmsg);
+            throw new \Svea\Maksuturva\Model\Gateway\Exception(array($errmsg));
         }
         curl_close($request);
-
         return $res;
     }
 
@@ -185,7 +191,6 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
             "pmtq_paymentdate"
         );
 
-
         foreach ($requiredFields as $requiredField) {
             if (!isset($data[$requiredField]) && !in_array($requiredField, $optionalFields)) {
                 return false;
@@ -216,7 +221,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         $parsedResponse = $this->parseResponse($response);
 
         /** If response was ok, check hash. */
-        if ($parsedResponse['pmtc_returncode']=== self::PAYMENT_CANCEL_OK){
+        if ($parsedResponse['pmtc_returncode']=== self::PAYMENT_CANCEL_OK) {
 
             $calcHash = $this->calculateHash($parsedResponse, $hashFields);
 
@@ -230,10 +235,9 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
             }
         }
 
-        $this->sveaLoggerInfo("Cancel or refund result for pmtc_id" . $parsedResponse['pmtc_id'] . " is '" . $parsedResponse['pmtc_returntext'] . "'" );
+        $this->sveaLoggerInfo($parsedResponse['pmtc_action'] . " result for transaction " . $parsedResponse['pmtc_id'] . " is '" . $parsedResponse['pmtc_returntext'] . "'" );
 
-        switch($parsedResponse['pmtc_returncode']){
-
+        switch($parsedResponse['pmtc_returncode']) {
             case self::PAYMENT_CANCEL_OK:
                 $error = false;
                 break;
@@ -275,7 +279,8 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         }
 
         /** If canceling failed, throw error */
-        if ($error){
+        if ($error) {
+            $this->sveaLoggerError("Cancelling payment failed for transaction " .  $parsedResponse['pmtc_id'] . ", reason " . $msg);
             throw new Exception(
                 [$msg],
                 $parsedResponse['pmtc_returncode']
@@ -292,9 +297,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
     private function parseResponse($response)
     {
         $xml = simplexml_load_string($response, 'SimpleXMLElement', LIBXML_NOERROR|LIBXML_NOWARNING);
-
         return $this->xmlConvert->xmlToAssoc($xml);
-
     }
 
     /**

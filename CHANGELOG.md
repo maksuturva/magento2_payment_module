@@ -4,6 +4,12 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.6.0] - 2021-06-28
+### Changed
+ - 'Query Svea Payments API for order status automatically' functionality rewritten
+ - Crontab changes
+ - Rearranged admin form elements and Communication url renamed to Endpoint API URL
+
 ## [1.5.4] - 2021-06-20
 ### Changed
  - Logging file is renamed to svea-payment-module.log
