@@ -27,17 +27,17 @@ class Cron
     }
 
     public function checkPaymentStatusPoller(){
-        $this->helper->sveaLoggerInfo("Payment status cron job short triggered.");
+        $this->helper->sveaLoggerDebug("Payment status cron automatic query triggered.");
         $this->checkPaymentStatus("-30 minutes", "-6 hours");
     }
 
     public function checkPaymentStatusInShortTime(){
-        $this->helper->sveaLoggerDebug("Payment status cron job short triggered.");
+        $this->helper->sveaLoggerDebug("Payment status cron job 'short window' triggered.");
         $this->checkPaymentStatus("-1 minutes", "-4 hours");
     }
 
     public function checkPaymentStatusInLongTime(){
-        $this->helper->sveaLoggerDebug("Payment status cron job long triggered.");
+        $this->helper->sveaLoggerDebug("Payment status cron job 'long window' triggered.");
         $this->checkPaymentStatus("-1 minutes", "-1 weeks");
     }
 
