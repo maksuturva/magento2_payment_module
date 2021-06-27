@@ -60,7 +60,7 @@ class Cron
            ->join(array('payment' => 'sales_order_payment'), 'main_table.entity_id=parent_id', 'method')
            ->addFieldToFilter('status', "pending")
            ->addFieldToFilter('payment.method', array('like' => 'maksuturva_%'))
-           ->addAttributeToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s')));
+           ->addAttributeToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s')))
            ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
 
         $this->helper->sveaLoggerInfo("Payment status cron job found " . $orderCollection->count() . " orders to be checked from Svea Payments.");
