@@ -11,50 +11,52 @@
             <resource>Svea_Maksuturva::system_config</resource>
             <group id="maksuturva_payment" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Base Config</label>
-                <field id="sellerid" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+
+                <field id="sandboxmode" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sandbox Mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="sellerid" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Seller ID</label>
-                    <validate>required-entry</validate>
                 </field>
-                <field id="test_sellerid" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox seller ID</label>
-                    <validate>required-entry</validate>
-                </field>
-                <field id="secretkey" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="secretkey" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Secret Key</label>
+                </field>
+                <field id="commurl" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Endpoint API Url</label>
+                </field>
+
+                <field id="test_sellerid" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sandbox seller ID</label>
                 </field>
                 <field id="test_secretkey" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Sandbox secret Key</label>
                 </field>
+                <field id="test_commurl" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sandbox Endpoint API Url</label>
+                </field>
 
-                <field id="locale" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="keyversion" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Key Version</label>
+                    <validate>required-entry</validate>
+                </field>
+
+                <field id="locale" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Locale</label>
                     <source_model>Svea\Maksuturva\Model\Source\AllowedLocale</source_model>
                 </field>
 
-                <field id="paymentdue" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="paymentdue" translate="label" type="text" sortOrder="105" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Payment due date</label>
                     <validate>validate-not-negative-number</validate>
                 </field>
-                <field id="commurl" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Endpoint API Url</label>
-                    <validate>required-entry</validate>
-                </field>
-                <field id="test_commurl" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox Endpoint API Url</label>
-                </field>
+
                 <field id="commencoding" translate="label" type="radios" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Communication Encoding</label>
                     <source_model>Svea\Maksuturva\Model\Source\Encoding</source_model>
                 </field>
 
-                <field id="sandboxmode" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Sandbox Mode</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="keyversion" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Key Version</label>
-                    <validate>required-entry</validate>
-                </field>
                 <field id="cron_active" translate="label" type="select" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Query Svea Payments API for orders missing payments</label>
                     <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
