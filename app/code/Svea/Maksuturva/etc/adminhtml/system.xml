@@ -65,11 +65,11 @@
                 </field>
 
                 <field id="manually_query_in_hour" translate="label" type="button" sortOrder="145" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Manually Query Svea Payments API for orders missing payments in hour</label>
+                    <label>Manually Query Svea Payments API for orders (short)</label>
                     <frontend_model>Svea\Maksuturva\Block\Form\Button</frontend_model>
                 </field>
                 <field id="manually_query_in_day" translate="label" type="button" sortOrder="146" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Manually Query Svea Payments API for orders missing payments in day</label>
+                    <label>Manually Query Svea Payments API for orders (long)</label>
                     <frontend_model>Svea\Maksuturva\Block\Form\Button</frontend_model>
                 </field>
 
