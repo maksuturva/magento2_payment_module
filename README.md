@@ -271,6 +271,34 @@ For testing our payment service without using actual money, you need to set comm
 
 If sandbox testing passes but testing with test server fails, the reason most likely is in endpoint API URL, seller id or secret key. In that case you should first check that they are correct and no extra spaces are added in the beginning or end of the inputs.
 
+# Cron jobs
+
+Magento cron scheduler run commands on system cron scheduler. If your cron jobs are not executed, check that system cronjob is running.
+
+```
+ps -ef | grep cron | grep -v grep
+```
+You should get something like
+```
+root        513      0  0 13:51 ?        00:00:00 /usr/sbin/cron
+```
+
+Next use your www user and check the crontab
+
+```
+su www-data
+crontab -l
+```
+
+You should get Magento cron jobs in the listing. Magento setup:cron:run is the most important for the payment module.  
+```
+* * * * * www-data /usr/local/bin/php /var/www/html/bin/magento cron:run | grep -v "Ran jobs by schedule" >> /var/www/html/var/log/magento-cron.log  
+* * * * * www-data /usr/local/bin/php /var/www/html/bin/magento indexer:reindex
+* * * * * www-data /usr/local/bin/php /var/www/html/update/cron.php >> /var/www/html/var/log/update-cron.log
+* * * * * www-data /usr/local/bin/php /var/www/html/bin/magento setup:cron:run >> /var/www/html/var/log/setup-cron.log
+```
+If you need to edit cron jobs, command is `crontab -e`
+
 # Known issues
 
 * Module supports Magento gift card, but not 3rd party gift card implementations. If you're using 3rd party modules, you may have to implement support for those by yourself.

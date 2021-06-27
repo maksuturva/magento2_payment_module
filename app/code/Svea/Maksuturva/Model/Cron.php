@@ -26,37 +26,42 @@ class Cron
         $this->registry = $registry;
     }
 
-    public function checkPaymentStatusInShortTime(){
+    public function checkPaymentStatusPoller(){
         $this->helper->sveaLoggerInfo("Payment status cron job short triggered.");
-        $this->checkPaymentStatus("-4 hours");
+        $this->checkPaymentStatus("-30 minutes", "-6 hours");
+    }
+
+    public function checkPaymentStatusInShortTime(){
+        $this->helper->sveaLoggerDebug("Payment status cron job short triggered.");
+        $this->checkPaymentStatus("-1 minutes", "-4 hours");
     }
 
     public function checkPaymentStatusInLongTime(){
-        $this->helper->sveaLoggerInfo("Payment status cron job long triggered.");
-        $this->checkPaymentStatus("-2 weeks");
+        $this->helper->sveaLoggerDebug("Payment status cron job long triggered.");
+        $this->checkPaymentStatus("-1 minutes", "-1 weeks");
     }
 
-    public function checkPaymentStatus($lookback = "-4 hours")
+    public function checkPaymentStatus($starttime = "-1 minutes", $lookback = "-4 hours")
     {
         if (!$this->_scopeConfig->isSetFlag('maksuturva_config/maksuturva_payment/cron_active') && !$this->registry->registry('run_cron_manually')) {
             return;
         }
-        $this->helper->sveaLoggerInfo("Payment status cron job check status triggered.");
         $this->_localeResolver->emulate(0);
 
         $from = $this->_localeDate->date();
         $from->modify($lookback);
 
-        /*
         $to = $this->_localeDate->date();
-        $to->modify("-5 minutes");
-        */
+        $to->modify($starttime);
+        
+        $this->helper->sveaLoggerInfo("Finding Pending orders to query between " . str($to) . " to " . str($from));
+        
         $orderCollection = $this->_orderCollectionFactory->create()
            ->join(array('payment' => 'sales_order_payment'), 'main_table.entity_id=parent_id', 'method')
            ->addFieldToFilter('status', "pending")
            ->addFieldToFilter('payment.method', array('like' => 'maksuturva_%'))
            ->addAttributeToFilter('created_at', array('gteq' => $from->format('Y-m-d H:i:s')));
-           // ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
+           ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
 
         $this->helper->sveaLoggerInfo("Payment status cron job found " . $orderCollection->count() . " orders to be checked from Svea Payments.");
 
