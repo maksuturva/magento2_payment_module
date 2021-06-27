@@ -142,7 +142,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             $order->setState($processState, true, $msg, false);
             $order->setStatus($processStatus, true, $msg, false);
             $order->save();
-            $this->getHelper()->sveaLoggerInfo("Success action controller, order " . $order->getIncrementId() . " saved with status '" . $msg "'");
+            $this->getHelper()->sveaLoggerInfo("Success action controller, order " . $order->getIncrementId() . " saved with status '" . $msg . "'");
             
             $this->disableQuote($order);
 
