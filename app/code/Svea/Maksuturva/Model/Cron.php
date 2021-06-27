@@ -26,9 +26,13 @@ class Cron
         $this->registry = $registry;
     }
 
-    public function checkPaymentStatusPoller(){
-        $this->helper->sveaLoggerDebug("Payment status cron automatic query triggered.");
-        $this->checkPaymentStatus("-30 minutes", "-6 hours");
+    public function checkPaymentStatusPoller() {
+        try {
+            $this->helper->sveaLoggerDebug("Payment status cron automatic query triggered.");
+            $this->checkPaymentStatus("-30 minutes", "-6 hours");    
+        } catch (Exception $e) {
+            $this->helper->sveaLoggerError("Payment status cron automatic query failed, reason " . $e->getMessage());
+        }
     }
 
     public function checkPaymentStatusInShortTime(){
@@ -54,7 +58,7 @@ class Cron
         $to = $this->_localeDate->date();
         $to->modify($starttime);
         
-        $this->helper->sveaLoggerInfo("Finding Pending orders to query between " . str($to) . " to " . str($from));
+        $this->helper->sveaLoggerInfo("Finding Pending orders to query between " . $to->format('Y-m-d H:i:s') . " to " . $from->format('Y-m-d H:i:s') );
         
         $orderCollection = $this->_orderCollectionFactory->create()
            ->join(array('payment' => 'sales_order_payment'), 'main_table.entity_id=parent_id', 'method')
