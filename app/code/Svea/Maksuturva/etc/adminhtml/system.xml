@@ -58,7 +58,7 @@
                 </field>
 
                 <field id="cron_active" translate="label" type="select" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Query Svea Payments API for orders missing payments</label>
+                    <label>Query Svea Payments API for order status automatically</label>
                     <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
                     <comment><![CDATA[If payment method can't verify payment immediately or customer fails to return to webshop with payment data, this option enables cronjob to query status of orders pending payment.]]></comment>
                     <validate>required-entry</validate>
