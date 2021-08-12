@@ -711,9 +711,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $refunds = $amount + (float)$order->getBaseTotalOnlineRefunded()
             + (float)$order->getBaseTotalOfflineRefunded();
         */
-
         
-        if (abs($this->getBaseGrandTotal() - $this->getBaseTotalRefunded() - $amount) < .0001) {
+        if (abs($invoice->getBaseGrandTotal() - $invoice->getBaseTotalRefunded() - $amount) < .0001) {
             $cancelType = 'FULL_REFUND';
         } else {
             $cancelType = 'PARTIAL_REFUND';
