@@ -706,16 +706,22 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         /** @var InvoiceInterface $invoice */
         $invoice = $payment->getCreditmemo()->getInvoice();
 
-        $canRefundMore = $invoice->canRefund();
-        $refunds = $amount + (float)$order->getBaseTotalOnlineRefunded()
+        /*
+            $canRefundMore = $invoice->canRefund();
+            $refunds = $amount + (float)$order->getBaseTotalOnlineRefunded()
             + (float)$order->getBaseTotalOfflineRefunded();
-
-        /** Do full refund, if we can't refund more and refunds cover grand total */
-        if (!$canRefundMore && (0.0001 > (float)$order->getBaseGrandTotal() - $refunds) ) {
+        */
+        
+        if (abs($invoice->getBaseGrandTotal() - $invoice->getBaseTotalRefunded()) < .0001) {
             $cancelType = 'FULL_REFUND';
+            $canRefundMore = false;
         } else {
             $cancelType = 'PARTIAL_REFUND';
+            $canRefundMore = true;
         }
+
+        $this->helper->sveaLoggerInfo("Refund canceltype " . $cancelType . ". GrandTotal=" . $invoice->getBaseGrandTotal() . ", TotalRefunded=" . 
+            $invoice->getBaseTotalRefunded() . ", amount=" . $amount);
 
         $parsedResponse = $this->cancel($payment, $amount, $cancelType);
 
