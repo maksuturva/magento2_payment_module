@@ -718,8 +718,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $cancelType = 'PARTIAL_REFUND';
         }
 
-        $this->helper->sveaLoggerInfo("Refund canceltype " . $cancelType . ". GrandTotal=" . $this->getBaseGrandTotal() . ", TotalRefunded=" . 
-            $this->getBaseTotalRefunded() . ", amount=" . $amount);
+        $this->helper->sveaLoggerInfo("Refund canceltype " . $cancelType . ". GrandTotal=" . $invoice->getBaseGrandTotal() . ", TotalRefunded=" . 
+            $invoice->getBaseTotalRefunded() . ", amount=" . $amount);
 
         $parsedResponse = $this->cancel($payment, $amount, $cancelType);
 
