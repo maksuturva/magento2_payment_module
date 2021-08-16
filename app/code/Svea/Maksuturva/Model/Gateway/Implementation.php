@@ -713,10 +713,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         /** @var InvoiceInterface $invoice */
         $invoice = $payment->getCreditmemo()->getInvoice();
 
-        //SVEADEBUG
-        $this->helper->sveaLoggerDebug("Refund invoice " . print_r($invoice, true));
-        $this->helper->sveaLoggerDebug("Refund order " . print_r($order, true));
-        
         /*
             $canRefundMore = $invoice->canRefund();
             $refunds = $amount + (float)$order->getBaseTotalOnlineRefunded()
