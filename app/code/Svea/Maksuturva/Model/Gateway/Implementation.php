@@ -714,7 +714,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $invoice = $payment->getCreditmemo()->getInvoice();
 
         //SVEADEBUG
-        $this->helper->sveaLoggerDebug("Refund invoice " . print_r($invouce, true));
+        $this->helper->sveaLoggerDebug("Refund invoice " . print_r($invoice, true));
         $this->helper->sveaLoggerDebug("Refund order " . print_r($order, true));
         
         /*
