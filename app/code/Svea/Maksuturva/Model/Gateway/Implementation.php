@@ -352,13 +352,16 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $options["pmt_rows"] = count($products_rows);
             $options["pmt_rows_data"] = $products_rows;
 
+            //SVEADEBUG
+            $this->helper->sveaLoggerDebug("Payment form " . print_r($options, true));
+            
             $transportObject = new \Magento\Framework\DataObject(array('order' => $order, 'options' => $options));
             $this->eventManager->dispatch(
                 'maksuturva_gateway_implementation_get_form_after',
                 array('transport_object' => $transportObject)
             );
             $options = $transportObject->getOptions();
-
+            
             $this->form = $this->_maksuturvaForm->setConfig(array('secretkey' => $this->secretKey, 'options' => $options, 'encoding' => $this->commEncoding, 'url' => $this->commUrl));
         }
 
@@ -706,6 +709,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         /** @var InvoiceInterface $invoice */
         $invoice = $payment->getCreditmemo()->getInvoice();
 
+        //SVEADEBUG
+        $this->helper->sveaLoggerDebug("Refund invoice " . print_r($invouce, true));
+        $this->helper->sveaLoggerDebug("Refund order " . print_r($order, true));
+        
         /*
             $canRefundMore = $invoice->canRefund();
             $refunds = $amount + (float)$order->getBaseTotalOnlineRefunded()
