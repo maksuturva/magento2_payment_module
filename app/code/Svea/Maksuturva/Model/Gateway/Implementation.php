@@ -114,9 +114,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             $products_rows = array();
             foreach ($items as $itemId => $item) {
-                //SVEADEBUG
-                $this->helper->sveaLoggerDebug("Item " . print_r($item, true));
-            
                 $itemData = $item->getData();
                 $productName = $item->getName();
 
