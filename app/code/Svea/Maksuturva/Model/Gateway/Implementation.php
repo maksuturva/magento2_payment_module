@@ -114,6 +114,9 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             $products_rows = array();
             foreach ($items as $itemId => $item) {
+                //SVEADEBUG
+                $this->helper->sveaLoggerDebug("Item " . print_r($item, true));
+            
                 $itemData = $item->getData();
                 $productName = $item->getName();
 
@@ -253,8 +256,12 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $shippingTax = 0;
             }
 
+            //SVEADEBUG
+            $this->helper->sveaLoggerDebug("Shipping cost " . $shippingCost . ", shipping tax " . $shippingTax);            
             $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
-
+            //SVEADEBUG
+            $this->helper->sveaLoggerDebug("Shipping tax rate " . $shippingTaxRate);            
+            
             $row = array(
                 'pmt_row_name' => __('Shipping'),
                 'pmt_row_desc' => $shippingDescription,
