@@ -254,6 +254,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             }
 
             $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
+            //SVEADEBUG
+            $this->helper->sveaLoggerDebug("Shipping cost " . $shippingCost . ", shipping tax " . $shippingTax . " and calculated tax rate " . $shippingTaxRate);            
 
             $row = array(
                 'pmt_row_name' => __('Shipping'),
@@ -358,7 +360,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 array('transport_object' => $transportObject)
             );
             $options = $transportObject->getOptions();
-
+            
             $this->form = $this->_maksuturvaForm->setConfig(array('secretkey' => $this->secretKey, 'options' => $options, 'encoding' => $this->commEncoding, 'url' => $this->commUrl));
         }
 
@@ -705,14 +707,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $order = $payment->getOrder();
         /** @var InvoiceInterface $invoice */
         $invoice = $payment->getCreditmemo()->getInvoice();
-
-        /*
-            $canRefundMore = $invoice->canRefund();
-            $refunds = $amount + (float)$order->getBaseTotalOnlineRefunded()
-            + (float)$order->getBaseTotalOfflineRefunded();
-        */
         
-        if (abs($invoice->getBaseGrandTotal() - $invoice->getBaseTotalRefunded()) < .0001) {
+        if (abs($order->getBaseTotalInvoiced() - $order->getBaseTotalRefunded()) < .0001) {
             $cancelType = 'FULL_REFUND';
             $canRefundMore = false;
         } else {
@@ -720,8 +716,9 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $canRefundMore = true;
         }
 
-        $this->helper->sveaLoggerInfo("Refund canceltype " . $cancelType . ". GrandTotal=" . $invoice->getBaseGrandTotal() . ", TotalRefunded=" . 
-            $invoice->getBaseTotalRefunded() . ", amount=" . $amount);
+        $this->helper->sveaLoggerInfo("Refund canceltype " . $cancelType . ". InvoiceGrandTotal=" . $invoice->getBaseGrandTotal()
+             . ", InvoiceTotalRefunded=" . $invoice->getBaseTotalRefunded() . ", OrderBaseTotalInvoiced=" . $order->getBaseTotalInvoiced() 
+             . ", OrderTotalRefunded=" . $order->getBaseTotalRefunded() . ", amount=" . $amount);
 
         $parsedResponse = $this->cancel($payment, $amount, $cancelType);
 
