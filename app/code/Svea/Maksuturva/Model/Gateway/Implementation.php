@@ -253,12 +253,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $shippingTax = 0;
             }
 
-            //SVEADEBUG
-            $this->helper->sveaLoggerDebug("Shipping cost " . $shippingCost . ", shipping tax " . $shippingTax);            
             $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
             //SVEADEBUG
-            $this->helper->sveaLoggerDebug("Shipping tax rate " . $shippingTaxRate);            
-            
+            $this->helper->sveaLoggerDebug("Shipping cost " . $shippingCost . ", shipping tax " . $shippingTax . " and calculated tax rate " . $shippingTaxRate);            
+
             $row = array(
                 'pmt_row_name' => __('Shipping'),
                 'pmt_row_desc' => $shippingDescription,
@@ -356,9 +354,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $options["pmt_rows"] = count($products_rows);
             $options["pmt_rows_data"] = $products_rows;
 
-            //SVEADEBUG
-            $this->helper->sveaLoggerDebug("Payment form " . print_r($options, true));
-            
             $transportObject = new \Magento\Framework\DataObject(array('order' => $order, 'options' => $options));
             $this->eventManager->dispatch(
                 'maksuturva_gateway_implementation_get_form_after',
