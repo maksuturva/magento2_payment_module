@@ -719,7 +719,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             + (float)$order->getBaseTotalOfflineRefunded();
         */
         
-        if (abs($invoice->getBaseGrandTotal() - $invoice->getBaseTotalRefunded()) < .0001) {
+        if (abs($invoice->getBaseGrandTotal() - $order->getBaseTotalRefunded()) < .0001) {
             $cancelType = 'FULL_REFUND';
             $canRefundMore = false;
         } else {
@@ -727,8 +727,9 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $canRefundMore = true;
         }
 
-        $this->helper->sveaLoggerInfo("Refund canceltype " . $cancelType . ". GrandTotal=" . $invoice->getBaseGrandTotal() . ", TotalRefunded=" . 
-            $invoice->getBaseTotalRefunded() . ", amount=" . $amount);
+        $this->helper->sveaLoggerInfo("Refund canceltype " . $cancelType . ". InvoiceGrandTotal=" . $invoice->getBaseGrandTotal()
+             . ", InvoiceTotalRefunded=" . $invoice->getBaseTotalRefunded() . ", OrderTotalRefunded=" . $order->getBaseTotalRefunded() 
+             . ", amount=" . $amount);
 
         $parsedResponse = $this->cancel($payment, $amount, $cancelType);
 
