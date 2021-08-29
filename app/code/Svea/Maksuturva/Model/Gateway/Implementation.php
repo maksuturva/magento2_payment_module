@@ -398,7 +398,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 
         if (property_exists($obj, 'paymentmethod') && $obj->paymentmethod) {
             if (is_array($obj->paymentmethod))
-            $this->helper->sveaLoggerInfo("Payment methods query found " . count($obj->paymentmethod) . " payment methods." );
+            $this->helper->sveaLoggerDebug("" . count($obj->paymentmethod) . " available payment methods for total " . $total);
             return $obj->paymentmethod;
         } else {
             return false;
@@ -471,14 +471,15 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 CURLOPT_FRESH_CONNECT => 1,
                 CURLOPT_FORBID_REUSE => 1,
                 CURLOPT_SSL_VERIFYPEER => 0,
-                CURLOPT_CONNECTTIMEOUT => 60,
+                CURLOPT_CONNECTTIMEOUT => 30,
             ]);
 
             $this->curlClient->post($this->getStatusQueryUrl(), $statusQueryData);
             if ($this->curlClient->getStatus() != 200) {
                 $this->helper->sveaLoggerError("Status query failed for payment " . $pmt_id . " result, http responsecode=" . $this->curlClient->getStatus());
                 throw new \Svea\Maksuturva\Model\Gateway\Exception(
-                    ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl()]
+                    ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl()
+                    . " HTTP response code " . $this->curlClient->getStatus()]
                 );
             }
         } catch (\Exception $e) {
@@ -488,17 +489,18 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         }
 
         $body = $this->curlClient->getBody();
+        //$this->helper->sveaLoggerDebug("Status query HTTP response body " . print_r($body, true));               
 
         // we will not rely on xml parsing - instead, the fields are going to be collected by means of preg_match
         $parsedResponse = array();
         $responseFields = array(
-            "pmtq_action", "pmtq_version", "pmtq_sellerid", "pmtq_id",
+            "pmtq_action", "pmtq_version", "pmtq_sellerid", "pmtq_id", "pmtq_orderid",
             "pmtq_amount", "pmtq_returncode", "pmtq_returntext", "pmtq_trackingcodes",
-            "pmtq_sellercosts", "pmtq_paymentmethod", "pmtq_escrow", "pmtq_certification", "pmtq_paymentdate",
+            "pmtq_sellercosts", "pmtq_invoicingfee", "pmtq_paymentmethod", "pmtq_escrow", 
+            "pmtq_certification", "pmtq_paymentdate",
             "pmtq_buyername", "pmtq_buyeraddress1", "pmtq_buyeraddress2",
             "pmtq_buyerpostalcode", "pmtq_buyercity", "pmtq_hash"
         );
-
    
         foreach ($responseFields as $responseField) {
             preg_match("/<$responseField>(.*)?<\/$responseField>/i", $body, $match);
@@ -507,16 +509,15 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             }
         }
 
-
         if (!$this->_verifyStatusQueryResponse($parsedResponse)) {
-            $this->helper->sveaLoggerInfo("Payment status query response hash doesn't match.");
+            $this->helper->sveaLoggerError("Payment status query response verification failed.");
             throw new \Svea\Maksuturva\Model\Gateway\Exception(
                 ["The authenticity of the answer could't be verified."],
                 self::EXCEPTION_CODE_HASHES_DONT_MATCH
             );
         }
 
-        $this->helper->sveaLoggerInfo("Payment status query for payment " . $pmt_id . " successful.");
+        $this->helper->sveaLoggerInfo("Payment status query for payment " . $pmt_id . " was successful.");
 
         return $parsedResponse;
     }
@@ -524,7 +525,42 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     public function processStatusQueryResult($response)
     {
         $order = $this->getOrder();
+        $incrementid = $order->getIncrementId();
         $result = array('success' => 'error', 'message' => '');
+
+        if (empty($response["pmtq_orderid"])) {
+            $result['message'] = __('Mandatory response field pmtq_orderid is missing.');
+            $result['success'] = "error";
+            $this->helper->sveaLoggerError("Mandatory response field pmtq_orderid is missing.");
+            return $result;
+        }
+
+        /* before processing the payment, check that response data matches order data */
+        if ($response["pmtq_orderid"]!=$incrementid) {
+            $result['message'] = __('Order id and status query response order id does not match! Status update failed.');
+            $result['success'] = "error";
+            $this->helper->sveaLoggerError("Order " . $incrementid . " does not match status query response orderid " . $response["pmtq_orderid"]);
+            return $result;
+        }
+        $pmtq_amount = floatval(str_replace(',', '.', $response["pmtq_amount"]) );
+        if ( empty($response["pmtq_sellercosts"]) )
+            $pmtq_sellercosts = floatval(str_replace(',', '.', "0,00") );
+        else
+            $pmtq_sellercosts = floatval(str_replace(',', '.', $response["pmtq_sellercosts"]) );
+        if ( empty($response["pmtq_invoicingfee"]) )
+            $pmtq_invoicingfee = floatval(str_replace(',', '.', "0,00") );
+        else
+            $pmtq_invoicingfee = floatval(str_replace(',', '.', $response["pmtq_invoicingfee"]) );
+        $total = floatval(str_replace(',', '.', $order->getGrandTotal() ) );
+
+        // 5.00 is maximum accpted sum difference
+        if ( abs($total - ($pmtq_amount+$pmtq_sellercosts-$pmtq_invoicingfee)) > 5.00) {
+            $result['message'] = __('Order and status query response sum mismatch! Status update failed.');
+            $result['success'] = "error";
+            $this->helper->sveaLoggerError("Order " . $incrementid . " sum (amount " . $pmtq_amount . " + sellercosts " . 
+                $pmtq_sellercosts .  " - invoicingfee " . $pmtq_invoicingfee . ") does not match order total " . $total);
+            return $result;
+        }
 
         switch ($response["pmtq_returncode"]) {
             // set as paid if not already set
@@ -544,7 +580,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                     $order->setStatus($processStatus, true, __('Payment capture authorized by Svea Payments'));
                     $order->save();
 
-                    $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment capture authorized by Svea Payments'");
+                    $this->helper->sveaLoggerInfo("Order " . $incrementid . " status updated to 'Payment capture authorized by Svea Payments'");
 
                     $result['message'] = __('Payment capture authorized by Svea Payments.');
                     $result['success'] = 'success';
@@ -559,7 +595,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
                             $result['message'] = __('Payment confirmed by Svea Payments. Invoice saved.');
                             $this->setOrderAsPaid($order);
-                            $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment confirmed by Svea Payments.'");
+                            $this->helper->sveaLoggerInfo("Order " . $incrementid . " status updated to 'Payment confirmed by Svea Payments.'");
                         }
                     } else {
                         $result['message'] = __('Payment confirmed by Svea Payments. Invoices already exist.');
@@ -567,7 +603,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                         if ($order->getStatus()==$this->getConfigData('order_status'))
                         {
                             $this->setOrderAsPaid($order);
-                            $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment confirmed by Svea Payments.'");
+                            $this->helper->sveaLoggerInfo("Order " . $incrementid . " status updated to 'Payment confirmed by Svea Payments.'");
                         }
                     }
                     $result['success'] = 'success';
@@ -588,7 +624,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $order->save();
                 $result['message'] = __('Payment canceled in Svea Payments');
                 $result['success'] = "error";
-                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status updated to 'Payment canceled in Svea Payments.'");
+                $this->helper->sveaLoggerInfo("Order " . $incrementid . " status updated to 'Payment canceled in Svea Payments.'");
                 break;
 
             // no news for buyer and seller\Svea\Maksuturva\Model\Gateway\Implementation
@@ -601,7 +637,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 // no action here
                 $result['message'] = __('No change, still awaiting payment');
                 $result['success'] = "notice";
-                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " status still waiting or unpaid.");
+                $this->helper->sveaLoggerInfo("Order " . $incrementid . " status still waiting or unpaid.");
                 break;
         }
 

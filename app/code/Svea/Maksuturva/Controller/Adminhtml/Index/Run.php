@@ -27,9 +27,9 @@ class Run extends \Magento\Backend\App\Action
         try{
             $this->registry->register('run_cron_manually', true);
             if($this->getRequest()->getParam('is_long_term')){
-                $this->_maksuturvaCronModel->checkPaymentStatus("-7 days");
+                $this->_maksuturvaCronModel->checkPaymentStatus("-1 minutes", "-1 week");
             }else{
-                $this->_maksuturvaCronModel->checkPaymentStatus("-4 hours");
+                $this->_maksuturvaCronModel->checkPaymentStatus("-1 minutes", "-1 day");
             }
 
             $this->messageManager->addSuccess(__('Successfully queried Maksuturva API for missing payments'));
