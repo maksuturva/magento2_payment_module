@@ -35,27 +35,29 @@ class Cron
     }
 
     public function checkPaymentStatusInShortTime(){
-        $this->checkPaymentStatus("-1 minutes", "-24 hours");
+        $this->checkPaymentStatus("-1 minutes", "-1 day");
     }
 
     public function checkPaymentStatusInLongTime(){
         $this->checkPaymentStatus("-1 minutes", "-1 weeks");
     }
 
-    public function checkPaymentStatus($starttime = "-1 minutes", $lookback = "-4 hours")
+    public function checkPaymentStatus($starttime, $lookback)
     {
         if (!$this->_scopeConfig->isSetFlag('maksuturva_config/maksuturva_payment/cron_active') && !$this->registry->registry('run_cron_manually')) {
             return;
         }
-        $this->_localeResolver->emulate(0);
 
-        $from = $this->_localeDate->date();
-        $from->modify($lookback);
+        $this->_localeResolver->emulate(0);
 
         $to = $this->_localeDate->date();
         $to->modify($starttime);
+
+        $from = $this->_localeDate->date();
+        $from->modify($lookback);
         
-        $this->helper->sveaLoggerInfo("Payment status job finding 'Pending' orders between " . $to->format('Y-m-d H:i:s') . " to " . $from->format('Y-m-d H:i:s') );
+        $this->helper->sveaLoggerInfo("Payment status job finding 'Pending' orders between " . 
+            $from->format('Y-m-d H:i:s') . " to " . $to->format('Y-m-d H:i:s') );
         
         $orderCollection = $this->_orderCollectionFactory->create()
            ->join(array('payment' => 'sales_order_payment'), 'main_table.entity_id=parent_id', 'method')

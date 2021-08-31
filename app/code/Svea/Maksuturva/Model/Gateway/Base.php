@@ -29,6 +29,7 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
     const EXCEPTION_CODE_INVALID_ITEM = '05';
     const EXCEPTION_CODE_PHP_CURL_NOT_INSTALLED = '06';
     const EXCEPTION_CODE_HASHES_DONT_MATCH = '07';
+    const EXCEPTION_CODE_STATUS_QUERY_RESPONSE_INVALID = '08';
 
     const PAYMENT_SERVICE_URN = 'NewPaymentExtended.pmt';
     const PAYMENT_METHOD_URN = 'GetPaymentMethods.pmt';
@@ -185,6 +186,8 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
         );
         $optionalFields = array(
             "pmtq_sellercosts",
+            "pmtq_orderid",
+            "pmtq_invoicingfee",
             "pmtq_paymentmethod",
             "pmtq_escrow",
             "pmtq_certification",
@@ -222,13 +225,11 @@ abstract class Base extends \Magento\Framework\Model\AbstractModel
 
         /** If response was ok, check hash. */
         if ($parsedResponse['pmtc_returncode']=== self::PAYMENT_CANCEL_OK) {
-
             $calcHash = $this->calculateHash($parsedResponse, $hashFields);
-
             if ($calcHash !== $parsedResponse['pmtc_hash']) {
                 throw new Exception(
                     array("The authenticity of the answer could't be verified. Hashes didn't match.
-                    Verify cancel in Maksuturva account and make offline refund, if needed."
+                    Verify cancel in Svea Payments account and make offline refund, if needed."
                     ),
                     self::EXCEPTION_CODE_HASHES_DONT_MATCH
                 );

@@ -4,6 +4,12 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.6.3] - 2021-08-29
+### Changed
+ - Added extra validity check to the status query order information
+### Fixed
+ - Manual payment status query (-24h and -1 week) buttons fixed
+ 
 ## [1.6.2] - 2021-08-17
 ### Fixed
  - Fixed partial / full refund cancel type logic and amount calculation
