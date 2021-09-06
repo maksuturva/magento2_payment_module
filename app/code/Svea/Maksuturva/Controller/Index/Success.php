@@ -52,7 +52,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         if ($this->getOrderByPaymentId($values['pmt_id'])!==null) {
             $this->getHelper()->sveaLoggerDebug("Success action controller request for order " . $order->getIncrementId());
         } else {
-            $this->getHelper()->sveaLoggerDebug("Success action controller request");
+            $this->getHelper()->sveaLoggerDebug("Success action controller request. Pmt_id is missing.");
         }
 
         $this->_checkoutSession
@@ -82,7 +82,6 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         $implementation->setPayment($order->getPayment());
 
         if (!$order->canInvoice()) {
-            $this->getHelper()->sveaLoggerError("Success action controller, canInvoice returned false for order " . $order->getIncrementId());
             $this->messageManager->addError(__('Your order is not valid or is already paid.'));
             $this->_redirect('checkout/cart');
             return;
