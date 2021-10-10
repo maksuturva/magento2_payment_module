@@ -854,7 +854,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             'pmtc_canceltype' => $cancelType,
             'pmtc_resptype' => 'XML',
             'pmtc_hashversion' => $this->_pmt_hashversion,
-            'pmtc_keygeneration' => '001'
+            'pmtc_keygeneration' => $this->keyVersion
         ];
 
         $hashFields = [
