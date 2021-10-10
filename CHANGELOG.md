@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.6.4] - 2021-10-10
+### Fixed
+ - Fixed the cancel hash error. An error occurred if the key version was not 001.
+
 ## [1.6.3] - 2021-08-29
 ### Changed
  - Added extra validity check to the status query order information
