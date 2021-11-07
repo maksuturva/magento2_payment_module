@@ -27,16 +27,51 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         $this->orderSender = $orderSender;
     }
 
+    /***
+     * Handle execute error messaging. If callback, use http response codes, otherwise
+     * redirect to error page
+     */
+    private function errorOccured($iscallback, $result_array, $httpcode, $msg, $e) {
+        if (!empty($e)) {
+            $this->getHelper()->sveaLoggerError($msg . $e);
+        } else {
+            $this->getHelper()->sveaLoggerError($msg);
+        }
+
+        if(!$iscallback) {
+            $this->_redirect('maksuturva/index/error', $result_array);
+        } else {
+            $this->getResponse()
+                ->clearHeaders()
+                ->setHeader('HTTP/1.0', $code, true)
+                ->setHeader('Content-Type', 'text/html') 
+                ->setBody($msg);
+        }
+    }
+    /**
+     * Execute success action
+     * 
+     * This method is called when user returns to the webshop after payment is completed
+     * successfully and also to process the Svea Payments callbacks 
+     */
     public function execute()
     {
         $params = $this->getRequest()->getParams();
+        $callback_header = $this->getRequest()->getHeader('X-Svea-Callback');
+        $iscallback = false;
+
+        if (!empty($callback_header) && $callback_header==="true" ) {
+            $this->getHelper()->sveaLoggerDebug("Callback webhook requested.");  
+            $iscallback=true; 
+        }
 
         foreach ($this->mandatoryFields as $field) {
             if (array_key_exists($field, $params)) {
                 $values[$field] = $params[$field];
             } else {
-                $this->getHelper()->sveaLoggerError("Success action controller, error " . $e);
-                $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD, 'field' => $field));
+                $this->errorOccured($iscallback,
+                    array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_EMPTY_FIELD, 'field' => $field),
+                    400, "Mandatory fields are missing.", null);
                 return;
             }
         }
@@ -44,15 +79,10 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         try {
             $order = $this->getOrderByPaymentId($values['pmt_id']);
         } catch (\Exception $e) {
-            $this->getHelper()->sveaLoggerError("Success action controller, error " . $e);
-            $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Order matching the payment id could not be found.')));
+            $this->errorOccured($iscallback, 
+                array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Order matching the payment id could not be found.')),
+                404, "Order " . $values['pmt_id'] . " not found.", $e);
             return;
-        }
-
-        if ($this->getOrderByPaymentId($values['pmt_id'])!==null) {
-            $this->getHelper()->sveaLoggerDebug("Success action controller request for order " . $order->getIncrementId());
-        } else {
-            $this->getHelper()->sveaLoggerDebug("Success action controller request. Pmt_id is missing.");
         }
 
         $this->_checkoutSession
@@ -63,8 +93,9 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             ->setLastOrderStatus($order->getStatus());
 
         if(!$this->validateReturnedOrder($order, $params)){
-            $this->getHelper()->sveaLoggerError("Success action controller, returned order validation error for order " . $order->getIncrementId());
-            $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on Svea payment module.')));
+            $$this->errorOccured($iscallback,
+                array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => __('Unknown error on Svea Payment module.')),
+                500, "Validation error for order " . $order->getIncrementId(), null);
             return;
         }
 
@@ -73,8 +104,9 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         $calculatedHash = $implementation->generateReturnHash($values);
 
         if ($values['pmt_hash'] != $calculatedHash) {
-            $this->getHelper()->sveaLoggerError("Success action controller, hash invalid error for order " . $order->getIncrementId());
-            $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_INVALID_HASH));
+            $$this->errorOccured($iscallback,
+                array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_INVALID_HASH),
+                405, "Response message hash is invalid for order " . $order->getIncrementId(), null);
             return;
         }
 
@@ -82,8 +114,13 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         $implementation->setPayment($order->getPayment());
 
         if (!$order->canInvoice()) {
-            $this->messageManager->addError(__('Your order is not valid or is already paid.'));
-            $this->_redirect('checkout/cart');
+            if (!$iscallback) {
+                $this->messageManager->addError(__('Your order is not valid or it is paid already. The order status is ' . $order->getState());
+                $this->_redirect('checkout/cart');
+            } else {
+                $this->getHelper()->sveaLoggerInfo("Callback for order " . $order->getIncrementId() . 
+                    " and it cannot be updated/invoiced anymore. The current order status " . $order->getState() . " and state " .  $order->getState());
+            }
             return;
         }
 
@@ -94,19 +131,24 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
                 continue;
             }
             if ($form->{$key} != $value) {
-                $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => urlencode("different $key: $value != " . $form->{$key})));
+                $this->errorOccured($iscallback,
+                    array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_VALUES_MISMATCH, 'message' => urlencode("different $key: $value != " . $form->{$key})),
+                    500, "Values mismatch for order " . $order->getIncrementId(), null);
                 return;
             }
         }
 
         if ($form->{'pmt_sellercosts'} > $values['pmt_sellercosts']) {
-            $this->getHelper()->sveaLoggerError("Success action controller, seller costs values mismatch for order " . $order->getIncrementId());
-            $this->_redirect('maksuturva/index/error', array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH, 'message' => urlencode("Payment method returned shipping and payment costs of " . $values['pmt_sellercosts'] . " EUR. YOUR PURCHASE HAS NOT BEEN SAVED. Please contact the web store."), 'new_sellercosts' => $values['pmt_sellercosts'], 'old_sellercosts' => $form->{'pmt_sellercosts'}));
+            $this->errorOccured($iscallback,
+                array('type' => \Svea\Maksuturva\Model\PaymentAbstract::ERROR_SELLERCOSTS_VALUES_MISMATCH, 
+                    'message' => urlencode("Payment method returned shipping and payment costs of " . $values['pmt_sellercosts'] . " EUR. YOUR PURCHASE HAS NOT BEEN SAVED. Please contact the web store."), 
+                    'new_sellercosts' => $values['pmt_sellercosts'], 
+                    'old_sellercosts' => $form->{'pmt_sellercosts'}),
+                500, "Sellercosts mismatch for order " . $order->getIncrementId(), null);
             return;
         }
 
         if ($order->getId()) {
-
             $isDelayedCapture = $method->isDelayedCaptureCase($values['pmt_paymentmethod']);
             $statusText = $isDelayedCapture ? "authorized" : "captured";
 
@@ -121,34 +163,39 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
                 $msg = __("Payment %1 by Svea Payments", $statusText);
             }
 
-            if (!$isDelayedCapture) {
-                $this->_createInvoice($order);
-            }
-            if (!$order->getEmailSent()) {
-                try {
-                    $this->orderSender->send($order);
-                    $this->getHelper()->statusQuery($order);
-                } catch (\Exception $e) {
-                    $this->getHelper()->sveaLoggerError($e);
+            try {
+                if (!$isDelayedCapture) {
+                    $this->_createInvoice($order);
                 }
-            }
-            if($this->getConfigData('paid_order_status')){
-                $processStatus = $this->getConfigData('paid_order_status');
-            }else{
-                $processStatus = \Magento\Sales\Model\Order::STATE_PROCESSING;
-            }
-            $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
-            $order->setState($processState, true, $msg, false);
-            $order->setStatus($processStatus, true, $msg, false);
-            $order->save();
-            $this->getHelper()->sveaLoggerInfo("Success action controller, order " . $order->getIncrementId() . " saved with status '" . $msg . "'");
-            
-            $this->disableQuote($order);
+                if (!$order->getEmailSent()) {
+                        $this->orderSender->send($order);
+                        $this->getHelper()->statusQuery($order);
+                }
+                if($this->getConfigData('paid_order_status')){
+                    $processStatus = $this->getConfigData('paid_order_status');
+                }else{
+                    $processStatus = \Magento\Sales\Model\Order::STATE_PROCESSING;
+                }
 
-            $this->_redirect('checkout/onepage/success', array('_secure' => true));
-            return;
+                $processState = \Magento\Sales\Model\Order::STATE_PROCESSING;
+                $order->setState($processState, true, $msg, false);
+                $order->setStatus($processStatus, true, $msg, false);
+                $order->save();
+                $this->getHelper()->sveaLoggerInfo("" . $order->getIncrementId() . 
+                    " status updated with message '" . $msg . 
+                    "', status " . $processStatus . 
+                    " and state " . $processState);
+                
+                $this->disableQuote($order);
+
+                $this->_redirect('checkout/onepage/success', array('_secure' => true));
+                return; 
+            } catch (Exception $e) {
+                $this->getHelper()->sveaLoggerError("Order " . $order->getIncrementId() . " status update failed. " . $e);
+            }
         }
 
+        $this->getHelper()->sveaLoggerError("Unknown success controller error for " .  $order->getIncrementId());
         $this->_redirect('maksuturva/index/error', array('type' => 9999));
         $this->getResponse()->setBody($this->_resultPageFactory->create()->getLayout()->createBlock('Svea\Maksuturva\Block\Form\Maksuturva')->toHtml());
     }

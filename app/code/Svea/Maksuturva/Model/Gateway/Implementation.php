@@ -254,8 +254,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             }
 
             $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
-            //SVEADEBUG
-            $this->helper->sveaLoggerDebug("Shipping cost " . $shippingCost . ", shipping tax " . $shippingTax . " and calculated tax rate " . $shippingTaxRate);            
 
             $row = array(
                 'pmt_row_name' => __('Shipping'),
@@ -271,7 +269,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             array_push($products_rows, $row);
 
             $handlingFee = $order->getHandlingFee();
-            
+            //$this->helper->sveaLoggerDebug("Handling fee " . $handlingFee);            
+
             //Row type 3
             $row = [
                 'pmt_row_name' => \__('Handling Fee'),
@@ -397,8 +396,9 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         
                 
         if (property_exists($obj, 'paymentmethod') && $obj->paymentmethod) {
-            if (is_array($obj->paymentmethod))
+            /*if (is_array($obj->paymentmethod))
             $this->helper->sveaLoggerDebug("" . count($obj->paymentmethod) . " available payment methods for total " . $total);
+            */
             return $obj->paymentmethod;
         } else {
             return false;
