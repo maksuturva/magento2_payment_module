@@ -21,7 +21,7 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
         $paramsArray = $this->getRequest()->getParams();
 
         if (array_key_exists('pmt_id', $paramsArray)) {
-            $this->messageManager->addError(__('Maksuturva returned an error on your payment.'));
+            $this->messageManager->addError(__('Svea Payments returned an error on your payment.'));
         } else {
             switch ($paramsArray['type']) {
                 case \Svea\Maksuturva\Model\PaymentAbstract::ERROR_INVALID_HASH:

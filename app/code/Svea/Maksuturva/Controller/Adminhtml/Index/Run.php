@@ -32,7 +32,7 @@ class Run extends \Magento\Backend\App\Action
                 $this->_maksuturvaCronModel->checkPaymentStatus("-1 minutes", "-1 day");
             }
 
-            $this->messageManager->addSuccess(__('Successfully queried Maksuturva API for missing payments'));
+            $this->messageManager->addSuccess(__('Successfully queried Svea Payments API for missing payments'));
         }catch (Exception $e){
             $this->messageManager->addError(__('Unknown exception occured.'));
         }

@@ -135,7 +135,7 @@ define(
                         }
                     };
                     request.onerror = function () {
-                        console.warn("Error calling Maksuturva API.");
+                        console.warn("Error calling Svea Payments API.");
                     };
                     request.send();
                 }

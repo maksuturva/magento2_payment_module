@@ -151,7 +151,6 @@ class Config
             $this->getCollatedPayNowOtherFees(),
             $this->getCollatedPayNowBankFees()
         );
-        error_log("DEBUG Handling fee array " . print_r($value, true));
         return \array_filter($value);
     }
 
@@ -163,7 +162,6 @@ class Config
     private function formatValue($value)
     {
         $formattedmap = array_map('trim', $value);
-        error_log("DEBUG Format " . print_r($value, true) . ", " . print_r($formattedmap, true) );
         return $formattedmap;
     }
 }
