@@ -4,9 +4,9 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
-## [1.6.5] - 2021-10-25
+## [1.6.5] - 2021-11-07
 ### Changed
- - Success and callback mechanism updates
+ - Success handler and callback mechanism updates
 
 ## [1.6.4] - 2021-10-10
 ### Fixed
