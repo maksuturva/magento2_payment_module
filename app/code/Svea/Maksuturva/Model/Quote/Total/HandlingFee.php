@@ -71,11 +71,9 @@ class HandlingFee extends AbstractTotal
         if ($collatedMethod = $quote->getPayment()->getAdditionalInformation('collated_method')) {
             $paymentCode = $collatedMethod;
         }
-        error_log("DEBUG calclulateHandlingFee paymentcode " . print_r($paymentCode, true) );
         $handlingFeeConfig = $this->configProvider->getHandlingFee();
         foreach ($handlingFeeConfig as $key => $fee) {
             if ($key == $paymentCode) {
-                error_log("DEBUG calclulateHandlingFee paymentcode " . print_r($paymentCode, true) . " fee " . print_r($fee, true) );
                 return $fee;
             }
         }
