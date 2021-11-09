@@ -119,7 +119,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
                 $this->_redirect('checkout/cart');
             } else {
                 $this->getHelper()->sveaLoggerInfo("Callback for order " . $order->getIncrementId() . 
-                    " and it cannot be updated/invoiced anymore. The current order status " . $order->getState() . " and state " . $order->getState());
+                    " and it cannot be updated or invoiced anymore. The current order status " . $order->getState() . " and state " . $order->getState());
             }
             return;
         }

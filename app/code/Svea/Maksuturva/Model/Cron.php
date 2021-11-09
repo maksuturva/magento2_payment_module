@@ -83,7 +83,9 @@ class Cron
 
                 try {
                     $response = $implementation->statusQuery($data);
-                    $result = $implementation->ProcessStatusQueryResult($response);
+                    if (!empty($response["pmtq_orderid"])) {
+                        $result = $implementation->ProcessStatusQueryResult($response);
+                    }
                     $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " query status " . $result['message']);
                 } catch (\Exception $e) 
                 {
