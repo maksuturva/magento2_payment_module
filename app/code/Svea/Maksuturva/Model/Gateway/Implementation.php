@@ -444,6 +444,14 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
     public function statusQuery($data = array())
     {
+        /**
+         * skip status query for sandbox testiasiakas
+         */
+        if ($this->sellerId === "testiasiakas") {
+            $this->helper->sveaLoggerInfo("Status query skipped because sandbox mode is activated.");
+            return;
+        }
+
         $payment = $this->getPayment();
         $additional_data = !is_array($payment->getAdditionalData())
             ? $this->helper->getSerializer()->unserialize($payment->getAdditionalData())
@@ -752,9 +760,9 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $canRefundMore = true;
         }
 
-        $this->helper->sveaLoggerInfo("Refund canceltype " . $cancelType . ". InvoiceGrandTotal=" . $invoice->getBaseGrandTotal()
-             . ", InvoiceTotalRefunded=" . $invoice->getBaseTotalRefunded() . ", OrderBaseTotalInvoiced=" . $order->getBaseTotalInvoiced() 
-             . ", OrderTotalRefunded=" . $order->getBaseTotalRefunded() . ", amount=" . $amount);
+        $this->helper->sveaLoggerInfo("" . $order->getIncrementId() . " " . $cancelType . ". Details: invoiceGrandTotal=" . $invoice->getBaseGrandTotal()
+             . ", invoiceTotalRefunded=" . $invoice->getBaseTotalRefunded() . ", orderBaseTotalInvoiced=" . $order->getBaseTotalInvoiced() 
+             . ", orderTotalRefunded=" . $order->getBaseTotalRefunded() . ", amount=" . $amount);
 
         $parsedResponse = $this->cancel($payment, $amount, $cancelType);
 
