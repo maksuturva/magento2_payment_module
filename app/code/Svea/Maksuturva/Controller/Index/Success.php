@@ -115,11 +115,11 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
 
         if (!$order->canInvoice()) {
             if (!$iscallback) {
-                $this->messageManager->addError(__('Your order is not valid or it is paid already. The order status is ' . $order->getState());
+                $this->messageManager->addError(__('Your order is not valid or it is paid already. The order status is ' . $order->getState()) );
                 $this->_redirect('checkout/cart');
             } else {
                 $this->getHelper()->sveaLoggerInfo("Callback for order " . $order->getIncrementId() . 
-                    " and it cannot be updated/invoiced anymore. The current order status " . $order->getState() . " and state " .  $order->getState());
+                    " and it cannot be updated/invoiced anymore. The current order status " . $order->getState() . " and state " . $order->getState());
             }
             return;
         }
