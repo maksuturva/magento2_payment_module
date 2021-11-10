@@ -90,7 +90,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper implements \Svea
 
         try {
             $response = $implementation->statusQuery($data);
-            if (!empty($response["pmtq_orderid"])) {
+            if (is_array($response)) {
                 $result = $implementation->ProcessStatusQueryResult($response);
             }
             $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " query status " . $result['message']);
