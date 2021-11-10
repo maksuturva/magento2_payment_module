@@ -451,6 +451,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $this->helper->sveaLoggerInfo("Status query skipped because sandbox mode is activated.");
             return;
         }
+        $this->helper->sveaLoggerInfo("DEBUG SELLERID " . $this->sellerId);
 
         $payment = $this->getPayment();
         $additional_data = !is_array($payment->getAdditionalData())
