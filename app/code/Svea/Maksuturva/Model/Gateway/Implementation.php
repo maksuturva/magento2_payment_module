@@ -447,7 +447,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         /**
          * skip status query for sandbox testiasiakas
          */
-        isSandboxMode
         if ($this->getConfigData('sandboxmode')==1) {
             $this->helper->sveaLoggerInfo("Status query skipped because sandbox mode is activated.");
             return;
