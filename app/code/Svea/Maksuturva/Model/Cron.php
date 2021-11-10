@@ -85,8 +85,9 @@ class Cron
                     $response = $implementation->statusQuery($data);
                     if (is_array($response)) {
                         $result = $implementation->ProcessStatusQueryResult($response);
+                        $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " query status " . $result['message']);
                     }
-                    $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " query status " . $result['message']);
+                    
                 } catch (\Exception $e) 
                 {
                     $this->helper->sveaLoggerError("Order " . $order->getIncrementId() . " status query exception: " . $e->getMessage());
