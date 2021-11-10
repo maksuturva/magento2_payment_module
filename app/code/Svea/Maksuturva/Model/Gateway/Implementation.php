@@ -447,11 +447,11 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         /**
          * skip status query for sandbox testiasiakas
          */
-        if ($this->sellerId === "testiasiakas") {
+        isSandboxMode
+        if ($this->getConfigData('sandboxmode')==1) {
             $this->helper->sveaLoggerInfo("Status query skipped because sandbox mode is activated.");
             return;
         }
-        $this->helper->sveaLoggerInfo("DEBUG SELLERID " . $this->sellerId);
 
         $payment = $this->getPayment();
         $additional_data = !is_array($payment->getAdditionalData())
