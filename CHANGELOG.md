@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.6.6] - 2021-11-10
+### Changed
+ - Status query is skipped when the sandbox mode is active
+
 ## [1.6.5] - 2021-11-07
 ### Changed
  - Success handler and callback mechanism updates
