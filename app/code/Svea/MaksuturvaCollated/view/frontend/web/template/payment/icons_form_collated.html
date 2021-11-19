@@ -9,7 +9,6 @@
         </label>
 
     </div>
-
     <div class="payment-method-content">
         <!-- ko foreach: getRegion('messages') -->
         <!-- ko template: getTemplate() --><!-- /ko -->
@@ -24,21 +23,21 @@
         </div>
         <!-- ko if: payments_pay_later -->
         <span class="subpayment-title" data-bind="text: title_pay_later"></span>
-        <form data-bind="attr: {id: getLaterCode() +'-form'}, data-role: getLaterCode() + '-form'" class="form form-purchase-order" >
-            <div class="maksuturva-payment-methods" data-bind="attr: {id: 'payment_form_'+ getLaterCode()}">
+        <form data-bind="attr: {id: getLaterCode() +'-form-collated'}, data-role: getLaterCode() + '-form-collated'" class="form form-purchase-order" >
+            <div class="maksuturva-payment-methods" data-bind="attr: {id: 'collated_payment_form_'+ getLaterCode()}">
                 <!-- ko foreach: { data: payments_pay_later, as: 'subpayment' } -->
                 <div class="payment-method">
                     <input class="payment-method-radio"
                         type="radio"
                         data-bind="
-                            attr: { id: 'maksuturva_' + subpayment.code, name: 'maksuturva_' + subpayment.code },
+                            attr: { id: 'maksuturva_collated_' + subpayment.code, name: 'maksuturva_collated_' + subpayment.code },
                             value:subpayment.code,
                             checked: $parent.selectedPayment,
                             event:{ click: $parent.selectSubMethod.bind($parent)}
                         "
                         tabindex="0"
                         data-validate="{required:true}">
-                    <label class="payment-method-label" data-bind="attr: {for: 'maksuturva_' + subpayment.code}">
+                    <label class="payment-method-label" data-bind="attr: {for: 'maksuturva_collated_' + subpayment.code}">
                         <img data-bind="attr: {src: subpayment.imageurl, alt: subpayment.displayname} "/>
                     </label>
                 </div>
@@ -48,21 +47,21 @@
         <!--/ko-->
         <!-- ko if: payments_pay_other -->
         <span class="subpayment-title" data-bind="text: title_pay_other"></span>
-        <form data-bind="attr: {id: getOtherCode() +'-form'}, data-role: getOtherCode() + '-form'" class="form form-purchase-order" >
-            <div class="maksuturva-payment-methods" data-bind="attr: {id: 'payment_form_'+ getOtherCode()}">
+        <form data-bind="attr: {id: getOtherCode() +'-form-collated'}, data-role: getOtherCode() + '-form-collated'" class="form form-purchase-order" >
+            <div class="maksuturva-payment-methods" data-bind="attr: {id: 'collated_payment_form_'+ getOtherCode()}">
                 <!-- ko foreach: { data: payments_pay_other, as: 'subpayment' } -->
                 <div class="payment-method">
                     <input class="payment-method-radio"
                            type="radio"
                            data-bind="
-                            attr: { id: 'maksuturva_' + subpayment.code, name: 'maksuturva_' + subpayment.code },
+                            attr: { id: 'maksuturva_collated_' + subpayment.code, name: 'maksuturva_collated_' + subpayment.code },
                             value:subpayment.code,
                             checked: $parent.selectedPayment,
                             event:{ click: $parent.selectSubMethod.bind($parent)}
                         "
                            tabindex="0"
                            data-validate="{required:true}">
-                    <label class="payment-method-label" data-bind="attr: {for: 'maksuturva_' + subpayment.code}">
+                    <label class="payment-method-label" data-bind="attr: {for: 'maksuturva_collated_' + subpayment.code}">
                         <img data-bind="attr: {src: subpayment.imageurl, alt: subpayment.displayname} "/>
                     </label>
                 </div>
@@ -72,21 +71,21 @@
         <!--/ko-->
         <!-- ko if: payments_pay_bank -->
         <span class="subpayment-title" data-bind="text: title_pay_bank"></span>
-        <form data-bind="attr: {id: getCode() +'-form'}, data-role: getCode() + '-form'" class="form form-purchase-order" >
-            <div class="maksuturva-payment-methods" data-bind="attr: {id: 'payment_form_'+ getCode()}">
+        <form data-bind="attr: {id: getCode() +'-form-collated'}, data-role: getCode() + '-form-collated'" class="form form-purchase-order" >
+            <div class="maksuturva-payment-methods" data-bind="attr: {id: 'collated_payment_form_'+ getCode()}">
                 <!-- ko foreach: { data: payments_pay_bank, as: 'subpayment' } -->
                 <div class="payment-method">
                     <input class="payment-method-radio"
                            type="radio"
                            data-bind="
-                            attr: { id: 'maksuturva_' + subpayment.code, name: 'maksuturva_' + subpayment.code },
+                            attr: { id: 'maksuturva_collated_' + subpayment.code, name: 'maksuturva_collated_' + subpayment.code },
                             value:subpayment.code,
                             checked: $parent.selectedPayment,
                             event:{ click: $parent.selectSubMethod.bind($parent)}
                         "
                            tabindex="0"
                            data-validate="{required:true}">
-                    <label class="payment-method-label" data-bind="attr: {for: 'maksuturva_' + subpayment.code}">
+                    <label class="payment-method-label" data-bind="attr: {for: 'maksuturva_collated_' + subpayment.code}">
                         <img data-bind="attr: {src: subpayment.imageurl, alt: subpayment.displayname} "/>
                     </label>
                 </div>

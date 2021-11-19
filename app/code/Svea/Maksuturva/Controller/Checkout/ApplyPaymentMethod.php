@@ -62,12 +62,9 @@ class ApplyPaymentMethod extends Action
     public function execute()
     {
         $paymentMethod = $this->getRequest()->getParam('payment_method');
-        $collatedPaymentMethod = $this->getRequest()->getParam('collated_method') ?? null;
+        $subMethod = $this->getRequest()->getParam('sub_payment_method') ?? null;
+        $collatedMethod = $this->getRequest()->getParam('collated_method') ?? null;
         $quote = $this->checkoutSession->getQuote();
-        if ($collatedPaymentMethod) {
-            $this->handlingApplier->updateHandlingFee($paymentMethod, $quote, $collatedPaymentMethod);
-        } else {
-            $this->handlingApplier->updateHandlingFee($paymentMethod, $quote);
-        }
+        $this->handlingApplier->updateHandlingFee($paymentMethod, $quote, $subMethod, $collatedMethod);
     }
 }

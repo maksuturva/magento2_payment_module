@@ -25,14 +25,15 @@ class HandlingFeeApplier implements HandlingFeeApplierInterface
     /**
      * @inheritDoc
      */
-    public function updateHandlingFee($paymentMethod, $quote, $submethod = null)
+    public function updateHandlingFee($paymentMethod, $quote, $subMethod = null, $collatedMethod = null)
     {
-        if (isset($paymentMethod['method'])) {
+        if (\is_string($paymentMethod)) {
+            $quote->getPayment()->setMethod($paymentMethod);
+        } elseif (isset($paymentMethod['method'])) {
             $quote->getPayment()->setMethod($paymentMethod['method']);
         }
-        if ($submethod) {
-            $quote->getPayment()->setAdditionalInformation('collated_method', $submethod);
-        }
+        $quote->getPayment()->setAdditionalInformation('sub_payment_method', $subMethod);
+        $quote->getPayment()->setAdditionalInformation('collated_method', $collatedMethod);
         $quote->unsTotalsCollectedFlag();
         $quote->collectTotals();
         $quote->setTriggerRecollect(true);
