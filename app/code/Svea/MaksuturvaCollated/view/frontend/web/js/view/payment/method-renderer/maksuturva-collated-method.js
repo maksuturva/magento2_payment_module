@@ -24,7 +24,6 @@ define(
             title_pay_bank: window.checkoutConfig.payment[bank_method_code]['title'],
             payments_pay_bank: window.checkoutConfig.payment[bank_method_code]['methods'],
 
-
             defaults: {
                 template: window.checkoutConfig.payment[method_code]['template'],
             },
@@ -42,10 +41,9 @@ define(
                 return bank_method_code;
             },
             selectSubMethod: function (data, event){
+                this.collatedMethod = data.parentMethod;
                 this.selectedPayment(event.target.value);
-                if (data.parentMethod) {
-                    this.updateTotals('maksuturva_collated_payment', data.parentMethod);
-                }
+                this.updateTotals();
                 return true;
             }
         });

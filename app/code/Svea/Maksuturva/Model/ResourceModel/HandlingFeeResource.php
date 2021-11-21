@@ -14,6 +14,7 @@ class HandlingFeeResource
     const GENERIC_PAYMENT = 'maksuturva_generic_payment';
     const INVOICE_PAYMENT = 'maksuturva_invoice_payment';
     const PART_PAYMENT = 'maksuturva_part_payment_payment';
+    const COLLATED_PAYMENT = 'maksuturva_collated_payment';
     const COLLATED_LATER_PAYMENT = 'pay_later';
     const COLLATED_NOW_PAYMENT = 'pay_now_other';
     const COLLATED_BANK_PAYMENT = 'pay_now_bank';

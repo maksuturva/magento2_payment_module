@@ -15,7 +15,7 @@ define(
         'Magento_Checkout/js/action/get-totals',
         'mage/validation'
     ],
-    function ($, ko, Component, selectPaymentMethodAction,quote, checkoutData, urlBuilder, url,customer, additionalValidators, placeOrderAction, fullScreenLoader, getTotalsAction) {
+    function ($, ko, Component, selectPaymentMethodAction, quote, checkoutData, urlBuilder, url,customer, additionalValidators, placeOrderAction, fullScreenLoader, getTotalsAction) {
         'use strict';
 
         var selectedMethod = ko.observable();
@@ -287,9 +287,11 @@ define(
             getData: function () {
                 return {
                     "method": this.item.method,
-                    "extension_attributes": {maksuturva_preselected_payment_method : this.selectedPayment()}
+                    "extension_attributes": {
+                        maksuturva_preselected_payment_method : this.selectedPayment(),
+                        collated_method : this.collatedMethod,
+                    }
                 };
-
             },
             placeOrder: function (data, event) {
                 if (event) {
@@ -330,9 +332,11 @@ define(
             },
 
             selectedPayment: selectedMethod,
+            collatedMethod: null,
 
             selectSubMethod : function (data, event){
                 this.selectedPayment(event.target.value);
+                this.updateTotals();
                 return true;
             },
 
@@ -341,18 +345,8 @@ define(
                 return window.checkoutConfig.payment[this.getCode()]['preselectRequired'];
             },
 
-            updateTotals: function (parentPaymentMethod, subpaymentMethod) {
-                fullScreenLoader.startLoader();
-                jQuery.ajax('/maksuturva/checkout/applyPaymentMethod', {
-                    data: {
-                        payment_method: parentPaymentMethod,
-                        collated_method: subpaymentMethod
-                    },
-                    complete: function () {
-                        getTotalsAction([]);
-                        fullScreenLoader.stopLoader();
-                    }
-                });
+            updateTotals: function () {
+                selectPaymentMethodAction(this.getData());
             }
         });
     }

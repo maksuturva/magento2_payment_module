@@ -137,6 +137,22 @@ class Config
     }
 
     /**
+     * @return array
+     */
+    public function getCollatedFees()
+    {
+        $fees = \array_merge(
+            $this->getCollatedPayLaterFees(),
+            $this->getCollatedPayNowOtherFees(),
+            $this->getCollatedPayNowBankFees()
+        );
+
+        return [
+            HandlingFeeResource::COLLATED_PAYMENT => $fees
+        ];
+    }
+
+    /**
      * @return false|string[]
      */
     public function getHandlingFee()
@@ -147,21 +163,43 @@ class Config
             $this->getGenericHandlingFee(),
             $this->getInvoiceHandlingFee(),
             $this->getPartHandlingFee(),
-            $this->getCollatedPayLaterFees(),
-            $this->getCollatedPayNowOtherFees(),
-            $this->getCollatedPayNowBankFees()
+            $this->getCollatedFees()
         );
+
         return \array_filter($value);
     }
 
     /**
-     * Formats the semi colon separated config values as an array
-     * @param $value
+     * Formats the semicolon-separated config values as an array
+     *
+     * 10;FI01=5;FI06=7.5 =>
+     *  0 = 10       (default)
+     *  FI01 = 5
+     *  FI06 = 7.5
+     *
+     * @param array $value
      * @return array
      */
     private function formatValue($value)
     {
-        $formattedmap = array_map('trim', $value);
-        return $formattedmap;
+        $formatted = [];
+        foreach ($value as $key => $data) {
+            $entries = [];
+            foreach (\explode(';', $data) as $entry) {
+                $feeInfo = \explode('=', $entry);
+                if (\count($feeInfo) == 1) {
+                    $code = 0;
+                    $amount = $feeInfo[0];
+                } else {
+                    $code = \trim($feeInfo[0]);
+                    $amount = $feeInfo[1];
+                }
+                if (!empty($amount)) {
+                    $entries[$code] = $amount;
+                }
+            }
+            $formatted[$key] = $entries;
+        }
+        return $formatted;
     }
 }

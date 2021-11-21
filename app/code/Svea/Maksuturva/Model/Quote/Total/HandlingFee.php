@@ -67,18 +67,41 @@ class HandlingFee extends AbstractTotal
      */
     private function calculateHandlingFee(CartInterface $quote, Total $total)
     {
-        $paymentCode = $quote->getPayment()->getMethod();
-        if ($collatedMethod = $quote->getPayment()->getAdditionalInformation('collated_method')) {
-            $paymentCode = $collatedMethod;
-        }
-        $handlingFeeConfig = $this->configProvider->getHandlingFee();
-        foreach ($handlingFeeConfig as $key => $fee) {
-            if ($key == $paymentCode) {
-                return $fee;
-            }
+        $method = $quote->getPayment()->getMethod();
+        if (!$method) {
+            return 0;
         }
 
-        return 0;
+        $subMethod = $quote->getPayment()->getAdditionalInformation('sub_payment_method');
+        $collatedMethod = $quote->getPayment()->getAdditionalInformation('collated_method');
+
+        return $this->resolveConfiguredHandlingFee($method, $subMethod, $collatedMethod);
+    }
+
+    /**
+     * @param string $method
+     * @param string|null $subMethod
+     * @param string|null $collatedMethod
+     *
+     * @return float
+     */
+    private function resolveConfiguredHandlingFee(string $method, ?string $subMethod, ?string $collatedMethod = null)
+    {
+        $feeConfig = $this->configProvider->getHandlingFee();
+        if (!isset($feeConfig[$method])) {
+            return 0;
+        }
+
+        $config = $feeConfig[$method];
+        if ($collatedMethod) {
+            $config = $config[$collatedMethod] ?? [];
+        }
+
+        if ($subMethod && isset($config[$subMethod])) {
+            return $config[$subMethod];
+        } else {
+            return $config[0] ?? 0;
+        }
     }
 
     /**
