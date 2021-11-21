@@ -4,6 +4,11 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+
+## [1.7.0] - 2021-11-21
+### Changed
+- Added support for defining handling fees for each submethod under each payment method including Collated.
+
 ## [1.6.6] - 2021-11-10
 ### Changed
  - Status query is skipped when the sandbox mode is active

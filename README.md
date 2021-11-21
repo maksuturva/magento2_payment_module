@@ -15,11 +15,13 @@ There is no guarantee that the module is fully functional in any other environme
 
 # Features
 
-* dynamic loading for payment method icons
-* sub payments filter
-* cronjob to deal with delayed Svea payments
-* payment methods selector (dropdown or icons)
-* credit memo support (partial and full refund)
+* Dynamic loading for payment method icons
+* Sub payments filter
+* Cronjob to deal with delayed Svea payments
+* Payment methods selector (dropdown or icons)
+* Invoice credit memo support (partial and full refund)
+
+Note! The latest and improved Maksuturva Collated payment method is the best suitable option for most users with all the needed features.  
 
 # Installation instructions
 
@@ -51,7 +53,7 @@ Enable Svea_Maksuturva* modules (and clean generated static view files).
   
 Minimum set  
 ```
-php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaGeneric
+php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaCollated
 ```
   
 Alternatively, if you want all modules  
@@ -148,7 +150,12 @@ Specifies which styling is used on preselection form on checkout. Option to use 
 
 ## Payment fees
 
-Only supported when preselect payment method in webshop is enabled. Currently requires module `Vaimo_PaymentFee`, this might change to more generic way in future versions.
+Only supported when preselect payment method in webshop is enabled. 
+
+The payment module has support for defining handling fees for each submethod under each payment method, including Collated payment method. For example, with "10;FI01=5;FI06=7.5" the fee in quote gets resolved based on the selected method in the following way:
+* FI01 gets a fee of 5   
+* FI06 gets a fee of 7.5  
+* Other methods in that group get a fee of 10  
 
 ## Delayed capture methods
 
@@ -227,6 +234,8 @@ FI30;FI50;FI51;FI52;FI53;FI54
 FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15;FI16;FI17;FI18;FI19;FI20
 ```
 ![image](https://user-images.githubusercontent.com/41151878/114894359-dbd78f00-9e0e-11eb-9cc2-12280b716fe9.png)
+
+See Payment Fee section, how to configure the payment fees if needed.
 
 ## Order Comment
 
