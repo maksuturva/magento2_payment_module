@@ -6,7 +6,7 @@
                 <active>0</active>
                 <model>Svea\MaksuturvaCod\Model\Cod</model>
                 <order_status>pending</order_status>
-                <title>Maksuturva Cod</title>
+                <title>Svea Payments Cod</title>
                 <method_filter>FI30</method_filter>
                 <default_preselect_method>FI30</default_preselect_method>
             </maksuturva_cod_payment>

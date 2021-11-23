@@ -6,9 +6,7 @@
                 <active>0</active>
                 <model>Svea\MaksuturvaCollated\Model\Collated</model>
                 <order_status>pending</order_status>
-                <title>Maksuturva Payments</title>
-                <method_filter/>
-                <default_preselect_method>FI01</default_preselect_method>
+                <title>Svea Payments</title>
                 <subpayments_active>1</subpayments_active>
                 <maksuturva_collated_subpayments>
                     <pay_later>Pay later</pay_later>

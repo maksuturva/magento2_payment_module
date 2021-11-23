@@ -6,7 +6,7 @@
                 <active>0</active>
                 <model>Svea\MaksuturvaPartPayment\Model\PartPayment</model>
                 <order_status>pending</order_status>
-                <title>Maksuturva Part Payment</title>
+                <title>Svea Payments Part Payment</title>
                 <method_filter>FI61;FI71;RBPP;RBCD;RBRC</method_filter>
                 <default_preselect_method>FI71</default_preselect_method>
             </maksuturva_part_payment_payment>

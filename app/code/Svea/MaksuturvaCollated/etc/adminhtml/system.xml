@@ -55,6 +55,7 @@
                     <label>Maksuturva Collated Payment Separation</label>
                     <field id="pay_later" translate="label" type="text" sortOrder="30" showInDefault="301" showInWebsite="1" showInStore="1">
                         <label>"Pay Later" title</label>
+                        <comment><![CDATA[1st payment method subgroup on the checkout page]]></comment>
                     </field>
                     <field id="pay_later_method_filter" translate="label" type="text" sortOrder="325" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Method Filter</label>
@@ -66,6 +67,7 @@
                     </field>
                     <field id="pay_now_other" translate="label" type="text" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>"Pay Now via Mobile etc." title</label>
+                        <comment><![CDATA[2nd payment method subgroup on the checkout page]]></comment>
                     </field>
                     <field id="pay_now_other_method_filter" translate="label" type="text" sortOrder="625" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Method Filter</label>
@@ -77,6 +79,7 @@
                     </field>
                     <field id="pay_now_bank" translate="label" type="text" sortOrder="800" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>"Pay Now via Online Banking" title</label>
+                        <comment><![CDATA[3rd payment method subgroup on the checkout page]]></comment>
                     </field>
                     <field id="pay_now_bank_method_filter" translate="label" type="text" sortOrder="925" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Method Filter</label>
