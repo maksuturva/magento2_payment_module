@@ -10,7 +10,9 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
  */
 class CollatedConfigProvider extends \Svea\Maksuturva\Model\ConfigProvider
 {
-    const CONFIG_SUBPAYMENT_PATH = 'payment/maksuturva_collated_payment/maksuturva_collated_subpayments/';
+    //const CONFIG_SUBPAYMENT_PATH = 'payment/maksuturva_collated_payment/maksuturva_collated_subpayments/';
+    const CONFIG_SUBPAYMENT_PATH = 'payment/maksuturva_collated_payment/';
+    
     const SUBPAYMENT_STEPS =[
         'pay_later',
         'pay_now_other',
