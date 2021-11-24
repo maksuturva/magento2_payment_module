@@ -41,7 +41,9 @@ class Collated extends \Svea\Maksuturva\Model\PaymentAbstract
 
     private function isSubpaymentsEnabled()
     {
-        return (bool)$this->getConfigData('subpayments_active');
+        /* always enabled since 1.7.1 */
+        return true;
+        //return (bool)$this->getConfigData('subpayments_active');
     }
 
     /**
