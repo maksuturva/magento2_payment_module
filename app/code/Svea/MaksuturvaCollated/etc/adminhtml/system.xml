@@ -50,9 +50,10 @@
                 </field>
             -->
                 <group id="maksuturva_collated_subpayments" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <depends>
+                <!--    <depends>
                         <field id="subpayments_active">1</field>
                     </depends>
+                -->
                     <label>Maksuturva Collated Payment Separation</label>
                     <field id="pay_later" translate="label" type="text" sortOrder="30" showInDefault="301" showInWebsite="1" showInStore="1">
                         <label>1st payment method subgroup title</label>
