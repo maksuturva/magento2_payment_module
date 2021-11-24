@@ -7,16 +7,10 @@
                 <model>Svea\MaksuturvaCollated\Model\Collated</model>
                 <order_status>pending</order_status>
                 <title>Svea Payments</title>
-                <subpayments_active>1</subpayments_active>
-                <!--
-                <maksuturva_collated_subpayments>
-                -->
                     <pay_later>Pay later</pay_later>
                     <pay_now_other>Pay now with mobile payment or card</pay_now_other>
                     <pay_now_bank>Pay now with online banking</pay_now_bank>
-                <!-- </maksuturva_collated_subpayments> -->
             </maksuturva_collated_payment>
-
         </payment>
     </default>
 

@@ -22,79 +22,49 @@
                     <label>Locale</label>
                     <source_model>Svea\Maksuturva\Model\Source\AllowedLocale</source_model>
                 </field>
-            <!--
-                <field id="method_filter" translate="label" type="text" sortOrder="125" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Method Filter</label>
-                    <comment><![CDATA[allowed payment method seperated by ;]]></comment>
-                </field>
 
-                <field id="default_preselect_method" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Default Method Code</label>
-                    <comment><![CDATA[The default method be used to when no bank be selected]]></comment>
-                </field>
-            -->
                 <field id="preselect_form_type" translate="label" type="select" sortOrder="155" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Preselect form type</label>
                     <source_model>Svea\Maksuturva\Model\System\Config\Source\Formtype</source_model>
                     <validate>required-entry</validate>
                 </field>
-            <!--
-                <field id="handling_fee" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Handling Fee</label>
-                    <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI01=5;FI06=7.5" results into payment method FI01 getting a fee of 5,00, FI06 getting a fee of 7,50 and all other payment methods getting a fee of 10,00.]]></comment>
-                </field>
-                <field id="subpayments_active" translate="label" type="select" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable subpayment division</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[Division into subpayment methods gives increased control over the checkout experience ;]]></comment>
-                </field>
-            -->
-              <!--
-                <group id="maksuturva_collated_subpayments" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
-                  <depends>
-                        <field id="subpayments_active">1</field>
-                    </depends>
-              
-            -->
-                    <label>Svea Collated Payment Subgroups</label>
-                    <field id="pay_later" translate="label" type="text" sortOrder="30" showInDefault="301" showInWebsite="1" showInStore="1">
+
+                    <field id="pay_later" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>1st payment method subgroup title</label>
                         <comment><![CDATA[For example, Pay later]]></comment>
                     </field>
-                    <field id="pay_later_method_filter" translate="label" type="text" sortOrder="325" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="pay_later_method_filter" translate="label" type="text" sortOrder="161" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Method Filter</label>
                         <comment><![CDATA[allowed payment method seperated by ;]]></comment>
                     </field>
-                    <field id="pay_later_handling_fee" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="pay_later_handling_fee" translate="label" type="text" sortOrder="162" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
                         <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI01=5;FI06=7.5" results into payment method FI01 getting a fee of 5,00, FI06 getting a fee of 7,50 and all other payment methods getting a fee of 10,00.]]></comment>
                     </field>
-                    <field id="pay_now_other" translate="label" type="text" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="pay_now_other" translate="label" type="text" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>2nd payment method subgroup title</label>
                         <comment><![CDATA[For example, Card and Mobile payments]]></comment>
                     </field>
-                    <field id="pay_now_other_method_filter" translate="label" type="text" sortOrder="625" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="pay_now_other_method_filter" translate="label" type="text" sortOrder="171" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Method Filter</label>
                         <comment><![CDATA[allowed payment method seperated by ;]]></comment>
                     </field>
-                    <field id="pay_now_other_handling_fee" translate="label" type="text" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="pay_now_other_handling_fee" translate="label" type="text" sortOrder="172" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
                         <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI01=5;FI06=7.5" results into payment method FI01 getting a fee of 5,00, FI06 getting a fee of 7,50 and all other payment methods getting a fee of 10,00.]]></comment>
                     </field>
-                    <field id="pay_now_bank" translate="label" type="text" sortOrder="800" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="pay_now_bank" translate="label" type="text" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>3rd payment method subgroup</label>
                         <comment><![CDATA[For example, Online banking]]></comment>
                     </field>
-                    <field id="pay_now_bank_method_filter" translate="label" type="text" sortOrder="925" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="pay_now_bank_method_filter" translate="label" type="text" sortOrder="181" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Method Filter</label>
                         <comment><![CDATA[allowed payment method seperated by ;]]></comment>
                     </field>
-                    <field id="pay_now_bank_handling_fee" translate="label" type="text" sortOrder="1000" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="pay_now_bank_handling_fee" translate="label" type="text" sortOrder="182" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
                         <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI01=5;FI06=7.5" results into payment method FI01 getting a fee of 5,00, FI06 getting a fee of 7,50 and all other payment methods getting a fee of 10,00.]]></comment>
                     </field>
-            <!--    </group>
-            -->
             </group>
         </section>
     </system>
