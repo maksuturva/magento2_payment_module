@@ -227,7 +227,7 @@ FI70;FI71;FI72
 ```
 * Pay Now via Mobile etc:
 ```
-FI30;FI50;FI51;FI52;FI53;FI54
+FI50;FI51;FI52;FI53;FI54;PIVO;SIIR
 ```
 * Pay Now via Online Banking:
 ```
