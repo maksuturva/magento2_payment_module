@@ -7,9 +7,13 @@
                 <model>Svea\MaksuturvaCollated\Model\Collated</model>
                 <order_status>pending</order_status>
                 <title>Svea Payments</title>
-                    <pay_later>Pay later</pay_later>
-                    <pay_now_other>Pay now with mobile payment or card</pay_now_other>
-                    <pay_now_bank>Pay now with online banking</pay_now_bank>
+                
+                <pay_later>Pay later</pay_later>
+                <pay_later_method_filter>FI70;FI71;FI72</pay_later_method_filter>
+                <pay_now_other>Pay now with mobile payment or card</pay_now_other>
+                <pay_now_other_method_filter>FI50;FI51;FI52;FI53;FI54;PIVO;SIIR</pay_now_other_method_filter>
+                <pay_now_bank>Pay now with online banking</pay_now_bank>
+                <pay_now_bank_method_filter>FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15</pay_now_bank_method_filter>
             </maksuturva_collated_payment>
         </payment>
     </default>
