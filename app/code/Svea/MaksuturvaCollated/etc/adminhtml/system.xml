@@ -39,7 +39,7 @@
                     </field>
                     <field id="pay_later_handling_fee" translate="label" type="text" sortOrder="162" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
-                        <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI01=5;FI06=7.5" results into payment method FI01 getting a fee of 5,00, FI06 getting a fee of 7,50 and all other payment methods getting a fee of 10,00.]]></comment>
+                        <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI70=5;FI72=3.5" results into payment method FI70 getting a fee of 5,00, FI72 getting a fee of 3,50 and all other payment methods getting a fee of 10,00. Default: empty]]></comment>
                     </field>
                     <field id="pay_now_other" translate="label" type="text" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>2nd payment method subgroup title</label>
@@ -51,7 +51,7 @@
                     </field>
                     <field id="pay_now_other_handling_fee" translate="label" type="text" sortOrder="172" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
-                        <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI01=5;FI06=7.5" results into payment method FI01 getting a fee of 5,00, FI06 getting a fee of 7,50 and all other payment methods getting a fee of 10,00.]]></comment>
+                        <comment><![CDATA[See above]]></comment>
                     </field>
                     <field id="pay_now_bank" translate="label" type="text" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>3rd payment method subgroup</label>
@@ -63,7 +63,7 @@
                     </field>
                     <field id="pay_now_bank_handling_fee" translate="label" type="text" sortOrder="182" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
-                        <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI01=5;FI06=7.5" results into payment method FI01 getting a fee of 5,00, FI06 getting a fee of 7,50 and all other payment methods getting a fee of 10,00.]]></comment>
+                        <comment><![CDATA[See above]]></comment>
                     </field>
             </group>
         </section>
