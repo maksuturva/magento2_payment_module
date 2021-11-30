@@ -35,7 +35,7 @@
                     </field>
                     <field id="pay_later_method_filter" translate="label" type="text" sortOrder="161" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Method Filter</label>
-                        <comment><![CDATA[allowed payment method seperated by ;]]></comment>
+                        <comment><![CDATA[List of allowed payment methods, seperated by ;]]></comment>
                     </field>
                     <field id="pay_later_handling_fee" translate="label" type="text" sortOrder="162" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
@@ -47,7 +47,7 @@
                     </field>
                     <field id="pay_now_other_method_filter" translate="label" type="text" sortOrder="171" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Method Filter</label>
-                        <comment><![CDATA[allowed payment method seperated by ;]]></comment>
+                        <comment><![CDATA[List of allowed payment methods, seperated by ;]]></comment>
                     </field>
                     <field id="pay_now_other_handling_fee" translate="label" type="text" sortOrder="172" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
@@ -59,7 +59,7 @@
                     </field>
                     <field id="pay_now_bank_method_filter" translate="label" type="text" sortOrder="181" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Method Filter</label>
-                        <comment><![CDATA[allowed payment method seperated by ;]]></comment>
+                        <comment><![CDATA[List of allowed payment methods, seperated by ;]]></comment>
                     </field>
                     <field id="pay_now_bank_handling_fee" translate="label" type="text" sortOrder="182" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
