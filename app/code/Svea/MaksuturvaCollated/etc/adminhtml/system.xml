@@ -31,7 +31,7 @@
 
                     <field id="pay_later" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>1st payment method subgroup title</label>
-                        <comment><![CDATA[For example, Pay later]]></comment>
+                        <comment><![CDATA[Default: Pay later]]></comment>
                     </field>
                     <field id="pay_later_method_filter" translate="label" type="text" sortOrder="161" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Payment Methods Filter</label>
@@ -43,7 +43,7 @@
                     </field>
                     <field id="pay_now_other" translate="label" type="text" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>2nd payment method subgroup title</label>
-                        <comment><![CDATA[For example, Card and Mobile payments]]></comment>
+                        <comment><![CDATA[Default: Pay now with mobile payment or card]]></comment>
                     </field>
                     <field id="pay_now_other_method_filter" translate="label" type="text" sortOrder="171" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Payment Methods Filter</label>
@@ -55,7 +55,7 @@
                     </field>
                     <field id="pay_now_bank" translate="label" type="text" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>3rd payment method subgroup</label>
-                        <comment><![CDATA[For example, Online banking]]></comment>
+                        <comment><![CDATA[Default: Pay now with online banking]]></comment>
                     </field>
                     <field id="pay_now_bank_method_filter" translate="label" type="text" sortOrder="181" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Payment Methods Filter</label>
