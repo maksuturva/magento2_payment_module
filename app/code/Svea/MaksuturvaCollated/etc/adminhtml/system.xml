@@ -8,7 +8,7 @@
                 <field id="active" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[This payment method can be used to collect all Svea payments under the same payment method in Magento checkout ;]]></comment>
+                    <comment><![CDATA[This payment method can be used to collect all Svea payments under the same payment method in Magento checkout]]></comment>
                 </field>
 
                 <field id="title" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
