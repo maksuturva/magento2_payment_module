@@ -219,7 +219,7 @@ You can enable "Enable subpayment division" (above settings), then you can use "
 
 ![image](https://user-images.githubusercontent.com/41151878/114892275-e5f88e00-9e0c-11eb-9f0a-a4a336ba7f70.png)
 
-Titles are store-specific, so they can be customized for different views and languages. Below are sample settings for each section of the "Method Filter":
+Titles are store-specific, so they can be customized for different views and languages. Below are sample settings for each section of the "Payment Methods Filter":
 
 * Pay Later:
 ```
@@ -231,7 +231,7 @@ FI50;FI51;FI52;FI53;FI54;PIVO;SIIR
 ```
 * Pay Now via Online Banking:
 ```
-FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15;FI16;FI17;FI18;FI19;FI20
+FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15
 ```
 ![image](https://user-images.githubusercontent.com/41151878/114894359-dbd78f00-9e0e-11eb-9cc2-12280b716fe9.png)
 

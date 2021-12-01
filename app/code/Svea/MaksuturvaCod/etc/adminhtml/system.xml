@@ -3,8 +3,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="payment">
-            <group id="maksuturva_card_payment" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Svea Payments Card</label>
+            <group id="maksuturva_cod_payment" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Svea Payments Cod</label>
                 <field id="active" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -24,7 +24,7 @@
 
                 <field id="method_filter" translate="label" type="text" sortOrder="125" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Payment Methods Filter</label>
-                    <comment><![CDATA[The allowed payment methods separated by ; (Default: FI50;FI51;FI52;FI53;FI54;PIVO;SIIR)]]></comment>
+                    <comment><![CDATA[The allowed payment methods separated by ; (Default: FI30)]]></comment>
                 </field>
 
                 <field id="default_preselect_method" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">

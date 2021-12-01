@@ -8,7 +8,7 @@
                 <field id="active" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[This payment method can be used to collect all Svea payments under the same payment method in Magento checkout ;]]></comment>
+                    <comment><![CDATA[This payment method can be used to collect all Svea payments under the same payment method in Magento checkout]]></comment>
                 </field>
 
                 <field id="title" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -31,11 +31,11 @@
 
                     <field id="pay_later" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>1st payment method subgroup title</label>
-                        <comment><![CDATA[For example, Pay later]]></comment>
+                        <comment><![CDATA[Default: Pay later]]></comment>
                     </field>
                     <field id="pay_later_method_filter" translate="label" type="text" sortOrder="161" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Method Filter</label>
-                        <comment><![CDATA[List of allowed payment methods, seperated by ;]]></comment>
+                        <label>Payment Methods Filter</label>
+                        <comment><![CDATA[List of 1st subgroup payment methods, separated by ; (Default: FI70;FI71;FI72)]]></comment>
                     </field>
                     <field id="pay_later_handling_fee" translate="label" type="text" sortOrder="162" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
@@ -43,11 +43,11 @@
                     </field>
                     <field id="pay_now_other" translate="label" type="text" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>2nd payment method subgroup title</label>
-                        <comment><![CDATA[For example, Card and Mobile payments]]></comment>
+                        <comment><![CDATA[Default: Pay now with mobile payment or card]]></comment>
                     </field>
                     <field id="pay_now_other_method_filter" translate="label" type="text" sortOrder="171" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Method Filter</label>
-                        <comment><![CDATA[List of allowed payment methods, seperated by ;]]></comment>
+                        <label>Payment Methods Filter</label>
+                        <comment><![CDATA[List of 2nd subgroup payment methods, separated by ; (Default: FI50;FI51;FI52;FI53;FI54;PIVO;SIIR)]]></comment>
                     </field>
                     <field id="pay_now_other_handling_fee" translate="label" type="text" sortOrder="172" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
@@ -55,11 +55,11 @@
                     </field>
                     <field id="pay_now_bank" translate="label" type="text" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>3rd payment method subgroup</label>
-                        <comment><![CDATA[For example, Online banking]]></comment>
+                        <comment><![CDATA[Default: Pay now with online banking]]></comment>
                     </field>
                     <field id="pay_now_bank_method_filter" translate="label" type="text" sortOrder="181" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Method Filter</label>
-                        <comment><![CDATA[List of allowed payment methods, seperated by ;]]></comment>
+                        <label>Payment Methods Filter</label>
+                        <comment><![CDATA[List of 3rd subgroup payment methods, separated by ; (Default: FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15)]]></comment>
                     </field>
                     <field id="pay_now_bank_handling_fee" translate="label" type="text" sortOrder="182" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>

@@ -23,8 +23,8 @@
                 </field>
 
                 <field id="method_filter" translate="label" type="text" sortOrder="125" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Method Filter</label>
-                    <comment><![CDATA[allowed payment method seperated by ;]]></comment>
+                    <label>Payment Methods Filter</label>
+                    <comment><![CDATA[The allowed payment methods separated by ; (Default: FI71)]]></comment>
                 </field>
 
                 <field id="default_preselect_method" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
