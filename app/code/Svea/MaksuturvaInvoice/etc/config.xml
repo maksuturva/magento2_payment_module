@@ -7,7 +7,7 @@
                 <model>Svea\MaksuturvaInvoice\Model\Invoice</model>
                 <order_status>pending</order_status>
                 <title>Svea Payments Invoice</title>
-                <method_filter>FI60;FI70;FI72;RBIN</method_filter>
+                <method_filter>FI70;FI72</method_filter>
                 <default_preselect_method>FI70</default_preselect_method>
             </maksuturva_invoice_payment>
         </payment>
