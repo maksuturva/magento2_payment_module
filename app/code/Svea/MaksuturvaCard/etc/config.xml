@@ -6,8 +6,8 @@
                 <active>0</active>
                 <model>Svea\MaksuturvaCard\Model\Card</model>
                 <order_status>pending</order_status>
-                <title>Maksuturva Card</title>
-                <method_filter>FI50;FI51;FI52;FI53;FI54;</method_filter>
+                <title>Svea Payments Card</title>
+                <method_filter>FI50;FI51;FI52;FI53;FI54;PIVO;SIIR;</method_filter>
                 <default_preselect_method>FI50</default_preselect_method>
             </maksuturva_card_payment>
         </payment>

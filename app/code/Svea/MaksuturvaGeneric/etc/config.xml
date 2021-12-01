@@ -6,8 +6,8 @@
                 <active>0</active>
                 <model>Svea\MaksuturvaGeneric\Model\Generic</model>
                 <order_status>pending</order_status>
-                <title>Maksuturva Generic</title>
-                <method_filter>FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15;FI16;FI17;FI18;FI19;FI20</method_filter>
+                <title>Svea Payments Generic</title>
+                <method_filter>FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15</method_filter>
                 <default_preselect_method>FI01</default_preselect_method>
             </maksuturva_generic_payment>
         </payment>

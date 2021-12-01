@@ -3,8 +3,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="payment">
-            <group id="maksuturva_generic_payment" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Maksuturva Generic</label>
+            <group id="maksuturva_generic_payment" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Svea Payments Generic</label>
                 <field id="active" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -23,8 +23,8 @@
                 </field>
 
                 <field id="method_filter" translate="label" type="text" sortOrder="125" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Method Filter</label>
-                    <comment><![CDATA[allowed payment method seperated by ;]]></comment>
+                    <label>Payment Methods Filter</label>
+                    <comment><![CDATA[The allowed payment methods separated by ;]]></comment>
                 </field>
 
                 <field id="default_preselect_method" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -40,7 +40,7 @@
 
                 <field id="handling_fee" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Handling Fee</label>
-                    <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI01=5;FI06=7.5" results into payment method FI01 getting a fee of 5,00, FI06 getting a fee of 7,50 and all other payment methods getting a fee of 10,00.]]></comment>
+                    <comment><![CDATA[Enter handling fee amount(s) that will be added to total when a payment method is selected. For example "10;FI70=5;FI72=3.5" results into payment method FI70 getting a fee of 5,00, FI72 getting a fee of 3,50 and all other payment methods getting a fee of 10,00. Default: empty]]></comment>
                 </field>
             </group>
         </section>
