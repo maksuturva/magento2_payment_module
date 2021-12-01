@@ -7,7 +7,7 @@ Tested up to: 2.4.2
 
 # System requirements
 * Magento 2.3.4 - 2.4.2
-* PHP 7.2 or 7.3
+* PHP >7.2
 * PHP cURL support
 * PHP libxml support
 
@@ -58,7 +58,7 @@ php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_Maksut
   
 Alternatively, if you want all modules  
 ```
-php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaCollated Svea_OrderComment Svea_MaksuturvaCard Svea_MaksuturvaCod Svea_MaksuturvaGeneric Svea_MaksuturvaInvoice Svea_MaksuturvaPartPayment
+php bin/magento module:enable --clear-static-content Svea_Maksuturva Svea_MaksuturvaBase Svea_MaksuturvaCollated Svea_OrderComment Svea_MaksuturvaCard Svea_MaksuturvaGeneric Svea_MaksuturvaInvoice Svea_MaksuturvaPartPayment
 ```
 
 Run setup:upgrade
