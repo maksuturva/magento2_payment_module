@@ -34,8 +34,8 @@
                         <comment><![CDATA[For example, Pay later]]></comment>
                     </field>
                     <field id="pay_later_method_filter" translate="label" type="text" sortOrder="161" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Method Filter</label>
-                        <comment><![CDATA[List of allowed payment methods, seperated by ;]]></comment>
+                        <label>Payment Methods Filter</label>
+                        <comment><![CDATA[List of 1st subgroup payment methods, separated by ; (Default: FI70;FI71;FI72)]]></comment>
                     </field>
                     <field id="pay_later_handling_fee" translate="label" type="text" sortOrder="162" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
@@ -46,8 +46,8 @@
                         <comment><![CDATA[For example, Card and Mobile payments]]></comment>
                     </field>
                     <field id="pay_now_other_method_filter" translate="label" type="text" sortOrder="171" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Method Filter</label>
-                        <comment><![CDATA[List of allowed payment methods, seperated by ;]]></comment>
+                        <label>Payment Methods Filter</label>
+                        <comment><![CDATA[List of 2nd subgroup payment methods, separated by ; (Default: FI50;FI51;FI52;FI53;FI54;PIVO;SIIR)]]></comment>
                     </field>
                     <field id="pay_now_other_handling_fee" translate="label" type="text" sortOrder="172" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
@@ -58,8 +58,8 @@
                         <comment><![CDATA[For example, Online banking]]></comment>
                     </field>
                     <field id="pay_now_bank_method_filter" translate="label" type="text" sortOrder="181" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Method Filter</label>
-                        <comment><![CDATA[List of allowed payment methods, seperated by ;]]></comment>
+                        <label>Payment Methods Filter</label>
+                        <comment><![CDATA[List of 3rd subgroup payment methods, separated by ; (Default: FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15)]]></comment>
                     </field>
                     <field id="pay_now_bank_handling_fee" translate="label" type="text" sortOrder="182" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Handling Fee</label>
