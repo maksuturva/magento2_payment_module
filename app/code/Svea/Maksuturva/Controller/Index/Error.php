@@ -1,9 +1,59 @@
 <?php
+
 namespace Svea\Maksuturva\Controller\Index;
 
 
-class Error extends \Svea\Maksuturva\Controller\Maksuturva
+use Magento\Checkout\Model\Session;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Api\SortOrderBuilder;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Sales\Api\OrderPaymentRepositoryInterface;
+use Magento\Sales\Model\OrderFactory;
+use Magento\Sales\Model\OrderRepository;
+use Svea\Maksuturva\Controller\Maksuturva;
+use Svea\Maksuturva\Helper\Data;
+use Svea\Maksuturva\Model\HandlingFeeApplier;
+
+class Error extends Maksuturva
 {
+    /**
+     * @var HandlingFeeApplier
+     */
+    private $handlingFeeApplier;
+
+
+    public function __construct(
+        Context                         $context,
+        OrderFactory                    $orderFactory,
+        ScopeConfigInterface            $scopeConfig,
+        CartRepositoryInterface         $quoteRepository,
+        Session                         $checkoutsession,
+        Data                            $maksuturvaHelper,
+        OrderRepository                 $orderRepository,
+        SearchCriteriaBuilder           $searchCriteriaBuilder,
+        SortOrderBuilder                $sortOrderBuilder,
+        OrderPaymentRepositoryInterface $orderPaymentRepository,
+        HandlingFeeApplier              $handlingFeeApplier,
+        array                           $data = []
+    ) {
+        parent::__construct(
+            $context,
+            $orderFactory,
+            $scopeConfig,
+            $quoteRepository,
+            $checkoutsession,
+            $maksuturvaHelper,
+            $orderRepository,
+            $searchCriteriaBuilder,
+            $sortOrderBuilder,
+            $orderPaymentRepository,
+            $data
+        );
+        $this->handlingFeeApplier = $handlingFeeApplier;
+    }
+
     public function execute()
     {
         $pmt_id = $this->getRequest()->getParam('pmt_id');
@@ -17,6 +67,9 @@ class Error extends \Svea\Maksuturva\Controller\Maksuturva
 
         $payment = $this->getPayment();
         $additional_data = $this->getHelper()->getPaymentAdditionData($payment);
+
+        $quote = $this->_checkoutSession->getQuote();
+        $this->handlingFeeApplier->updateHandlingFee($quote);
 
         $paramsArray = $this->getRequest()->getParams();
 
