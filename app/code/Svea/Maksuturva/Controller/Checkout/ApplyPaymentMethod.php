@@ -40,10 +40,10 @@ class ApplyPaymentMethod extends Action
      * @param HandlingFeeApplier $handlingApplier
      */
     public function __construct(
-        Context $context,
-        ForwardFactory $resultForwardFactory,
-        LayoutFactory $layoutFactory,
-        Session $checkoutSession,
+        Context            $context,
+        ForwardFactory     $resultForwardFactory,
+        LayoutFactory      $layoutFactory,
+        Session            $checkoutSession,
         HandlingFeeApplier $handlingApplier
     ) {
         $this->resultForwardFactory = $resultForwardFactory;
@@ -65,6 +65,6 @@ class ApplyPaymentMethod extends Action
         $subMethod = $this->getRequest()->getParam('sub_payment_method') ?? null;
         $collatedMethod = $this->getRequest()->getParam('collated_method') ?? null;
         $quote = $this->checkoutSession->getQuote();
-        $this->handlingApplier->updateHandlingFee($paymentMethod, $quote, $subMethod, $collatedMethod);
+        $this->handlingApplier->updateHandlingFee($quote, $paymentMethod, $subMethod, $collatedMethod);
     }
 }
