@@ -13,5 +13,5 @@ interface HandlingFeeApplierInterface
      *
      * @return mixed
      */
-    public function updateHandlingFee($paymentMethod, $quote, $subMethod = null, $collatedMethod = null);
+    public function updateHandlingFee($quote, $paymentMethod = '', $subMethod = null, $collatedMethod = null);
 }

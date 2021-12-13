@@ -8,7 +8,7 @@ define([
     'Magento_Checkout/js/view/summary/abstract-total',
     'Magento_Checkout/js/model/quote',
     'Magento_Checkout/js/model/totals',
-], function(ko, Component, quote, totals) {
+], function (ko, Component, quote, totals) {
     'use strict';
 
     return Component.extend({
@@ -18,10 +18,10 @@ define([
         },
         totals: quote.getTotals(),
         isTaxDisplayedInGrandTotal: window.checkoutConfig.includeTaxInGrandTotal || false,
-        isDisplayed: function() {
-            return true;
+        isDisplayed: function () {
+            return this.getPureValue() > 0;
         },
-        getPureValue: function() {
+        getPureValue: function () {
             var price = 0,
                 handlingSegment = totals.getSegment('handling_fee'),
                 handlingValue = handlingSegment ? totals.getSegment('handling_fee').value : null;
@@ -30,7 +30,7 @@ define([
             }
             return price;
         },
-        getValue: function() {
+        getValue: function () {
             return this.getFormattedPrice(this.getPureValue());
         }
     });
