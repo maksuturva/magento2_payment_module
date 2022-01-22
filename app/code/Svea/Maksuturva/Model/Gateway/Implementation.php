@@ -666,8 +666,12 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " set as paid and status to '" . strval($processStatus) . "'");
     }
     
+   
     public function addDeliveryInfo($payment)
     {
+        $allowed_codes = array('ITELL', 'MATHU', 'KAUKO', 'TRANS', 'KIITO', 'MYPAC', 'DBSCH', 'FEDEX', 'DHLDP', 'TNTNV', 'UPSAM', 'UNREG', 'PICKU', 'ODLVR', 'SERVI',
+        'ELECT', 'UNREF', 'UNRDL');
+
         try
         {                                                                                                                                                                                         
             $additional_data = $payment->getAdditionalData();
@@ -680,12 +684,20 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             return;
         }
         
+        $deliveryMethod = $payment->getOrder()->getShippingMethod();
+        if (!in_array($deliveryMethod, $allowed_codes)) {
+            $this->helper->sveaLoggerError("Unable to create add delivery method request. Invalid deliverymethod " . $deliveryMethod);
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __("Invalid delivery method id " . $deliveryMethod);
+            );
+        }
+
         $deliveryData = array(
             "pkg_version" => "0002",
             "pkg_sellerid" => $this->sellerId,
             "pkg_id" => $pkg_id,
-            "pkg_deliverymethodid" => $payment->getOrder()->getShippingMethod(),
-            "pkg_adddeliveryinfo" => "Delivered by ".$payment->getOrder()->getShippingMethod()."",
+            "pkg_deliverymethodid" => $deliveryMethod,
+            "pkg_adddeliveryinfo" => "Delivered by " . $deliveryMethod . "",
             "pkg_allsent" => "Y",
             "pkg_resptype" => "XML",
             "pkg_hashversion" => $this->_pmt_hashversion,
