@@ -692,6 +692,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             "pkg_keygeneration" => $this->keyVersion
         );
 
+        $this->helper->sveaLoggerDebug("Delivery info request: " . print_r($deliveryData, true) ); 
+
         // hash calculation
         $hashFields = array(
             "pkg_id",
