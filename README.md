@@ -169,6 +169,9 @@ The methods are given as comma separated list, example:
 ```
 code1,code2,code3
 ```
+
+Allowed delivery method codes: http://docs.sveapayments.fi/api/post-payment-api/delivery-information-management/#DeliveryInformationManagement-DeliveryMethodcodes
+
 ## Query Svea Payments API payment status for orders automatically (version 1.6.0 above)
 
 If enabled, this will activate a cronjob that queries `Pending` payments from Svea Payments API. This kind of order might occasionally happen, if after successful payment customer does not return to the webshop, but the payment transaction was successful.
