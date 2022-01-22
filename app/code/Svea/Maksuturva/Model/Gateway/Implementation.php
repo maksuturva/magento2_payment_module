@@ -686,7 +686,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         
         $deliveryMethod = $payment->getOrder()->getShippingMethod();
         if (!in_array($deliveryMethod, $allowed_codes)) {
-            $this->helper->sveaLoggerError("Unable to create add delivery method request. Invalid deliverymethod " . $deliveryMethod);
+            $this->helper->sveaLoggerError("Unable to create add delivery method request to Svea Payments. Invalid deliverymethod " . $deliveryMethod);
             throw new \Magento\Framework\Exception\LocalizedException(
                 __("Invalid delivery method id " . $deliveryMethod)
             );
