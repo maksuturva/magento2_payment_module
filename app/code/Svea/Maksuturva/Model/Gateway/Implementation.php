@@ -688,7 +688,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         if (!in_array($deliveryMethod, $allowed_codes)) {
             $this->helper->sveaLoggerError("Unable to create add delivery method request. Invalid deliverymethod " . $deliveryMethod);
             throw new \Magento\Framework\Exception\LocalizedException(
-                __("Invalid delivery method id " . $deliveryMethod);
+                __("Invalid delivery method id " . $deliveryMethod)
             );
         }
 
