@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.7.2] - 2022-01-27
 ### Changed
-- Added the delivery method id validation to the add delivery info request
+- Delivery method info defaults to ODLVR method code when the Magento delivery method code does not match predefined list values.
 
 ## [1.7.1] - 2021-12-13
 ### Changed
