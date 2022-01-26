@@ -4,9 +4,9 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
-## [1.7.2] - 2022-01-xx
+## [1.7.2] - 2022-01-26
 ### Changed
-- Added the delivery method id validation to the add delivery info request
+- Delivery method info defaults to ODLVR method code when the Magento delivery method code does not match predefined list values.
 
 ## [1.7.1] - 2021-12-13
 ### Changed

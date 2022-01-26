@@ -170,7 +170,8 @@ The methods are given as comma separated list, example:
 code1,code2,code3
 ```
 
-Allowed delivery method codes: http://docs.sveapayments.fi/api/post-payment-api/delivery-information-management/#DeliveryInformationManagement-DeliveryMethodcodes
+Delivery method codes: http://docs.sveapayments.fi/api/post-payment-api/delivery-information-management/#DeliveryInformationManagement-DeliveryMethodcodes . If Magento delivery method 
+does not match any value in the list, the default ODLVR is used instead.
 
 ## Query Svea Payments API payment status for orders automatically (version 1.6.0 above)
 
