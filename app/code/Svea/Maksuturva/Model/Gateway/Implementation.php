@@ -669,7 +669,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
    
     public function addDeliveryInfo($payment)
     {
-        $allowed_codes = array('ITELL', 'MATHU', 'KAUKO', 'TRANS', 'KIITO', 'MYPAC', 'DBSCH', 'FEDEX', 'DHLDP', 'TNTNV', 'UPSAM', 'UNREG', 'PICKU', 'ODLVR', 'SERVI',
+        $allowedDeliveryCodes = array('ITELL', 'MATHU', 'KAUKO', 'TRANS', 'KIITO', 'MYPAC', 'DBSCH', 'FEDEX', 'DHLDP', 'TNTNV', 'UPSAM', 'UNREG', 'PICKU', 'ODLVR', 'SERVI',
         'ELECT', 'UNREF', 'UNRDL');
 
         try
@@ -685,11 +685,12 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         }
         
         $deliveryMethod = $payment->getOrder()->getShippingMethod();
-        if (!in_array($deliveryMethod, $allowed_codes)) {
-            $this->helper->sveaLoggerError("Unable to create add delivery method request to Svea Payments. Invalid deliverymethod " . $deliveryMethod . ". See Readme.md / Delayed Capture.");
-            throw new \Magento\Framework\Exception\LocalizedException(
-                __("Unable send the delivery information to Svea Payments. Invalid delivery method id " . $deliveryMethod . ".")
-            );
+        if (!in_array($deliveryMethod, $allowedDeliveryCodes)) {
+            //$this->helper->sveaLoggerError("Unable to create add delivery method request to Svea Payments. Invalid deliverymethod " . $deliveryMethod . ". See Readme.md / Delayed Capture.");
+            //throw new \Magento\Framework\Exception\LocalizedException(
+            //    __("Unable send the delivery information to Svea Payments. Invalid delivery method id " . $deliveryMethod . ".")
+            //);
+            $deliveryMethod = "ODLVR";
         }
 
         $deliveryData = array(
