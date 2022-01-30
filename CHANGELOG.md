@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.7.3] - 2022-01-30
+### Fixed
+- Fixed handling fee JavaScript on checkout page for Apple iOS 13 and older platforms. (PR #42)
+
 ## [1.7.2] - 2022-01-27
 ### Changed
 - Delivery method info defaults to ODLVR method code when the Magento delivery method code does not match predefined list values.
