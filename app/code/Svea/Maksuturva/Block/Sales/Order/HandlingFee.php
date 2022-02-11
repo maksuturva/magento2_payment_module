@@ -14,7 +14,7 @@ class HandlingFee extends \Magento\Framework\View\Element\AbstractBlock
     public function __construct(
         Context $context,
         DataObjectFactory $objectFactory,
-        array   $data = []
+        array $data = []
     ) {
         parent::__construct($context, $data);
         $this->objectFactory = $objectFactory;
@@ -35,7 +35,7 @@ class HandlingFee extends \Magento\Framework\View\Element\AbstractBlock
                     'strong' => false,
                     'value' => $order->getHandlingFee(),
                     'base_value' => $order->getHandlingFee(),
-                    'label' => __('Handling Fee'),
+                    'label' => \__('Handling Fee'),
                 ]
             );
             $this->getParentBlock()->addTotalBefore($handlingFee, 'grand_total');
