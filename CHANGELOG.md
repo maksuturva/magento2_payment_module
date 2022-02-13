@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.7.4] - 2022-02-13
+### Fixed
+- The handling fee row is now visible in the order confirmation e-mails, if it's value is greater than zero
+
 ## [1.7.3] - 2022-01-30
 ### Fixed
 - Fixed handling fee JavaScript on checkout page for Apple iOS 13 and older platforms. (PR #42)
