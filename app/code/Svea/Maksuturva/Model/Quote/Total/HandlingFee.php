@@ -74,29 +74,33 @@ class HandlingFee extends AbstractTotal
 
         $subMethod = $quote->getPayment()->getAdditionalInformation('sub_payment_method');
         $collatedMethod = $quote->getPayment()->getAdditionalInformation('collated_method');
+        $storeId = $quote->getStoreId();
 
-        return $this->resolveConfiguredHandlingFee($method, $subMethod, $collatedMethod);
+        return $this->resolveConfiguredHandlingFee($storeId, $method, $subMethod, $collatedMethod);
     }
 
     /**
+     * @param int $storeId
      * @param string $method
      * @param string|null $subMethod
      * @param string|null $collatedMethod
      *
      * @return float
      */
-    private function resolveConfiguredHandlingFee(string $method, ?string $subMethod, ?string $collatedMethod = null)
-    {
-        $feeConfig = $this->configProvider->getHandlingFee();
+    private function resolveConfiguredHandlingFee(
+        int     $storeId,
+        string  $method,
+        ?string $subMethod,
+        ?string $collatedMethod = null
+    ) {
+        $feeConfig = $this->configProvider->getHandlingFee($storeId);
         if (!isset($feeConfig[$method])) {
             return 0;
         }
-
         $config = $feeConfig[$method];
         if ($collatedMethod) {
             $config = $config[$collatedMethod] ?? [];
         }
-
         if ($subMethod && isset($config[$subMethod])) {
             return $config[$subMethod];
         } else {

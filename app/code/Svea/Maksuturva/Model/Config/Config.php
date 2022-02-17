@@ -3,6 +3,7 @@
 namespace Svea\Maksuturva\Model\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 use Svea\Maksuturva\Model\ResourceModel\HandlingFeeResource;
 
 class Config
@@ -33,6 +34,17 @@ class Config
     }
 
     /**
+     * @param string $config
+     * @param int|null $storeId
+     *
+     * @return mixed
+     */
+    private function getStoreConfig(string $config, $storeId)
+    {
+        return $this->scopeConfig->getValue($config, ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    /**
      * @return bool
      */
     public function canCancelSettled()
@@ -41,110 +53,128 @@ class Config
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return array
      */
-    public function getCardHandlingFee()
+    public function getCardHandlingFee($storeId)
     {
         $value = [
-            HandlingFeeResource::CARD_PAYMENT => $this->scopeConfig->getValue(self::CARD_HANDLING_FEE)
+            HandlingFeeResource::CARD_PAYMENT => $this->getStoreConfig(self::CARD_HANDLING_FEE, $storeId),
         ];
 
         return $this->formatValue($value);
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return array
      */
-    public function getCodHandlingFee()
+    public function getCodHandlingFee($storeId)
     {
         $value = [
-            HandlingFeeResource::COD_PAYMENT => $this->scopeConfig->getValue(self::COD_HANDLING_FEE)
+            HandlingFeeResource::COD_PAYMENT => $this->getStoreConfig(self::COD_HANDLING_FEE, $storeId),
         ];
 
         return $this->formatValue($value);
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return array
      */
-    public function getGenericHandlingFee()
+    public function getGenericHandlingFee($storeId)
     {
         $value = [
-            HandlingFeeResource::GENERIC_PAYMENT => $this->scopeConfig->getValue(self::GENERIC_HANDLING_FEE)
+            HandlingFeeResource::GENERIC_PAYMENT => $this->getStoreConfig(self::GENERIC_HANDLING_FEE, $storeId),
         ];
 
         return $this->formatValue($value);
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return array
      */
-    public function getInvoiceHandlingFee()
+    public function getInvoiceHandlingFee($storeId)
     {
         $value = [
-            HandlingFeeResource::INVOICE_PAYMENT => $this->scopeConfig->getValue(self::INVOICE_HANDLING_FEE)
+            HandlingFeeResource::INVOICE_PAYMENT => $this->getStoreConfig(self::INVOICE_HANDLING_FEE, $storeId),
         ];
 
         return $this->formatValue($value);
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return array
      */
-    public function getPartHandlingFee()
+    public function getPartHandlingFee($storeId)
     {
         $value = [
-            HandlingFeeResource::PART_PAYMENT => $this->scopeConfig->getValue(self::PART_HANDLING_FEE)
+            HandlingFeeResource::PART_PAYMENT => $this->getStoreConfig(self::PART_HANDLING_FEE, $storeId),
         ];
 
         return $this->formatValue($value);
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return array
      */
-    public function getCollatedPayLaterFees()
+    public function getCollatedPayLaterFees($storeId)
     {
         $value = [
-            HandlingFeeResource::COLLATED_LATER_PAYMENT => $this->scopeConfig->getValue(self::COLLATED_LATER_HANDLING_FEE)
+            HandlingFeeResource::COLLATED_LATER_PAYMENT => $this->getStoreConfig(self::COLLATED_LATER_HANDLING_FEE, $storeId),
         ];
 
         return $this->formatValue($value);
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return array
      */
-    public function getCollatedPayNowOtherFees()
+    public function getCollatedPayNowOtherFees($storeId)
     {
         $value = [
-            HandlingFeeResource::COLLATED_NOW_PAYMENT => $this->scopeConfig->getValue(self::COLLATED_NOW_HANDLING_FEE)
+            HandlingFeeResource::COLLATED_NOW_PAYMENT => $this->getStoreConfig(self::COLLATED_NOW_HANDLING_FEE, $storeId),
         ];
 
         return $this->formatValue($value);
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return array
      */
-    public function getCollatedPayNowBankFees()
+    public function getCollatedPayNowBankFees($storeId)
     {
         $value = [
-            HandlingFeeResource::COLLATED_BANK_PAYMENT => $this->scopeConfig->getValue(self::COLLATED_BANK_HANDLING_FEE)
+            HandlingFeeResource::COLLATED_BANK_PAYMENT => $this->getStoreConfig(self::COLLATED_BANK_HANDLING_FEE, $storeId),
         ];
 
         return $this->formatValue($value);
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return array
      */
-    public function getCollatedFees()
+    public function getCollatedFees($storeId)
     {
         $fees = \array_merge(
-            $this->getCollatedPayLaterFees(),
-            $this->getCollatedPayNowOtherFees(),
-            $this->getCollatedPayNowBankFees()
+            $this->getCollatedPayLaterFees($storeId),
+            $this->getCollatedPayNowOtherFees($storeId),
+            $this->getCollatedPayNowBankFees($storeId)
         );
 
         return [
@@ -153,17 +183,19 @@ class Config
     }
 
     /**
+     * @param int|null $storeId
+     *
      * @return false|string[]
      */
-    public function getHandlingFee()
+    public function getHandlingFee($storeId)
     {
         $value = array_merge(
-            $this->getCardHandlingFee(),
-            $this->getCodHandlingFee(),
-            $this->getGenericHandlingFee(),
-            $this->getInvoiceHandlingFee(),
-            $this->getPartHandlingFee(),
-            $this->getCollatedFees()
+            $this->getCardHandlingFee($storeId),
+            $this->getCodHandlingFee($storeId),
+            $this->getGenericHandlingFee($storeId),
+            $this->getInvoiceHandlingFee($storeId),
+            $this->getPartHandlingFee($storeId),
+            $this->getCollatedFees($storeId)
         );
 
         return \array_filter($value);
