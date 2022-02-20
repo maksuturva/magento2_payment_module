@@ -21,6 +21,7 @@ define(
                 : null;
 
             let data = {
+                store: quote.getStoreCode(),
                 payment_method: paymentMethod.method,
                 sub_payment_method: sub_payment_method,
                 collated_method: collated_method
