@@ -4,7 +4,7 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
-## [1.7.5] - 2022-02-xx (not released yet)
+## [1.7.5] - 2022-02-21
 ### Fixed
 - Add support for configuration scopes with handling fees
 
