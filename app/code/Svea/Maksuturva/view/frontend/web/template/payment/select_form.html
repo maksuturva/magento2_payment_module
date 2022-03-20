@@ -25,7 +25,7 @@
                 <div data-bind="attr: {id: 'payment_form_'+ getCode()}" >
                     <select class="validate-select"
                             data-bind="
-                                   attr: {title: $t('Pre-Seleceted Bank'), id: getCode() + '_dropdown', name:'payment['+ getCode()+ '_preselected_payment_method]'}
+                                   attr: {title: $t('Pre-Seleceted Bank'), id: getCode() + '_dropdown', name:'payment['+ getCode()+ '_preselected_payment_method]'},
                                    event:{ change: selectSubMethod},
                                    options: payments,
                                    optionsText: function(item) {
