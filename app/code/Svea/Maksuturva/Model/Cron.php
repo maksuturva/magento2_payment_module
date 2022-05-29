@@ -68,35 +68,97 @@ class Cron
            ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
 
         if ($orderCollection->count()>0) {
-            $this->helper->sveaLoggerInfo("Payment status job found " . $orderCollection->count() . " orders to be checked from Svea Payments.");
+            $this->helper->sveaLoggerInfo("Payment status job found " . $orderCollection->count() . " orders to be checked with Svea Payments.");
         } else {
             $this->helper->sveaLoggerInfo("Payment status job found no 'Pending' orders to be checked.");
         }
         foreach ($orderCollection as $order) {
             $model = $order->getPayment()->getMethodInstance();
-            $this->helper->sveaLoggerInfo("Checking order " . $order->getIncrementId() . " created at " . $order->getCreatedAt());
-            $implementation = $model->getGatewayImplementation();
-            if ($implementation != NULL) 
-            {
-                $implementation->setOrder($order);
-                $config = $model->getConfigs();
-                $data = array('pmtq_keygeneration' => $config['keyversion']);
+            $this->helper->sveaLoggerInfo("Checking order " . $order->getIncrementId() . " created at " . $order->getCreatedAt() . ", updated at " . $order->getUpdatedAt());
+            $checkrule = $this->is_time_to_check( $order->getCreatedAt(),  $order->getUpdatedAt());
 
-                try {
-                    $response = $implementation->statusQuery($data);
-                    if (is_array($response)) {
-                        $result = $implementation->ProcessStatusQueryResult($response);
-                        $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " query status " . $result['message']);
-                    }
-                    
-                } catch (\Exception $e) 
+            if ($checkrule>0)
+            {
+                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " check rule " . strval($checkrule) );
+                $implementation = $model->getGatewayImplementation();
+                if ($implementation != NULL) 
                 {
-                    $this->helper->sveaLoggerError("Order " . $order->getIncrementId() . " status query exception: " . $e->getMessage());
+                    $implementation->setOrder($order);
+                    $config = $model->getConfigs();
+                    $data = array('pmtq_keygeneration' => $config['keyversion']);
+
+                    try {
+                        $response = $implementation->statusQuery($data);
+                        if (is_array($response)) {
+                            $result = $implementation->ProcessStatusQueryResult($response);
+                            $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " query status " . $result['message']);
+                        }
+                        
+                    } catch (\Exception $e) 
+                    {
+                        $this->helper->sveaLoggerError("Order " . $order->getIncrementId() . " status query exception: " . $e->getMessage());
+                    }
                 }
+            } else {
+                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " does not match check time window.");
             }
         }
 
-        $this->helper->sveaLoggerInfo("Payment status job finished.");
+        $this->helper->sveaLoggerInfo("Scheduled payment status query job finished.");
         $this->_localeResolver->revert();
     }
+
+
+    /**
+	 * 
+	 * Payment status query window check. Ideally this would be in the database query but this is for
+     * WC module compatibility reasons.
+	 * 
+	 */
+	private function is_time_to_check($payment_date_added, $payment_date_updated)
+	{
+		$now_time = strtotime(date('Y-m-d H:i:s'));
+		
+		$create_diff = $now_time - strtotime($payment_date_added);
+		/* if there is no 'updated date', so do status query if order is created max 7 days ago */
+		if (is_null($payment_date_updated) && $this->in_range($create_diff, 0, 168*3600)) {
+			return 4;
+		}
+		$update_diff = $now_time - strtotime($payment_date_updated);
+
+		$checkrule = 0;
+		if ($this->in_range($create_diff, 5*60, 2*3600) && $update_diff > 20*60) {
+			$checkrule = 1;
+		}
+		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2*3600) {
+			$checkrule = 2;
+		} 
+		// 168 hours = 7 days. No older than 7 days allowed.
+		if ($create_diff < 168*3600 && $update_diff > 12 * 3600) {
+			$checkrule = 3;
+		}
+
+        return $checkrule;
+	}
+
+	/**
+	 * Determines if $number is between $min and $max
+	 *
+	 * @param  integer  $number     The number to test
+	 * @param  integer  $min        The minimum value in the range
+	 * @param  integer  $max        The maximum value in the range
+	 * @param  boolean  $inclusive  Whether the range should be inclusive or not
+	 * @return boolean              Whether the number was in the range
+	 */
+	private function in_range($number, $min, $max, $inclusive = FALSE)
+	{
+		$number = intval($number);
+		$min = intval($min);
+		$max = intval($max);
+
+		return $inclusive
+			? ($number >= $min && $number <= $max)
+			: ($number > $min && $number < $max);
+	}
+
 }
