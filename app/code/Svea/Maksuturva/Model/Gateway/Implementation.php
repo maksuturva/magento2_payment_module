@@ -643,6 +643,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_UNPAID_DELIVERY:
             default:
                 // update order timestamp for query time window check functionality
+                $order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING, true, __('Payment waiting in Svea Payments'));
+                $order->setStatus(\Magento\Sales\Model\Order::STATE_PROCESSING, true, __('Payment waiting in Svea Payments'));
                 $order->save();
                 $result['message'] = __('No change, still awaiting payment');
                 $result['success'] = "notice";
