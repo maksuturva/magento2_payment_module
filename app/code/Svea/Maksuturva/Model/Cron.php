@@ -100,7 +100,7 @@ class Cron
                     }
                 }
             } else {
-                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " does not match check time window.");
+                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " does not match any check time windows.");
             }
         }
 
@@ -118,24 +118,22 @@ class Cron
 	private function is_time_to_check($payment_date_added, $payment_date_updated)
 	{
 		$now_time = strtotime(date('Y-m-d H:i:s'));
-		
-		$create_diff = $now_time - strtotime($payment_date_added);
-		/* if there is no 'updated date', so do status query if order is created max 7 days ago */
-		if (is_null($payment_date_updated) && $this->in_range($create_diff, 0, 168*3600)) {
-			return 4;
-		}
-		$update_diff = $now_time - strtotime($payment_date_updated);
-
 		$checkrule = 0;
-        if ($this->in_range($create_diff, 60, 2*3600) && $update_diff > 60) {
-		//if ($this->in_range($create_diff, 5*60, 2*3600) && $update_diff > 20*60) {
+        		
+		$create_diff = $now_time - strtotime($payment_date_added);
+		$update_diff = $now_time - strtotime($payment_date_updated);
+    
+		if ($this->in_range($create_diff, 5*60, 2*3600) && $update_diff > 20*60) 
+        {
 			$checkrule = 1;
 		}
-		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2*3600) {
+		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2*3600) 
+        {
 			$checkrule = 2;
 		} 
 		// 168 hours = 7 days. No older than 7 days allowed.
-		if ($create_diff < 168*3600 && $update_diff > 12 * 3600) {
+		if ($create_diff < 168*3600 && $update_diff > 12 * 3600) 
+        {
 			$checkrule = 3;
 		}
 
