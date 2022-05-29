@@ -28,6 +28,8 @@ class Cron
 
     public function checkPaymentStatusPoller() {
         try {
+            $this->helper->sveaLoggerInfo("Payment status automatic query");
+            
             $this->checkPaymentStatus("-30 minutes", "-24 hours");    
         } catch (Exception $e) {
             $this->helper->sveaLoggerError("Payment status automatic query failed, reason " . $e->getMessage());
