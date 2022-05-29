@@ -68,7 +68,7 @@ class Cron
            ->addAttributeToFilter('created_at', array('lt' => $to->format('Y-m-d H:i:s')));
 
         if ($orderCollection->count()>0) {
-            $this->helper->sveaLoggerInfo("Payment status job found " . $orderCollection->count() . " orders to be checked with Svea Payments.");
+            $this->helper->sveaLoggerInfo("Payment status job found " . $orderCollection->count() . " pending orders.");
         } else {
             $this->helper->sveaLoggerInfo("Payment status job found no 'Pending' orders to be checked.");
         }

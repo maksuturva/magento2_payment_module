@@ -642,7 +642,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_UNPAID:
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_UNPAID_DELIVERY:
             default:
-                // no action here
+                // update order timestamp for query time window check functionality
+                $order->save();
                 $result['message'] = __('No change, still awaiting payment');
                 $result['success'] = "notice";
                 $this->helper->sveaLoggerInfo("Order " . $incrementid . " status still waiting or unpaid.");
