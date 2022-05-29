@@ -127,7 +127,8 @@ class Cron
 		$update_diff = $now_time - strtotime($payment_date_updated);
 
 		$checkrule = 0;
-		if ($this->in_range($create_diff, 5*60, 2*3600) && $update_diff > 20*60) {
+        if ($this->in_range($create_diff, 60, 2*3600) && $update_diff > 60) {
+		//if ($this->in_range($create_diff, 5*60, 2*3600) && $update_diff > 20*60) {
 			$checkrule = 1;
 		}
 		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2*3600) {
