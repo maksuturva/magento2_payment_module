@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
     <group id="default">
         <job name="svea_payment_check_cron" instance="Svea\Maksuturva\Model\Cron" method="checkPaymentStatusPoller">
-            <schedule>* * * * *</schedule>
+            <schedule>*/10 * * * *</schedule>
         </job>
     </group>
 </config>
