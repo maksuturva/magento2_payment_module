@@ -57,7 +57,7 @@ class Cron
         $from = $this->_localeDate->date();
         $from->modify($lookback);
         
-        $this->helper->sveaLoggerInfo("Payment status job finding 'Pending' orders between " . 
+        $this->helper->sveaLoggerInfo("Scheduled payment status query job searching for 'Pending' orders between " . 
             $from->format('Y-m-d H:i:s') . " to " . $to->format('Y-m-d H:i:s') );
         
         $orderCollection = $this->_orderCollectionFactory->create()
@@ -74,7 +74,7 @@ class Cron
         }
         foreach ($orderCollection as $order) {
             $model = $order->getPayment()->getMethodInstance();
-            $this->helper->sveaLoggerInfo("Checking order " . $order->getIncrementId() . " created at " . $order->getCreatedAt() . ", updated at " . $order->getUpdatedAt());
+            //$this->helper->sveaLoggerInfo("Checking order " . $order->getIncrementId() . " created at " . $order->getCreatedAt() . ", updated at " . $order->getUpdatedAt());
             $checkrule = $this->is_time_to_check( $order->getCreatedAt(),  $order->getUpdatedAt());
 
             if ($checkrule>0)
@@ -100,7 +100,7 @@ class Cron
                     }
                 }
             } else {
-                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " does not match any check time windows.");
+                $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " does not match any check rules. Skipping the status check.");
             }
         }
 

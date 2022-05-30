@@ -4,6 +4,12 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.8.0] - 2022-05-30
+### Changed
+- Automatic status query has new time based rules to reduce unneccessary query traffic for pending payments.
+### Fixed
+- Handling fee database upgrade script fixed. 
+ 
 ## [1.7.6] - 2022-03-20
 ### Fixed
 - The drop-down view type of the payment selection didn't update the total amount on the checkout page because JavaScript had a typo. 
