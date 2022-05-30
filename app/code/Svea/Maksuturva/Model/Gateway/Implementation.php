@@ -35,6 +35,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     protected $_orderFactory;
     protected $_taxHelper;
     protected $_calculationModel;
+    protected $_localeResolver;
+    protected $_localeDate;
     protected $_maksuturvaForm;
     protected $_maksuturvaModel;
     protected $commUrl;
@@ -60,6 +62,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Tax\Helper\Data $taxHelper,
         \Magento\Tax\Model\Calculation $calculationModel,
+        \Magento\Framework\Locale\ResolverInterface $localeResolver,
+        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
         \Svea\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm,
         \Magento\Framework\HTTP\Client\Curl $curl = null,
         \Magento\Framework\Event\ManagerInterface $eventManager,
@@ -77,6 +81,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $this->_orderFactory = $orderFactory;
         $this->_taxHelper = $taxHelper;
         $this->_calculationModel = $calculationModel;
+        $this->_localeResolver = $localeResolver;
+        $this->_localeDate = $localeDate;
         $this->_maksuturvaForm = $maksuturvaForm;
         $this->curlClient = $curl ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\HTTP\Client\Curl::class); 
         $this->eventManager = $eventManager ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\Event\ManagerInterface::class);
@@ -642,7 +648,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_UNPAID:
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_UNPAID_DELIVERY:
             default:
-                // no action here
+                // update order timestamp for query time window check functionality
+                $updatedate = $this->_localeDate->date();
+                $order->setUpdatedAt($updatedate->format('Y-m-d H:i:s'));
+                $order->save();
                 $result['message'] = __('No change, still awaiting payment');
                 $result['success'] = "notice";
                 $this->helper->sveaLoggerInfo("Order " . $incrementid . " status still waiting or unpaid.");
