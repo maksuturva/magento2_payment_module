@@ -21,6 +21,11 @@ class AddGiftCardPaymentRow implements ObserverInterface
         if (isset($orderData["base_gift_cards_amount"]) && $orderData["base_gift_cards_amount"] != 0) {
             $discount = (float)$orderData["base_gift_cards_amount"];
 
+            // Always have the discount as a negative number
+            if ($discount > 0) {
+                $discount = -$discount;
+            }
+
             $row = array(
                 'pmt_row_name' => "Gift cards",
                 'pmt_row_desc' => "Gift cards",
@@ -40,10 +45,12 @@ class AddGiftCardPaymentRow implements ObserverInterface
                 'pmt_row_type' => 6, // discounts
             );
 
-            $totalAmount = $this->getTotalAmount($options);
-            $totalAmount = $discount > 0 ? ($totalAmount - $discount) : ($totalAmount + $discount);
-
-            $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalAmount));
+            // Modifying the total is commented out because the discounts are already included in the total at this point.
+            // See the implementation in Model\Gateway\Total\TotalCalculation::getProductsTotal()
+            //
+            // $totalAmount = $this->getTotalAmount($options);
+            // $totalAmount = $discount > 0 ? ($totalAmount - $discount) : ($totalAmount + $discount);
+            // options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalAmount));
 
             array_push($options["pmt_rows_data"], $row);
             $options["pmt_rows"] = count($options["pmt_rows_data"]);
