@@ -7,8 +7,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 class TotalCalculation
 {
     /**
-     * Get order total including tax but without shipping price and tax and handling fee.
-     * Discount are included in the total
+     * Get the order total including tax and discounts, but without shipping price, shipping tax and handling fee.
      *
      * @param OrderInterface $order
      * @return float
@@ -29,14 +28,11 @@ class TotalCalculation
      */
     public function getDiscountAmount($order)
     {
-        // By tax compensated discount we mean the value which is
-        // actually subtracted from the total to get the correct total for
-        // the order, and not the value provided by Magentos base_discount_amount
-        // because it may change depending on the configuration at which
-        // point the discounts are calculated (before / after tax)
+        // By tax compensated discount we mean the value which is actually subtracted from the subtotal to get the correct total for
+        // the order, and not the value provided by Magentos base_discount_amount because it may change depending on the configuration at which
+        // point the discounts and taxes are calculated
 
-        // Start from productsTotal which has only the real prices for products
-        // discounts etc. applied
+        // Start from productsTotal which has only the real prices for products, discounts etc. applied
         return  $this->getProductsTotal($order)
 
             // Subtract the products normal price from the total to get negative discount amount.
