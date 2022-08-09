@@ -4,6 +4,11 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.8.1] - 2022-08-09
+### Changed
+- Add support for various tax and discount calculation configurations
+- Improve explanation on tax compensated discount
+
 ## [1.8.0] - 2022-05-30
 ### Changed
 - Automatic status query has new time based rules to reduce unneccessary query traffic for pending payments.
