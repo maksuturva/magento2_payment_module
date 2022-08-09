@@ -46,6 +46,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     protected $keyVersion;
     protected $paymentDue;
     protected $eventManager;
+    protected $totalCalculation;
 
     /**
      * @var \Magento\Framework\HTTP\Client\Curl
@@ -67,10 +68,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         \Svea\Maksuturva\Api\MaksuturvaFormInterface $maksuturvaForm,
         \Magento\Framework\HTTP\Client\Curl $curl = null,
         \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Svea\Maksuturva\Model\Gateway\Total\TotalCalculation $totalCalculation,
         Xml $xmlConvert,
         Config $config
-    )
-    {
+    ) {
         parent::__construct($xmlConvert, $config);
         $this->helper = $maksuturvaHelper;
         $this->_scopeConfig = $scopeConfig;
@@ -84,11 +85,12 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $this->_localeResolver = $localeResolver;
         $this->_localeDate = $localeDate;
         $this->_maksuturvaForm = $maksuturvaForm;
-        $this->curlClient = $curl ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\HTTP\Client\Curl::class); 
+        $this->curlClient = $curl ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\HTTP\Client\Curl::class);
         $this->eventManager = $eventManager ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\Event\ManagerInterface::class);
-        }
+        $this->totalCalculation = $totalCalculation;
+    }
 
-    public  function setConfig($config)
+    public function setConfig($config)
     {
         $this->sellerId = $config['sellerId'];
         $this->secretKey = $config['secretKey'];
@@ -105,8 +107,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
     public function getForm()
     {
         if (!$this->form) {
-
             $order = $this->getOrder();
+
             if(!($order instanceof \Magento\Sales\Model\Order)){
                 throw new \Exception("Order not found");
             }
@@ -115,10 +117,9 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             $items = $order->getAllItems();
             $orderData = $order->getData();
-            $totalAmount = 0;
             $totalSellerCosts = 0;
-
             $products_rows = array();
+
             foreach ($items as $itemId => $item) {
                 $itemData = $item->getData();
                 $productName = $item->getName();
@@ -161,14 +162,11 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                         if (mb_strlen($childSku) > 10) {
                             $childSku = mb_substr($childSku, 0, 10);
                         }
-
                         $row['pmt_row_articlenr'] = $childSku;
                     }
                     if (strlen($childSku) > 0) {
                         $row['pmt_row_desc'] = $childSku;
                     }
-                    $totalAmount += $itemData["base_price_incl_tax"] * $item->getQtyToInvoice();
-
                 }
 
                 else if ($item->getParentItem() != null && $item->getParentItem()->getProductType() == \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
@@ -179,8 +177,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                     $row['pmt_row_quantity'] = str_replace('.', ',', sprintf("%.2f", $item->getQtyOrdered()));
                     if ($item->getProduct()->getPriceType() == 0) { //if price is fully dynamic
                         $row['pmt_row_price_net'] = str_replace('.', ',', sprintf("%.2f", '0'));
-                    } else {
-                        $totalAmount += $itemData["price_incl_tax"] * $item->getQtyOrdered();
                     }
                     $row['pmt_row_type'] = 4;
                 }
@@ -200,23 +196,15 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
                     $row['pmt_row_name'] = $unitQty . " X " . $parentQty . " X " . $item->getName();
                     $row['pmt_row_quantity'] = str_replace('.', ',', sprintf("%.2f", $item->getQtyOrdered()));
-                    $totalAmount += $itemData["base_price_incl_tax"] * $item->getQtyOrdered();
                     $row['pmt_row_type'] = 4;
-
-                }
-                else {
-                    $totalAmount += $itemData["base_price_incl_tax"] * $item->getQtyToInvoice();
                 }
                 array_push($products_rows, $row);
             }
 
             // row type 6
-            $discount = 0;
             if (isset($orderData["base_discount_amount"]) && $orderData["base_discount_amount"] != 0) {
-                $discount = $orderData["base_discount_amount"];
-                if ($discount > ($orderData["base_shipping_amount"] + $totalAmount)) {
-                    $discount = ($orderData["base_shipping_amount"] + $totalAmount);
-                }
+                $discount = $this->totalCalculation->getDiscountAmount($order);
+
                 $row = array(
                     'pmt_row_name' => "Discount",
                     'pmt_row_desc' => "Discount: " . $orderData["discount_description"],
@@ -237,7 +225,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 );
                 array_push($products_rows, $row);
             }
-            $totalAmount += $discount;
 
             $shippingDescription = ($order->getShippingDescription() ? $order->getShippingDescription() : 'Free Shipping');
 
@@ -275,7 +262,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             array_push($products_rows, $row);
 
             $handlingFee = $order->getHandlingFee();
-            //$this->helper->sveaLoggerDebug("Handling fee " . $handlingFee);            
+            //$this->helper->sveaLoggerDebug("Handling fee " . $handlingFee);
 
             //Row type 3
             $row = [
@@ -328,7 +315,9 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $options["pmt_cancelreturn"] = $this->_urlBuilder->getUrl('maksuturva/index/cancel');
             $options["pmt_delayedpayreturn"] = $this->_urlBuilder->getUrl('maksuturva/index/delayed');
 
+            $totalAmount = $this->totalCalculation->getProductsTotal($order);
             $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalAmount));
+
             if ($this->getPreselectedMethod()) {
                 $options["pmt_paymentmethod"] = $this->getPreselectedMethod();
             }
@@ -365,7 +354,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 array('transport_object' => $transportObject)
             );
             $options = $transportObject->getOptions();
-            
+
             $this->form = $this->_maksuturvaForm->setConfig(array('secretkey' => $this->secretKey, 'options' => $options, 'encoding' => $this->commEncoding, 'url' => $this->commUrl));
         }
 
@@ -399,8 +388,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $xml = simplexml_load_string($response);
         $obj = json_decode(json_encode($xml));
 
-        
-                
+
+
         if (property_exists($obj, 'paymentmethod') && $obj->paymentmethod) {
             /*if (is_array($obj->paymentmethod))
             $this->helper->sveaLoggerDebug("" . count($obj->paymentmethod) . " available payment methods for total " . $total);
@@ -493,7 +482,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $this->helper->sveaLoggerError("Status query failed for payment " . $pmt_id . " result, http responsecode=" . $this->curlClient->getStatus());
                 throw new \Svea\Maksuturva\Model\Gateway\Exception(
                     ["Failed to communicate with Svea Payments. Please check the network connection. URL: " . $this->getStatusQueryUrl()
-                    . " HTTP response code " . $this->curlClient->getStatus()]
+                     . " HTTP response code " . $this->curlClient->getStatus()]
                 );
             }
         } catch (\Exception $e) {
@@ -503,19 +492,19 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         }
 
         $body = $this->curlClient->getBody();
-        //$this->helper->sveaLoggerDebug("Status query HTTP response body " . print_r($body, true));               
+        //$this->helper->sveaLoggerDebug("Status query HTTP response body " . print_r($body, true));
 
         // we will not rely on xml parsing - instead, the fields are going to be collected by means of preg_match
         $parsedResponse = array();
         $responseFields = array(
             "pmtq_action", "pmtq_version", "pmtq_sellerid", "pmtq_id", "pmtq_orderid",
             "pmtq_amount", "pmtq_returncode", "pmtq_returntext", "pmtq_trackingcodes",
-            "pmtq_sellercosts", "pmtq_invoicingfee", "pmtq_paymentmethod", "pmtq_escrow", 
+            "pmtq_sellercosts", "pmtq_invoicingfee", "pmtq_paymentmethod", "pmtq_escrow",
             "pmtq_certification", "pmtq_paymentdate",
             "pmtq_buyername", "pmtq_buyeraddress1", "pmtq_buyeraddress2",
             "pmtq_buyerpostalcode", "pmtq_buyercity", "pmtq_hash"
         );
-   
+
         foreach ($responseFields as $responseField) {
             preg_match("/<$responseField>(.*)?<\/$responseField>/i", $body, $match);
             if (count($match) == 2) {
@@ -571,7 +560,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         if ( abs($total - ($pmtq_amount+$pmtq_sellercosts-$pmtq_invoicingfee)) > 5.00) {
             $result['message'] = __('Order and status query response sum mismatch! Status update failed.');
             $result['success'] = "error";
-            $this->helper->sveaLoggerError("Order " . $incrementid . " sum (amount " . $pmtq_amount . " + sellercosts " . 
+            $this->helper->sveaLoggerError("Order " . $incrementid . " sum (amount " . $pmtq_amount . " + sellercosts " .
                 $pmtq_sellercosts .  " - invoicingfee " . $pmtq_invoicingfee . ") does not match order total " . $total);
             return $result;
         }
@@ -632,7 +621,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_PAYER_RECLAMATION:
             case \Svea\Maksuturva\Model\Gateway\Implementation::STATUS_QUERY_CANCELLED:
                 //Mark the order cancelled
-                
+
                 $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Svea Payments'));
                 $order->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED, true, __('Payment canceled in Svea Payments'));
                 $order->save();
@@ -674,25 +663,25 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $order->save();
         $this->helper->sveaLoggerInfo("Order " . $order->getIncrementId() . " set as paid and status to '" . strval($processStatus) . "'");
     }
-    
-   
+
+
     public function addDeliveryInfo($payment)
     {
         $allowedDeliveryCodes = array('ITELL', 'MATHU', 'KAUKO', 'TRANS', 'KIITO', 'MYPAC', 'DBSCH', 'FEDEX', 'DHLDP', 'TNTNV', 'UPSAM', 'UNREG', 'PICKU', 'ODLVR', 'SERVI',
-        'ELECT', 'UNREF', 'UNRDL');
+                                      'ELECT', 'UNREF', 'UNRDL');
 
         try
-        {                                                                                                                                                                                         
+        {
             $additional_data = $payment->getAdditionalData();
             $json_data = json_decode($additional_data, true);
             $pkg_id = $json_data[\Svea\Maksuturva\Model\PaymentAbstract::MAKSUTURVA_TRANSACTION_ID];
-            $this->helper->sveaLoggerInfo("Adding delivery info for pkg_id " . strval($pkg_id));                                                                        
+            $this->helper->sveaLoggerInfo("Adding delivery info for pkg_id " . strval($pkg_id));
         } catch (Exception $e)
-        {                                                                                                                                                                                                                                                                                                                                                                                   
+        {
             $this->helper->sveaLoggerError("Add delivery function failed, parse exception " . $e->getMessage());
             return;
         }
-        
+
         $deliveryMethod = $payment->getOrder()->getShippingMethod();
         if (!in_array($deliveryMethod, $allowedDeliveryCodes)) {
             //$this->helper->sveaLoggerError("Unable to create add delivery method request to Svea Payments. Invalid deliverymethod " . $deliveryMethod . ". See Readme.md / Delayed Capture.");
@@ -773,7 +762,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         $order = $payment->getOrder();
         /** @var InvoiceInterface $invoice */
         $invoice = $payment->getCreditmemo()->getInvoice();
-        
+
         if (abs($order->getBaseTotalInvoiced() - $order->getBaseTotalRefunded()) < .0001) {
             $cancelType = 'FULL_REFUND';
             $canRefundMore = false;
@@ -783,8 +772,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         }
 
         $this->helper->sveaLoggerInfo("" . $order->getIncrementId() . " " . $cancelType . ". Details: invoiceGrandTotal=" . $invoice->getBaseGrandTotal()
-             . ", invoiceTotalRefunded=" . $invoice->getBaseTotalRefunded() . ", orderBaseTotalInvoiced=" . $order->getBaseTotalInvoiced() 
-             . ", orderTotalRefunded=" . $order->getBaseTotalRefunded() . ", amount=" . $amount);
+            . ", invoiceTotalRefunded=" . $invoice->getBaseTotalRefunded() . ", orderBaseTotalInvoiced=" . $order->getBaseTotalInvoiced()
+            . ", orderTotalRefunded=" . $order->getBaseTotalRefunded() . ", amount=" . $amount);
 
         $parsedResponse = $this->cancel($payment, $amount, $cancelType);
 
@@ -905,7 +894,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
         $fields['pmtc_hash'] = $this->calculateHash($fields, $hashFields);
         $response = $this->getPostResponse($this->getPaymentCancelUrl(), $fields);
-  
+
         return $this->processCancelPaymentResponse($response);
     }
 
