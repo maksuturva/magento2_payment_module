@@ -240,7 +240,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 ->setProductClassId($taxId);
 
             //HENE
-            $percent = $$this->_calculationModel->getRate($request->setProductClassId($taxId));
+            $percent = $this->_calculationModel->getRate($request->setProductClassId($taxId));
             $this->helper->sveaLoggerDebug("SHIPPING PERCENT " . $percent);
             
             if(isset($orderData["base_shipping_tax_amount"])){
@@ -250,7 +250,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             }
 
             $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
-            $this->helper->sveaLoggerDebug("SHIPPING TAX " . $shippingTax . ", COST " . $shippingCost);
+            $this->helper->sveaLoggerDebug("SHIPPING TAX " . $shippingTax . ", COST " . $shippingCost . ", RATE " . $shippingTaxRate);
                     
             $row = array(
                 'pmt_row_name' => __('Shipping'),
