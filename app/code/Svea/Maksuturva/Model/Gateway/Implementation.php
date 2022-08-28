@@ -318,14 +318,16 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $totalAmount = $this->totalCalculation->getProductsTotal($order);
 
             // WORKAROUND for discount codes, if total amount is zero, move seller costs to total amount
+            $this->helper->sveaLoggerDebug("Total" . sprintf("%.2f %.2f", $totalAmount, $totalSellerCosts));
             if ($totalAmount<0.01) {
                 $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));
                 $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", 0.00));  
                 foreach ($products_rows as $checkrow) {
-                    $this->helper->sveaLoggerDebug("" . print_r($checkrow, true));
+                    $this->helper->sveaLoggerDebug("" . "pmt_row_desc" . "" . "pmt_row_type");
             
                     if ($checkrow["pmt_row_type"]==3 || $checkrow["pmt_row_type"]==2) {
                         $checkrow["pmt_row_type"]=1;
+                        $this->helper->sveaLoggerDebug("REPLACED" . "pmt_row_desc" . "" . "pmt_row_type");
                     }
                 }
             } else {
