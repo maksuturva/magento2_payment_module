@@ -316,7 +316,21 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $options["pmt_delayedpayreturn"] = $this->_urlBuilder->getUrl('maksuturva/index/delayed');
 
             $totalAmount = $this->totalCalculation->getProductsTotal($order);
-            $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalAmount));
+
+            // WORKAROUND for discount codes, if total amount is zero, move seller costs to total amount
+            if ($totalAmount<0.01) {
+                $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));
+                $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", 0.00));  
+                foreach ($products_rows as $checkrow) {
+                    if ($checkrow["pmt_row_type"]==3 || $checkrow["pmt_row_type"]==2) {
+                        $checkrow["pmt_row_type"]=1;
+                    }
+                }
+            } else {
+                // normal action
+                $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalAmount));
+                $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));    
+            }
 
             if ($this->getPreselectedMethod()) {
                 $options["pmt_paymentmethod"] = $this->getPreselectedMethod();
@@ -342,8 +356,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $options["pmt_deliverypostalcode"] = ($order->getShippingAddress() ? $order->getShippingAddress()->getPostcode() : '');
             $options["pmt_deliverycity"] = ($order->getShippingAddress() ? $order->getShippingAddress()->getCity() : '');
             $options["pmt_deliverycountry"] = ($order->getShippingAddress() ? $order->getShippingAddress()->getCountry() : '');
-
-            $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));
 
             $options["pmt_rows"] = count($products_rows);
             $options["pmt_rows_data"] = $products_rows;
