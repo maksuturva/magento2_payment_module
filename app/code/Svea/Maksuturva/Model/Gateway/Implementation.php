@@ -239,6 +239,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $request->setCustomerClassId($this->_getCustomerTaxClass())
                 ->setProductClassId($taxId);
 
+            //HENE
+            $percent = $$this->_calculationModel->getRate($request->setProductClassId($taxId));
+            $this->helper->sveaLoggerDebug("SHIPPING PERCENT " . $percent);
+            
             if(isset($orderData["base_shipping_tax_amount"])){
                 $shippingTax = $orderData["base_shipping_tax_amount"];
             }else{
@@ -246,7 +250,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             }
 
             $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
-            $this->helper->sveaLoggerDebug("SHIPPING TAX" . $shippingTax . ", COST" . $shippingCost);
+            $this->helper->sveaLoggerDebug("SHIPPING TAX " . $shippingTax . ", COST " . $shippingCost);
                     
             $row = array(
                 'pmt_row_name' => __('Shipping'),
@@ -262,7 +266,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             array_push($products_rows, $row);
 
             $handlingFee = $order->getHandlingFee();
-            //$this->helper->sveaLoggerDebug("Handling fee " . $handlingFee);
 
             //Row type 3
             $row = [
@@ -318,7 +321,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $totalAmount = $this->totalCalculation->getProductsTotal($order);
 
             // WORKAROUND for discount codes, if total amount is zero, move seller costs to total amount
-            $this->helper->sveaLoggerDebug("Total" . sprintf("%.2f %.2f", $totalAmount, $totalSellerCosts));
+            $this->helper->sveaLoggerDebug("Total " . sprintf("%.2f %.2f", $totalAmount, $totalSellerCosts));
             if ($totalAmount<0.01) {
                 $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));
                 $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", 0.00));  
