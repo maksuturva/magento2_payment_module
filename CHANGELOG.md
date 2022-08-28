@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.8.2] - 2022-08-28
+### Changed
+- Seller costs calculation workaround when total amount is zero
+
 ## [1.8.1] - 2022-08-09
 ### Changed
 - Add support for various tax and discount calculation configurations

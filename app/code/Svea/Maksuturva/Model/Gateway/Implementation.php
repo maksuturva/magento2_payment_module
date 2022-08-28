@@ -234,7 +234,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $shippingCost = 0;
             }
 
-
             $taxId = $this->_taxHelper->getShippingTaxClass($this->_storeManager->getStore()->getId());
             $request = $this->_calculationModel->getRateRequest();
             $request->setCustomerClassId($this->_getCustomerTaxClass())
@@ -246,8 +245,10 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $shippingTax = 0;
             }
 
-            $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
-
+            $shippingTaxRate = $this->_calculationModel->getRate($request->setProductClassId($taxId));
+            //$shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
+            $this->helper->sveaLoggerDebug("Shipping amount " . $shippingCost . ", tax_amount " . $shippingTax . ", rate " . $shippingTaxRate);
+                    
             $row = array(
                 'pmt_row_name' => __('Shipping'),
                 'pmt_row_desc' => $shippingDescription,
@@ -262,7 +263,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             array_push($products_rows, $row);
 
             $handlingFee = $order->getHandlingFee();
-            //$this->helper->sveaLoggerDebug("Handling fee " . $handlingFee);
 
             //Row type 3
             $row = [
@@ -316,7 +316,22 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $options["pmt_delayedpayreturn"] = $this->_urlBuilder->getUrl('maksuturva/index/delayed');
 
             $totalAmount = $this->totalCalculation->getProductsTotal($order);
-            $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalAmount));
+
+            // WORKAROUND for discount codes, if total amount is zero, move seller costs to total amount
+            if ($totalAmount<0.01) {
+                $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", ($totalAmount+$totalSellerCosts) ));
+                $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", 0.00));  
+                foreach ($products_rows as &$checkrow) {
+                    if ($checkrow["pmt_row_type"]==3 || $checkrow["pmt_row_type"]==2) {
+                        $checkrow["pmt_row_type"]=1;
+                    }
+                }
+                unset($checkrow);
+            } else {
+                // normal action
+                $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalAmount));
+                $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));    
+            }
 
             if ($this->getPreselectedMethod()) {
                 $options["pmt_paymentmethod"] = $this->getPreselectedMethod();
@@ -342,8 +357,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $options["pmt_deliverypostalcode"] = ($order->getShippingAddress() ? $order->getShippingAddress()->getPostcode() : '');
             $options["pmt_deliverycity"] = ($order->getShippingAddress() ? $order->getShippingAddress()->getCity() : '');
             $options["pmt_deliverycountry"] = ($order->getShippingAddress() ? $order->getShippingAddress()->getCountry() : '');
-
-            $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));
 
             $options["pmt_rows"] = count($products_rows);
             $options["pmt_rows_data"] = $products_rows;
@@ -492,7 +505,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         }
 
         $body = $this->curlClient->getBody();
-        //$this->helper->sveaLoggerDebug("Status query HTTP response body " . print_r($body, true));
 
         // we will not rely on xml parsing - instead, the fields are going to be collected by means of preg_match
         $parsedResponse = array();
