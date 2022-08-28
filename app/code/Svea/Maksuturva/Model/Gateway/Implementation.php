@@ -322,14 +322,16 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             if ($totalAmount<0.01) {
                 $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));
                 $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", 0.00));  
-                foreach ($products_rows as $checkrow) {
-                    $this->helper->sveaLoggerDebug("" . "pmt_row_desc" . "" . "pmt_row_type");
+                foreach ($products_rows as &$checkrow) {
+                    $this->helper->sveaLoggerDebug("" . $checkrow["pmt_row_desc"] . "" . $checkrow["pmt_row_type"]);
             
                     if ($checkrow["pmt_row_type"]==3 || $checkrow["pmt_row_type"]==2) {
                         $checkrow["pmt_row_type"]=1;
-                        $this->helper->sveaLoggerDebug("REPLACED" . "pmt_row_desc" . "" . "pmt_row_type");
+                        $this->helper->sveaLoggerDebug("REPLACED" . $checkrow["pmt_row_desc"] . "" . $checkrow["pmt_row_type"]);
                     }
                 }
+                unset($checkrow);
+                $this->helper->sveaLoggerDebug("MODIFIED ARRAY " . print_r($products_rows, true));
             } else {
                 // normal action
                 $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalAmount));
