@@ -239,18 +239,15 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $request->setCustomerClassId($this->_getCustomerTaxClass())
                 ->setProductClassId($taxId);
 
-            //HENE
-            $percent = $this->_calculationModel->getRate($request->setProductClassId($taxId));
-            $this->helper->sveaLoggerDebug("SHIPPING PERCENT " . $percent);
-            
             if(isset($orderData["base_shipping_tax_amount"])){
                 $shippingTax = $orderData["base_shipping_tax_amount"];
             }else{
                 $shippingTax = 0;
             }
 
-            $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
-            $this->helper->sveaLoggerDebug("SHIPPING TAX " . $shippingTax . ", COST " . $shippingCost . ", RATE " . $shippingTaxRate);
+            $shippingTaxRate = $this->_calculationModel->getRate($request->setProductClassId($taxId));
+            //$shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
+            $this->helper->sveaLoggerDebug("Shipping amount " . $shippingCost . ", tax_amount " . $shippingTax . ", rate " . $shippingTaxRate);
                     
             $row = array(
                 'pmt_row_name' => __('Shipping'),
@@ -321,20 +318,16 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             $totalAmount = $this->totalCalculation->getProductsTotal($order);
 
             // WORKAROUND for discount codes, if total amount is zero, move seller costs to total amount
-            $this->helper->sveaLoggerDebug("Total " . sprintf("%.2f %.2f", $totalAmount, $totalSellerCosts));
             if ($totalAmount<0.01) {
                 $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));
                 $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", 0.00));  
                 foreach ($products_rows as &$checkrow) {
-                    $this->helper->sveaLoggerDebug("" . $checkrow["pmt_row_desc"] . "" . $checkrow["pmt_row_type"]);
-            
                     if ($checkrow["pmt_row_type"]==3 || $checkrow["pmt_row_type"]==2) {
                         $checkrow["pmt_row_type"]=1;
-                        $this->helper->sveaLoggerDebug("REPLACED" . $checkrow["pmt_row_desc"] . "" . $checkrow["pmt_row_type"]);
+                        //$this->helper->sveaLoggerDebug("REPLACED" . $checkrow["pmt_row_desc"] . "" . $checkrow["pmt_row_type"]);
                     }
                 }
                 unset($checkrow);
-                $this->helper->sveaLoggerDebug("MODIFIED ARRAY " . print_r($products_rows, true));
             } else {
                 // normal action
                 $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalAmount));
@@ -513,7 +506,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         }
 
         $body = $this->curlClient->getBody();
-        //$this->helper->sveaLoggerDebug("Status query HTTP response body " . print_r($body, true));
 
         // we will not rely on xml parsing - instead, the fields are going to be collected by means of preg_match
         $parsedResponse = array();
