@@ -322,6 +322,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));
                 $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", 0.00));  
                 foreach ($products_rows as $checkrow) {
+                    $this->helper->sveaLoggerDebug("" . print_r($checkrow, true));
+            
                     if ($checkrow["pmt_row_type"]==3 || $checkrow["pmt_row_type"]==2) {
                         $checkrow["pmt_row_type"]=1;
                     }
