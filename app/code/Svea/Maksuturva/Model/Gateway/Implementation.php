@@ -234,7 +234,6 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $shippingCost = 0;
             }
 
-
             $taxId = $this->_taxHelper->getShippingTaxClass($this->_storeManager->getStore()->getId());
             $request = $this->_calculationModel->getRateRequest();
             $request->setCustomerClassId($this->_getCustomerTaxClass())
@@ -247,7 +246,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
             }
 
             $shippingTaxRate = $this->getShippingTaxRate($shippingTax, $shippingCost);
-
+            $this->helper->sveaLoggerDebug("SHIPPING TAX" . $shippingTax . ", COST" . $shippingCost);
+                    
             $row = array(
                 'pmt_row_name' => __('Shipping'),
                 'pmt_row_desc' => $shippingDescription,
