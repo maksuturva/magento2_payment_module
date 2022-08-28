@@ -319,7 +319,8 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
             // WORKAROUND for discount codes, if total amount is zero, move seller costs to total amount
             if ($totalAmount<0.01) {
-                $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", $totalSellerCosts));
+                $this->helper->sveaLoggerDebug("UUSI LASKU amount: " . $totalAmount . ", " . $totalSellerCosts);
+                $options["pmt_amount"] = str_replace('.', ',', sprintf("%.2f", ($totalAmount+$totalSellerCosts) ));
                 $options["pmt_sellercosts"] = str_replace('.', ',', sprintf("%.2f", 0.00));  
                 foreach ($products_rows as &$checkrow) {
                     if ($checkrow["pmt_row_type"]==3 || $checkrow["pmt_row_type"]==2) {
