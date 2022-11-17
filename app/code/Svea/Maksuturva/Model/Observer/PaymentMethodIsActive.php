@@ -2,6 +2,7 @@
 namespace Svea\Maksuturva\Model\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
+use Svea\Maksuturva\Model\PaymentAbstract;
 
 class PaymentMethodIsActive implements ObserverInterface {
 
@@ -15,7 +16,7 @@ class PaymentMethodIsActive implements ObserverInterface {
         $event  = $observer->getEvent();
         $method = $event->getMethodInstance();
 
-        if ($method instanceof PaymentAbstract) {    
+        if ($method instanceof PaymentAbstract) {
             $result = $event->getResult();
             if (is_object($method)) {
                 $methodCode = $method->getCode();

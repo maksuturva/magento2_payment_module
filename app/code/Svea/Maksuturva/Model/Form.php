@@ -185,6 +185,10 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Svea\Maksu
 
         // Force to cut off all amps and merge in current array_data
         foreach ($data as $key => $value) {
+            if ($value === null) {
+                $this->_formData[$key] = $value;
+                continue;
+            }
             if ($key == 'pmt_rows_data') {
                 $rows = array();
                 foreach ($value as $k => $v) {
@@ -486,6 +490,9 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Svea\Maksu
 
     private function convert_encoding($string_input, $encoding)
     {
+        if ($encoding === null) {
+            $encoding = $this->_charsethttp;
+        }
         return mb_convert_encoding($string_input, $encoding);
     }
 
@@ -512,6 +519,10 @@ class Form extends \Magento\Framework\Model\AbstractModel implements \Svea\Maksu
 
         // Force to cut off all amps and merge in current array_data
         foreach ($data as $key => $value) {
+            if ($value === null) {
+                $this->_formData[$key] = $value;
+                continue;
+            }
             if ($key == 'pmt_rows_data') {
                 $rows = array();
                 foreach ($value as $k => $v) {
