@@ -15,7 +15,7 @@ class HandlingFee extends AbstractTotal
         $order = $creditmemo->getOrder();
         $orderHandlingFee = $order->getHandlingFee();
         $allowedAmount = $orderHandlingFee - $order->getRefundedHandlingFee();
-        $desiredAmount = round($creditmemo->getBaseHandlingFee(), 2);
+        $desiredAmount = round($creditmemo->getBaseHandlingFee() ?? 0, 2);
 
         // Note: ($x > $y + 0.0001) means ($x >= $y) for floats
         if ($desiredAmount > round($allowedAmount) + 0.0001) {

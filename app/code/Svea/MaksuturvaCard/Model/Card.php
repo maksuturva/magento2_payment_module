@@ -12,7 +12,8 @@ class Card extends \Svea\Maksuturva\Model\PaymentAbstract
             $this->_methods = $this->_getPaymentMethods();
         }
         foreach($this->_methods as $method){
-            if(in_array($method->code, $this->_getAllowedMethods())){
+            $allowedMethods = $this->_getAllowedMethods();
+            if(in_array($method->code, $allowedMethods)){
                 $this->_allowedMethods[] = $method;
             }
         }

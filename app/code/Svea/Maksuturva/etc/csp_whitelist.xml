@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp/etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="connect-src">
+            <values>
+                <value id="test1.maksuturva.fi" type="host">https://test1.maksuturva.fi/</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="https://www.maksuturva.fi/" type="host">https://www.maksuturva.fi/</value>
+                <value id="test1.maksuturva.fi" type="host">https://test1.maksuturva.fi/</value>
+                <value id="https://payments.maksuturva.fi/" type="host">https://payments.maksuturva.fi/</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

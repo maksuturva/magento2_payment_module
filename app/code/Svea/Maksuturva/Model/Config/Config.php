@@ -216,6 +216,9 @@ class Config
     {
         $formatted = [];
         foreach ($value as $key => $data) {
+            if ($data === null) {
+                continue;
+            }
             $entries = [];
             foreach (\explode(';', $data) as $entry) {
                 $feeInfo = \explode('=', $entry);
