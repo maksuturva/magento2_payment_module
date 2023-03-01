@@ -4,6 +4,16 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.9.1] - 2023-03-01
+### Changed
+- PR54 Move preparing products rows to a separate function allowing easier product data modification with plugins if needed.
+- PR54 Change pmt_row_desc max length from 10 to 1000
+- PR54 Change pmt_row_articlenr max length from 10 to 100
+
+## [1.9.0] - 2022-11-24
+### Fixed
+- PR53 MAKSU-209 Fixed several classes to avoid php8.1 crashes. Added csp_whitelist for maksuturva urls.
+
 ## [1.8.1] - 2022-08-09
 ### Changed
 - Add support for various tax and discount calculation configurations
