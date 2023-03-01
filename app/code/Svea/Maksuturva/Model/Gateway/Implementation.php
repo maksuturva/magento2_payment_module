@@ -881,17 +881,13 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
         foreach ($items as $itemId => $item) {
             $itemData = $item->getData();
             $productName = $item->getName();
-
-            $sku = $item->getSku();
-            if (mb_strlen($sku) > 10) {
-                $sku = mb_substr($sku, 0, 10);
-            }
+            $sku = $item->getSku() ?? '';
 
             $row = array(
                 'pmt_row_name' => $productName,
-                'pmt_row_desc' => $sku,
+                'pmt_row_desc' => mb_substr($sku, 0, 1000),
                 'pmt_row_quantity' => str_replace('.', ',', sprintf("%.2f", $item->getQtyToInvoice())),
-                'pmt_row_articlenr' => $sku,
+                'pmt_row_articlenr' => mb_substr($sku, 0, 100),
                 'pmt_row_deliverydate' => date("d.m.Y"),
                 'pmt_row_price_net' => str_replace('.', ',', sprintf("%.2f", $item->getBasePrice())),
                 'pmt_row_vat' => str_replace('.', ',', sprintf("%.2f", $itemData["tax_percent"])),
@@ -914,17 +910,9 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
 
                 $child = $children[0];
                 $row['pmt_row_name'] = $child->getName();
-                $childSku = $child->getSku();
-
-                if (strlen($childSku) > 0) {
-                    if (mb_strlen($childSku) > 10) {
-                        $childSku = mb_substr($childSku, 0, 10);
-                    }
-                    $row['pmt_row_articlenr'] = $childSku;
-                }
-                if (strlen($childSku) > 0) {
-                    $row['pmt_row_desc'] = $childSku;
-                }
+                $childSku = $child->getSku() ?? '';
+                $row['pmt_row_articlenr'] = mb_substr($childSku, 0, 100);
+                $row['pmt_row_desc'] = mb_substr($childSku, 0, 1000);
             } else if ($item->getParentItem() != null && $item->getParentItem()->getProductType() == Configurable::TYPE_CODE) {
                 continue;
             } else if ($item->getProductType() == Type::TYPE_CODE && $item->getChildrenItems() != null && sizeof($item->getChildrenItems()) > 0) {
