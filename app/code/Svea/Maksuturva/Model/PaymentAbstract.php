@@ -177,7 +177,7 @@ abstract class PaymentAbstract extends \Magento\Payment\Model\Method\AbstractMet
 
     protected function _getPaymentMethods()
     {
-        $quoteTotal = $this->cart->getQuote()->getGrandTotal();
+        $quoteTotal = $this->cart->getQuote()->getGrandTotal() ?? 0;
         $cacheKey = "MAKSUTURVA_PAYMENT_METHODS_" . number_format($quoteTotal, 4, "_", "");
 
         if ($cachedData = $this->cache->load($cacheKey)) {
