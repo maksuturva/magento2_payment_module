@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.9.2] - 2023-06-11
 ### Changed
-- Callback does not update order status if it's paid already
+- The received callback call does not update the order status if it's paid already. This fixes interoperatility with ERP 
+  when external system updates the order status in parallel.
 
 ## [1.9.1] - 2023-03-01
 ### Changed

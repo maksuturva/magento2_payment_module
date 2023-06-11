@@ -27,28 +27,6 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         $this->orderSender = $orderSender;
     }
 
-    /***
-     * Handle execute error messaging. If callback, use http response codes, otherwise
-     * redirect to error page
-     */
-    private function errorOccured($iscallback, $result_array, $httpcode, $msg, $e) {
-        if (!empty($e)) {
-            $this->getHelper()->sveaLoggerError($msg . $e);
-        } else {
-            $this->getHelper()->sveaLoggerError($msg);
-        }
-
-        if(!$iscallback) {
-            $this->_redirect('maksuturva/index/error', $result_array);
-        } else {
-            $this->getResponse()
-                ->clearHeaders()
-                ->setHeader('HTTP/1.0', $code, true)
-                ->setHeader('Content-Type', 'text/html') 
-                ->setBody($msg);
-        }
-    }
-
     /**
      * Execute success action
      * 
@@ -90,10 +68,8 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             $noticemsg = "Callback received but order " . $order->getIncrementId() . " is marked as paid already.";
             $this->getHelper()->sveaLoggerInfo($noticemsg);  
             $this->getResponse()
-                ->clearHeaders()
-                ->setHeader('HTTP/1.0', 200, true)
-                ->setHeader('Content-Type', 'text/html') 
-                ->setBody($noticemsg);
+                ->setStatusCode(\Magento\Framework\App\Response\Http::STATUS_CODE_200)
+                ->setContent($noticemsg);
             return;
         }
 
@@ -212,4 +188,26 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
         $this->getResponse()->setBody($this->_resultPageFactory->create()->getLayout()->createBlock('Svea\Maksuturva\Block\Form\Maksuturva')->toHtml());
     }
 
+    /***
+     * Handle execute error messaging. If callback, use http response codes, otherwise
+     * redirect to error page
+     */
+    private function errorOccured($iscallback, $result_array, $httpcode, $msg, $e) {
+        if (!empty($e)) {
+            $this->getHelper()->sveaLoggerError($msg . $e);
+        } else {
+            $this->getHelper()->sveaLoggerError($msg);
+        }
+
+        if(!$iscallback) {
+            $this->_redirect('maksuturva/index/error', $result_array);
+        } else {
+            $this->getResponse()
+                //->clearHeaders()
+                //->setHeader('HTTP/1.0', $code, true)
+                //->setHeader('Content-Type', 'text/html') 
+                ->setStatusCode($httpcode)
+                ->setContent($msg);
+        }
+    }
 }
