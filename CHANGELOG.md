@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.9.2] - 2023-06-11
+### Changed
+- Callback does not update order status if it's paid already
+
 ## [1.9.1] - 2023-03-01
 ### Changed
 - PR54 Move preparing products rows to a separate function allowing easier product data modification with plugins if needed.
