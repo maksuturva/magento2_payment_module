@@ -86,7 +86,7 @@ class Success extends \Svea\Maksuturva\Controller\Maksuturva
             return;
         }
 
-        if ($order->getBaseTotalDue()<0.01) {
+        if ($iscallback && $order->getBaseTotalDue()<0.01) {
             $noticemsg = "Callback received but order " . $order->getIncrementId() . " is marked as paid already.";
             $this->getHelper()->sveaLoggerInfo($noticemsg);  
             $this->getResponse()
