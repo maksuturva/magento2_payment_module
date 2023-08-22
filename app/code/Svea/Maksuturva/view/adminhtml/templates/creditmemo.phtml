@@ -1,10 +1,10 @@
-<?php $order = $block->getOrder() ?>
+<?php /** @var $block \Svea\Maksuturva\Block\Adminhtml\Sales\Order\Creditmemo\HandlingFee */ ?>
 
 <td class="label"><?= /* @escapeNotVerified */ \__('Handling Fee') ?><div id="handling_fee"></div></td>
 <td>
     <input type="text"
            name="creditmemo[handling_fee]"
-           value="<?= (float)$order->getHandlingFee() - (float)$order->getRefundedHandlingFee() ?>"
+           value="<?= (float)$block->getHandlingFee() ?>"
            class="input-text admin__control-text not-negative-amount"
            id="handling_fee" />
 </td>

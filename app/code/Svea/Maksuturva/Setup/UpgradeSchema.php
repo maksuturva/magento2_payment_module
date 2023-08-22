@@ -36,9 +36,12 @@ class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface {
             $this->addMaksuturvaIdForPayment($setup);
         }
 
-
         if (\version_compare($context->getVersion(), '1.0.4') < 0) {
             $this->version104($setup);
+        }
+
+        if (\version_compare($context->getVersion(), '1.0.5') < 0) {
+            $this->version105($setup);
         }
 
         $setup->endSetup();
@@ -123,5 +126,37 @@ class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface {
         );
     }
 
+    /**
+     * @param \Magento\Framework\Setup\SchemaSetupInterface $setup
+     */
+    public function version105(SchemaSetupInterface $setup)
+    {
+        $connection = $setup->getConnection();
+        $tables = ['sales_creditmemo', 'sales_invoice'];
 
+        foreach ($tables as $table) {
+            $connection->addColumn(
+                $setup->getTable($table),
+                'handling_fee',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length' => '12,4',
+                    'default' => null,
+                    'nullable' => true,
+                    'comment' => 'Handling Fee Amount',
+                ]
+            );
+            $connection->addColumn(
+                $setup->getTable($table),
+                'base_handling_fee',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                    'length' => '12,4',
+                    'default' => null,
+                    'nullable' => true,
+                    'comment' => 'Base Handling Fee Amount',
+                ]
+            );
+        }
+    }
 }

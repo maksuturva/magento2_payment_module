@@ -1,10 +1,10 @@
-<?php $_order = $block->getOrder() ?>
+<?php /** @var \Svea\Maksuturva\Block\Adminhtml\Sales\Order\Creditmemo\HandlingFee $block */ ?>
 
 <tr>
     <td class="label">
         <div class="summary-collapse" tabindex="0"><?= /* @escapeNotVerified */ \__('Handling Fee') ?></div>
     </td>
     <td>
-        <span class="price"><?= $_order->getBaseCurrency()->format((float)$_order->getHandlingFee(), null, false) ?></span>
+        <span class="price"><?= $block->getFormattedHandlingFee() ?></span>
     </td>
 </tr>
