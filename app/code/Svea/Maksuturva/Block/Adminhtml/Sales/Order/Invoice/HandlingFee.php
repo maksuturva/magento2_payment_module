@@ -83,18 +83,18 @@ class HandlingFee extends \Magento\Framework\View\Element\Template
     public function initTotals()
     {
         $parent = $this->getParentBlock();
-        $this->order = $parent->getOrder();
+        $invoice = $parent->getInvoice();
         $handlingFee = $this->objectFactory->create();
         $handlingFee->setData(
             [
                 'code' => 'handling_fee',
                 'strong' => false,
-                'value' => $this->order->getHandlingFee(),
-                'base_value' => $this->order->getHandlingFee(),
+                'value' => $invoice->getHandlingFee(),
+                'base_value' => $invoice->getHandlingFee(),
                 'label' => __('Handling Fee'),
             ]
         );
-        $this->getInvoice()->setGrandTotal($this->order->getHandlingFee());
+        $this->getInvoice()->setGrandTotal($invoice->getHandlingFee());
         $parent->addTotalBefore($handlingFee, 'grand_total');
 
         return $this;

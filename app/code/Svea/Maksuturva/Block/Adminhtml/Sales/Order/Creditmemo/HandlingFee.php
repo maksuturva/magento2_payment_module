@@ -1,12 +1,18 @@
 <?php
 namespace Svea\Maksuturva\Block\Adminhtml\Sales\Order\Creditmemo;
 
+use Magento\Framework\DataObject;
 use Magento\Framework\DataObjectFactory;
 use Magento\Framework\View\Element\Template;
 use Magento\Sales\Api\Data\OrderInterface;
 
 class HandlingFee extends \Magento\Framework\View\Element\Template
 {
+    /**
+     * @var DataObject
+     */
+    private $source;
+
     /**
      * @var OrderInterface
      */
@@ -56,6 +62,14 @@ class HandlingFee extends \Magento\Framework\View\Element\Template
         return $this->order;
     }
 
+    /**
+     * @return DataObject
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
     public function getCreditMemo()
     {
         return $this->getParentBlock()->getCreditMemo();
@@ -83,21 +97,34 @@ class HandlingFee extends \Magento\Framework\View\Element\Template
     public function initTotals()
     {
         $parent = $this->getParentBlock();
+        $this->source = $parent->getSource();
         $this->order = $parent->getOrder();
         $handlingFee = $this->objectFactory->create();
         $handlingFee->setData(
             [
                 'code' => 'handling_fee',
                 'strong' => false,
-                'value' => $this->order->getHandlingFee(),
-                'base_value' => $this->order->getHandlingFee(),
+                'value' => $this->source->getHandlingFee(),
+                'base_value' => $this->source->getHandlingFee(),
                 'label' => __('Handling Fee'),
                 'block_name' => 'handling_fee'
             ]
         );
-        $this->getCreditMemo()->setGrandTotal($this->order->getHandlingFee());
+        $this->getCreditMemo()->setGrandTotal($this->source->getHandlingFee());
         $parent->addTotalBefore($handlingFee, 'grand_total');
 
         return $this;
+    }
+
+    public function getHandlingFee()
+    {
+        return $this->source->getHandlingFee();
+    }
+
+    public function getFormattedHandlingFee()
+    {
+        return $this->order->getBaseCurrency()->format(
+            (float) $this->source->getHandlingFee(), null, false
+        );
     }
 }
