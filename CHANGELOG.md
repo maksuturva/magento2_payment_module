@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.9.3] - 2023-08-2
+### Fixed
+- The handling fee can be set to zero when refunding invoice items by creating a new credit memo - PR #58.
+
 ## [1.9.2] - 2023-06-11
 ### Changed
 - The received callback call does not update the order status if it's paid already. This fixes interoperatility with ERP 
