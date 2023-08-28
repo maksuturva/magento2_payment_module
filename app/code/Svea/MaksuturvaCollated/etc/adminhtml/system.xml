@@ -30,12 +30,12 @@
                 </field>
 
                 <field id="pay_now_bank" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>3rd payment method subgroup</label>
+                    <label>1st payment method subgroup</label>
                     <comment><![CDATA[Default: Pay now with online banking]]></comment>
                 </field>
                 <field id="pay_now_bank_method_filter" translate="label" type="text" sortOrder="161" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Payment Methods Filter</label>
-                    <comment><![CDATA[List of 3rd subgroup payment methods, separated by ; (Default: FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15)]]></comment>
+                    <comment><![CDATA[List of 1st subgroup payment methods, separated by ; (Default: FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15)]]></comment>
                 </field>
                 <field id="pay_now_bank_handling_fee" translate="label" type="text" sortOrder="162" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Handling Fee</label>
@@ -54,12 +54,12 @@
                     <comment><![CDATA[See above]]></comment>
                 </field>
                 <field id="pay_later" translate="label" type="text" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>1st payment method subgroup title</label>
+                    <label>3rd payment method subgroup title</label>
                     <comment><![CDATA[Default: Pay later]]></comment>
                 </field>
                 <field id="pay_later_method_filter" translate="label" type="text" sortOrder="181" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Payment Methods Filter</label>
-                    <comment><![CDATA[List of 1st subgroup payment methods, separated by ; (Default: FI70;FI71;FI72)]]></comment>
+                    <comment><![CDATA[List of 3rd subgroup payment methods, separated by ; (Default: FI70;FI71;FI72)]]></comment>
                 </field>
                 <field id="pay_later_handling_fee" translate="label" type="text" sortOrder="182" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Handling Fee</label>
