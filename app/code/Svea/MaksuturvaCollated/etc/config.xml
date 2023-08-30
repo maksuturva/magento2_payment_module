@@ -7,7 +7,7 @@
                 <model>Svea\MaksuturvaCollated\Model\Collated</model>
                 <order_status>pending</order_status>
                 <title>Svea Payments</title>
-                
+                <sort_order>2</sort_order>
                 <pay_now_bank>Pay now with online banking</pay_now_bank>
                 <pay_now_bank_method_filter>FI01;FI02;FI03;FI04;FI05;FI06;FI07;FI08;FI09;FI10;FI11;FI12;FI13;FI14;FI15</pay_now_bank_method_filter>
                 <pay_now_other>Pay now with mobile payment or card</pay_now_other>
