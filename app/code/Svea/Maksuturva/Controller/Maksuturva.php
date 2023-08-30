@@ -68,7 +68,6 @@ abstract class Maksuturva extends \Magento\Framework\App\Action\Action
      */
     protected function _createInvoice($order)
     {
-        //if (!$order->canInvoice() || (!$this->_maksuturvaHelper->generateInvoiceAutomatically())) {
         if (!$order->canInvoice() || (!$this->_scopeConfig->getValue('maksuturva_config/maksuturva_payment/generate_invoice'))) {
             return false;
         }
