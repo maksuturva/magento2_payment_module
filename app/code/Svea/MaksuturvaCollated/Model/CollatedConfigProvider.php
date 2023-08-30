@@ -14,9 +14,9 @@ class CollatedConfigProvider extends \Svea\Maksuturva\Model\ConfigProvider
     const CONFIG_SUBPAYMENT_PATH = 'payment/maksuturva_collated_payment/';
     
     const SUBPAYMENT_STEPS =[
+        'pay_now_bank',
         'pay_later',
         'pay_now_other',
-        'pay_now_bank',
     ];
     const PAY_LATER = 'pay_later';
     const PAY_NOW_OTHER = 'pay_now_other';

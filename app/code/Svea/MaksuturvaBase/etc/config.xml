@@ -7,6 +7,7 @@
                 <model>Svea\MaksuturvaBase\Model\Base</model>
                 <order_status>pending</order_status>
                 <title>Maksuturva Service</title>
+                <sort_order>1</sort_order>
             </maksuturva_base_payment>
         </payment>
     </default>

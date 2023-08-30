@@ -17,13 +17,13 @@ define(
 
             payments: window.checkoutConfig.payment[method_code]['methods'],
             titles: window.checkoutConfig.payment[method_code]['titles'],
-            title_pay_later: window.checkoutConfig.payment[later_method_code]['title'],
-            payments_pay_later: window.checkoutConfig.payment[later_method_code]['methods'],
-            title_pay_other: window.checkoutConfig.payment[other_method_code]['title'],
-            payments_pay_other: window.checkoutConfig.payment[other_method_code]['methods'],
             title_pay_bank: window.checkoutConfig.payment[bank_method_code]['title'],
             payments_pay_bank: window.checkoutConfig.payment[bank_method_code]['methods'],
-
+            title_pay_other: window.checkoutConfig.payment[other_method_code]['title'],
+            payments_pay_other: window.checkoutConfig.payment[other_method_code]['methods'],
+            title_pay_later: window.checkoutConfig.payment[later_method_code]['title'],
+            payments_pay_later: window.checkoutConfig.payment[later_method_code]['methods'],
+            
             defaults: {
                 template: window.checkoutConfig.payment[method_code]['template'],
             },

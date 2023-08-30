@@ -4,7 +4,11 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
-## [1.9.3] - 2023-08-2
+## [1.9.4] - 2023-08-28
+### Changed
+- The default payment method order conforms Kuluttajasuojalaki in Finland (effective from 1.10.)
+
+## [1.9.3] - 2023-08-22
 ### Fixed
 - The handling fee can be set to zero when refunding invoice items by creating a new credit memo - PR #58.
 
