@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.9.5] - 2023-09-24
+### Fixed
+- Set the payment method to NULL when cancelling the payment after the checkout. Fixes some GraphQL queries.
+
 ## [1.9.4] - 2023-08-28
 ### Changed
 - The default payment method order conforms Kuluttajasuojalaki in Finland (effective from 1.10.)
