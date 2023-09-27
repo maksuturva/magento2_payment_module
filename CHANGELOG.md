@@ -4,6 +4,10 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
+## [1.9.6] [not released yet] - 2023-09-27
+### Fixed
+- Added collated submodule payment filter config string value checks to get rid of exception messages
+
 ## [1.9.5] - 2023-09-24
 ### Fixed
 - Set the payment method to NULL when cancelling the payment after the checkout. Fixes some GraphQL queries.

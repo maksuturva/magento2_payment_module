@@ -55,8 +55,11 @@ class Collated extends \Svea\Maksuturva\Model\PaymentAbstract
         foreach (CollatedConfigProvider::SUBPAYMENT_STEPS as $subpayment) {
            // $allowedMethodsString = $this->getConfigData('maksuturva_collated_subpayments/'.$subpayment.'_method_filter');
             $allowedMethodsString = $this->getConfigData($subpayment.'_method_filter');
-            $allowedMethodsString = preg_replace('/\s+/', '', $allowedMethodsString);
-            $allowedMethods[$subpayment] = explode(";", $allowedMethodsString);
+            if (!empty($allowedMethodsString))
+            {
+                $allowedMethodsString = preg_replace('/\s+/', '', $allowedMethodsString);
+                $allowedMethods[$subpayment] = explode(";", $allowedMethodsString);
+            }
         }
         return $allowedMethods;
     }
