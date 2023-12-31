@@ -566,7 +566,7 @@ class Implementation extends \Svea\Maksuturva\Model\Gateway\Base
                 $order->save();
                 $result['message'] = __('No change, still awaiting payment');
                 $result['success'] = "notice";
-                $this->helper->sveaLoggerInfo("Order " . $incrementid . " status still waiting or unpaid.");
+                $this->helper->sveaLoggerInfo("Order " . $incrementid . " status still waiting or unpaid. Updated at: " . $updatedate );
                 break;
         }
 
