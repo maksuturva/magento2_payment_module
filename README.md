@@ -2,12 +2,12 @@
 
 Contributors: Svea Payments Oy  
 Tags: svea, payment gateway  
-Requires Magento version at least: 2.3.4  
+Requires Magento version at least: 2.4.1  
 Tested up to: 2.4.6    
 
 # System requirements
-* Magento 2.3.4 - 2.4.6
-* PHP >7.2
+* Magento 2.4.1 - 2.4.6
+* PHP 7.4-8.2
 * PHP cURL support
 * PHP libxml support
 

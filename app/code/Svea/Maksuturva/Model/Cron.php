@@ -75,7 +75,7 @@ class Cron
         foreach ($orderCollection as $order) {
             $model = $order->getPayment()->getMethodInstance();
             //$this->helper->sveaLoggerInfo("Checking order " . $order->getIncrementId() . " created at " . $order->getCreatedAt() . ", updated at " . $order->getUpdatedAt());
-            $checkrule = $this->is_time_to_check( $order->getCreatedAt(),  $order->getUpdatedAt());
+            $checkrule = $this->is_time_to_check( $order->getCreatedAt());
 
             if ($checkrule>0)
             {
@@ -115,24 +115,27 @@ class Cron
      * WC module compatibility reasons.
 	 * 
 	 */
-	private function is_time_to_check($payment_date_added, $payment_date_updated)
+	private function is_time_to_check($payment_date_added)
 	{
 		$now_time = strtotime(date('Y-m-d H:i:s'));
 		$checkrule = 0;
         		
 		$create_diff = $now_time - strtotime($payment_date_added);
-		$update_diff = $now_time - strtotime($payment_date_updated);
-    
-		if ($this->in_range($create_diff, 5*60, 2*3600) && $update_diff > 20*60) 
+
+        $oneto10th = (rand(0, 9) == 5);
+        $oneto30th = (rand(0, 29) == 15);
+
+        // in Magento >2.4.1 updated_at is not updated anymore
+        // rule 1 - 5 minutes to 2 hours
+        // rule 2 - 6 hours to 24 hours
+        // rule 3 - 48 hours to 72 hours
+		if ($this->in_range($create_diff, 5*60, 2*3600))  
         {
 			$checkrule = 1;
-		}
-		if ($this->in_range($create_diff, 2*3600, 24*3600) && $update_diff > 2*3600) 
+		} else if ($this->in_range($create_diff, 6*3600, 24*3600) && $oneto10th) 
         {
 			$checkrule = 2;
-		} 
-		// 168 hours = 7 days. No older than 7 days allowed.
-		if ($create_diff < 168*3600 && $update_diff > 12 * 3600) 
+		} else if ($this->in_range($create_diff, 48*3600, 72*3600) && $oneto30th) 
         {
 			$checkrule = 3;
 		}
