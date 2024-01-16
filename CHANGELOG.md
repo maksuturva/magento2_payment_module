@@ -4,8 +4,9 @@ All notable changes to this module will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/). 
 
-## [1.9.6] 2024-01-15
+## [1.9.6] 2024-01-16
 ### Changed
+- Status Query Cron interval changed from 10 to 30 minutes
 - New status query time interval logic as order updated_at is not usable on newer Magento versions
 
 ## [1.9.5] - 2023-09-24
