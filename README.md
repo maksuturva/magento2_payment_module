@@ -1,3 +1,5 @@
+# This module has been replaced by [magento2_svea_payments](https://github.com/maksuturva/magento2_svea_payments)
+---
 # Svea Payments payment module for Magento 2
 
 Contributors: Svea Payments Oy  
